@@ -5,7 +5,7 @@ Professional React + Vite starter focused on a POS-style login screen.
 ## Quick start
 
 ```bash
-cd coupang-kmart-app
+cd coupang-kmart-Frontend
 npm install
 npm run dev
 ```
