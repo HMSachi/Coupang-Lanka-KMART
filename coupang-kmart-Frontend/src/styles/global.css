@@ -13,6 +13,8 @@
 	--shadow-1: 0 12px 35px rgba(12, 41, 66, 0.12);
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
 * {
 	box-sizing: border-box;
 	margin: 0;
@@ -21,7 +23,7 @@
 
 body {
 	min-height: 100vh;
-	font-family: "Segoe UI", "Noto Sans", sans-serif;
+	font-family: 'Poppins', "Segoe UI", "Noto Sans", sans-serif;
 	color: var(--text-primary);
 	background:
 		radial-gradient(circle at 15% 20%, #ffffff, transparent 42%),
