@@ -28,6 +28,22 @@ export const apiService = {
         return DUMMY_SHIFT_REPORT;
     },
 
+    // Dashboard Stats
+    getDashboardStats: async () => {
+        await delay(600);
+        const lowStockCount = DUMMY_PRODUCTS.filter(p => p.stock < 20).length;
+        const totalProducts = DUMMY_PRODUCTS.length;
+        // Simple calculation mock
+        return {
+            totalSales: 'LKR 964,800',
+            salesTrend: '+18.5%',
+            totalOrders: 342,
+            orderTrend: '+5.2%',
+            productsCount: 840,
+            lowStockAlerts: lowStockCount
+        };
+    },
+
     // Authentication (Simulated)
     login: async (email, password) => {
         await delay(1200);

@@ -4,7 +4,7 @@ import Card from '../../../components/shared/Card';
 import Button from '../../../components/shared/Button';
 import Modal from '../../../components/shared/Modal';
 import Input from '../../../components/shared/Input';
-import { Package, Plus, Search, Filter, AlertTriangle, ArrowUpDown, MoreHorizontal, Barcode, Tags, Image as ImageIcon, DollarSign, Database } from 'lucide-react';
+import { Package, Plus, Search, Filter, AlertTriangle, ArrowUpDown, MoreHorizontal, Barcode, Tags, Image as ImageIcon, DollarSign, Database, Edit2, Trash2 } from 'lucide-react';
 import { DUMMY_PRODUCTS } from '../../../services/dummyData';
 
 export default function ProductCatalog() {
@@ -59,14 +59,14 @@ export default function ProductCatalog() {
                     onClick={() => setActiveTab('all')}
                 >
                     All Products
-                    <span className="count">{DUMMY_PRODUCTS.length}</span>
+                    <span className="tab-count">{DUMMY_PRODUCTS.length}</span>
                 </button>
                 <button
                     className={`tab-btn ${activeTab === 'low' ? 'active' : ''}`}
                     onClick={() => setActiveTab('low')}
                 >
                     Low Stock
-                    <span className="count warning">{DUMMY_PRODUCTS.filter(p => p.stock < 20).length}</span>
+                    <span className="tab-count warning">{DUMMY_PRODUCTS.filter(p => p.stock < 20).length}</span>
                 </button>
             </div>
 
@@ -115,15 +115,19 @@ export default function ProductCatalog() {
                             {filteredProducts.map((p) => (
                                 <tr key={p.id}>
                                     <td>
-                                        <div className="product-cell">
-                                            <div className="prod-img">{p.image}</div>
-                                            <div className="prod-info">
-                                                <span className="name">{p.name}</span>
-                                                <span className="sku">SKU: CK-00{p.id}</span>
+                                        <div className="product-info-premium">
+                                            <div className="product-icon-wrap">{p.image}</div>
+                                            <div className="product-details">
+                                                <span className="product-name">{p.name}</span>
+                                                <span className="product-sku">SKU: CK-00{p.id}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td><span className="category-pill">{p.category}</span></td>
+                                    <td>
+                                        <span className={`category-tag cat-${p.category.toLowerCase().replace(/\s+/g, '-')}`}>
+                                            {p.category}
+                                        </span>
+                                    </td>
                                     <td className="fw-600">LKR {p.price.toLocaleString()}</td>
                                     <td>
                                         <div className="stock-level-cell">
@@ -147,7 +151,14 @@ export default function ProductCatalog() {
                                         )}
                                     </td>
                                     <td className="text-right">
-                                        <button className="icon-btn"><MoreHorizontal size={18} /></button>
+                                        <div className="table-actions-premium">
+                                            <button className="icon-btn-refined edit" title="Edit Product">
+                                                <Edit2 size={16} />
+                                            </button>
+                                            <button className="icon-btn-refined delete" title="Delete Product">
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -225,28 +236,32 @@ export default function ProductCatalog() {
                     </div>
                 }
             >
-                <div className="category-form-premium">
-                    <Input
-                        label="Category Name"
-                        placeholder="e.g. Skin Care"
-                        value={newCategory.name}
-                        onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-                        icon={Tags}
-                    />
-                    <Input
-                        label="Category Icon"
-                        placeholder="💄"
-                        value={newCategory.icon}
-                        onChange={(e) => setNewCategory({ ...newCategory, icon: e.target.value })}
-                        icon={ImageIcon}
-                    />
+                <div className="category-management-v2">
+                    <div className="modal-form-row">
+                        <Input
+                            label="Category Name"
+                            placeholder="e.g. Skin Care"
+                            value={newCategory.name}
+                            onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+                            icon={Tags}
+                        />
+                        <Input
+                            label="Icon/Emoji"
+                            placeholder="💄"
+                            value={newCategory.icon}
+                            onChange={(e) => setNewCategory({ ...newCategory, icon: e.target.value })}
+                            icon={ImageIcon}
+                        />
+                    </div>
 
-                    <div className="existing-categories-chip-wrap">
-                        <label className="input-label">Existing Categories</label>
-                        <div className="chips-grid">
+                    <div className="existing-categories-section">
+                        <label className="input-label-premium">Current Categories</label>
+                        <div className="category-manage-grid">
                             {categories.filter(c => c !== 'All').map(cat => (
-                                <div key={cat} className="category-chip">
-                                    <span>{cat}</span>
+                                <div key={cat} className="category-chip-manage">
+                                    <span className="chip-icon">🏷️</span>
+                                    <span className="chip-text">{cat}</span>
+                                    <button className="chip-remove" title="Remove">&times;</button>
                                 </div>
                             ))}
                         </div>

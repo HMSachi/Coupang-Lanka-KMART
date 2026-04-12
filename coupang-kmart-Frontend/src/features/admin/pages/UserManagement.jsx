@@ -57,12 +57,22 @@ export default function UserManagement() {
                             {filteredUsers.map((u) => (
                                 <tr key={u.email}>
                                     <td>
-                                        <div className="user-cell">
-                                            <div className="user-avatar-sm">{u.name[0]}</div>
-                                            <span className="fw-600">{u.name}</span>
+                                        <div className="user-info-premium">
+                                            <div className={`user-avatar-circle user-role-${u.role}`}>
+                                                {u.name[0]}
+                                            </div>
+                                            <div className="user-details-main">
+                                                <span className="user-display-name">{u.name}</span>
+                                                <span className="user-id-sub">UID: {u.id}</span>
+                                            </div>
                                         </div>
                                     </td>
-                                    <td className="color-muted">{u.email}</td>
+                                    <td>
+                                        <div className="email-cell-premium">
+                                            <Mail size={14} />
+                                            <span>{u.email}</span>
+                                        </div>
+                                    </td>
                                     <td>
                                         <span className={`role-badge ${u.role}`}>
                                             <Shield size={12} />
@@ -70,12 +80,16 @@ export default function UserManagement() {
                                         </span>
                                     </td>
                                     <td>
-                                        <span className="branch-tag">{u.branch}</span>
+                                        <span className="branch-pill">{u.branch}</span>
                                     </td>
                                     <td className="text-right">
-                                        <div className="action-btns">
-                                            <button className="icon-btn edit"><Edit2 size={16} /></button>
-                                            <button className="icon-btn delete"><Trash2 size={16} /></button>
+                                        <div className="table-actions-premium">
+                                            <button className="icon-btn-refined edit" title="Edit User">
+                                                <Edit2 size={16} />
+                                            </button>
+                                            <button className="icon-btn-refined delete" title="Delete User">
+                                                <Trash2 size={16} />
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
