@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogOut, Home, Package, Users, BarChart2, Bell, Settings, Store, ArrowLeftRight, ShoppingCart, History, Shield } from 'lucide-react';
+import { LogOut, Home, Package, Users, BarChart2, Bell, Settings, Store, ArrowLeftRight, Shield } from 'lucide-react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import './AdminLayout.css';
 
@@ -18,24 +18,31 @@ const navItems = [
 const AdminLayout = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = JSON.parse(localStorage.getItem('user')) || { email: 'Admin', role: 'Super Admin' };
+    const user = JSON.parse(localStorage.getItem('user')) || { email: 'Admin@g.com', role: 'superAdmin' };
 
     const handleLogout = () => {
         localStorage.removeItem('user');
         navigate('/login');
     };
 
+    const filteredNavItems = navItems.filter(item => {
+        if (user.role === 'superAdmin') return true;
+        // Restrict local Admins from sensitive cross-branch / user management
+        const restricted = ['Branches', 'User Management', 'Roles & Permissions'];
+        return !restricted.includes(item.label);
+    });
+
     return (
         <div className="admin-layout">
             {/* Sidebar */}
             <aside className="sidebar">
                 <div className="sidebar-logo">
-                    <div className="logo-icon">C</div>
+                    <div className="logo-icon">CK</div>
                     <span className="logo-text">Coupang <span>Kmart</span></span>
                 </div>
 
                 <nav className="sidebar-nav">
-                    {navItems.map((item) => (
+                    {filteredNavItems.map((item) => (
                         <Link
                             key={item.path}
                             to={item.path}
