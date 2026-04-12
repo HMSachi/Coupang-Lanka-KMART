@@ -1,20 +1,19 @@
 import React from 'react'
-import logo from '../../../assets/logo.jpeg'
 
 export default function BrandPanel() {
   return (
     <section className="pos-brand-panel" aria-label="Brand information">
       <div>
         <div className="brand-top">
-          <img className="brand-logo" src={logo} alt="Coupang Kmart logo" />
+          <div className="brand-logo" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem'}}>✨</div>
           <div>
-            <p className="brand-kicker">POS MANAGEMENT</p>
-            <h1 className="brand-title">Coupang Kmart</h1>
+            <p className="brand-kicker">BEAUTY POS</p>
+            <h1 className="brand-title">Luxe Cosmetics</h1>
           </div>
         </div>
 
         <p className="brand-subtitle">
-          Unified checkout, inventory, and shift operations from one secure point of sale platform.
+          Unified checkout, inventory, and shift operations from one secure point of sale platform for our beauty bar.
         </p>
       </div>
 
