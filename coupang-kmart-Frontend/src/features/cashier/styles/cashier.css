@@ -9,11 +9,15 @@
   
   --pos-primary: #0f5f8c;
   --pos-primary-hover: #0c4d71;
+  --pos-primary-soft: #f0f9ff;
   
   --pos-danger: #ef4444;
   --pos-danger-hover: #dc2626;
+  --pos-danger-soft: #fee2e2;
 
   --pos-cart-bg: #ffffff;
+  --pos-empty: #cbd5e1;
+  --pos-hover: #e2e8f0;
   
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
@@ -75,11 +79,18 @@
   --pos-border: #22324a;
   --pos-text-main: #e7edf7;
   --pos-text-muted: #97a9c6;
+  
   --pos-primary: #4ea5d8;
   --pos-primary-hover: #3e90c1;
+  --pos-primary-soft: #172a45;
+
   --pos-danger: #fb7185;
   --pos-danger-hover: #f43f5e;
+  --pos-danger-soft: #4c1d24;
+
   --pos-cart-bg: #101a2b;
+  --pos-empty: #334155;
+  --pos-hover: #1e293b;
 }
 
 /* Main Area (Left) */
@@ -114,7 +125,7 @@
 
 .pos-search-box:focus-within {
   border-color: var(--pos-primary);
-  box-shadow: 0 0 0 3px rgba(15, 95, 140, 0.15);
+  box-shadow: 0 0 0 3px var(--pos-primary-soft);
 }
 
 .icon-search {
@@ -147,8 +158,8 @@
   transition: all 0.2s;
 }
 .logout-btn-top:hover {
-  background: #fee2e2;
-  border-color: #fca5a5;
+  background: var(--pos-danger-soft);
+  border-color: var(--pos-danger);
 }
 
 /* Categories Area */
@@ -168,7 +179,7 @@
   height: 4px;
 }
 .pos-categories::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1;
+  background-color: var(--pos-hover);
   border-radius: 4px;
 }
 
@@ -230,7 +241,7 @@
   align-items: center;
   justify-content: center;
   font-size: 3.5rem;
-  background: #f8fafc;
+  background: var(--pos-bg);
   border-radius: 12px;
   margin-bottom: 12px;
 }
@@ -306,7 +317,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #cbd5e1;
+  color: var(--pos-empty);
   gap: 12px;
 }
 .empty-icon {
@@ -368,7 +379,7 @@
   color: var(--pos-text-main);
   border-radius: 6px;
 }
-.qty-btn:hover { background: #e2e8f0; }
+.qty-btn:hover { background: var(--pos-hover); }
 
 .qty-val {
   width: 32px;
@@ -393,12 +404,12 @@
   align-items: center;
   justify-content: center;
 }
-.delete-btn:hover { background: #fee2e2; color: var(--pos-danger); }
+.delete-btn:hover { background: var(--pos-danger-soft); color: var(--pos-danger); }
 
 /* Billing Section */
 .cart-summary {
   padding: 20px 24px;
-  background: #f8fafc;
+  background: var(--pos-surface);
   border-top: 1px solid var(--pos-border);
   display: flex;
   flex-direction: column;
@@ -414,7 +425,7 @@
 .summary-row.total {
   margin-top: 8px;
   padding-top: 12px;
-  border-top: 1px dashed #cbd5e1;
+  border-top: 1px dashed var(--pos-border);
   font-size: 1.3rem;
   font-weight: 700;
   color: var(--pos-text-main);
@@ -424,7 +435,7 @@
   display: flex;
   gap: 12px;
   padding: 0 24px 20px;
-  background: #f8fafc;
+  background: var(--pos-surface);
 }
 
 .pay-method-btn {
@@ -434,7 +445,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: var(--pos-surface);
+  background: var(--pos-bg);
   border: 1px solid var(--pos-border);
   border-radius: 10px;
   padding: 12px;
@@ -449,7 +460,7 @@
 .pay-method-btn:hover {
   border-color: var(--pos-primary);
   color: var(--pos-primary);
-  background: #f0f9ff;
+  background: var(--pos-primary-soft);
 }
 
 .checkout-btn {
@@ -474,7 +485,7 @@
 }
 
 .checkout-btn:disabled {
-  background: #94a3b8;
+  background: var(--pos-text-muted);
   box-shadow: none;
   cursor: not-allowed;
   transform: none;
