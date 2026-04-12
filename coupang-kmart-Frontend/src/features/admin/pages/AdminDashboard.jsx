@@ -13,15 +13,17 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div className="dashboard-content">
-        <div className="content-header">
-          <h1>{isSuper ? 'Global Overview' : 'Branch Dashboard'}</h1>
-          <p>
-            {isSuper
-              ? 'Real-time analytics and performance metrics for all Coupang Kmart branches.'
-              : `Managing operations and inventory for your assigned station.`
-            }
-          </p>
+      <div className="admin-content-wrapper">
+        <div className="page-header">
+          <div className="header-info">
+            <h1>{isSuper ? 'Global Overview' : 'Branch Dashboard'}</h1>
+            <p>
+              {isSuper
+                ? 'Real-time analytics and performance metrics for all Coupang Kmart branches.'
+                : `Managing operations and inventory for your assigned station.`
+              }
+            </p>
+          </div>
         </div>
 
         <KpiCards />

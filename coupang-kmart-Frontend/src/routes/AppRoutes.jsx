@@ -6,6 +6,10 @@ import UserManagement from '../features/admin/pages/UserManagement';
 import BranchManagement from '../features/admin/pages/BranchManagement';
 import ProductCatalog from '../features/admin/pages/ProductCatalog';
 import StockTransfer from '../features/admin/pages/StockTransfer';
+import Reports from '../features/admin/pages/Reports';
+import Notifications from '../features/admin/pages/Notifications';
+import Settings from '../features/admin/pages/Settings';
+import RolesPermissions from '../features/admin/pages/RolesPermissions';
 import CashierDashboard from '../features/cashier/pages/CashierDashboard';
 import RefundPage from '../features/cashier/pages/RefundPage';
 import EodPage from '../features/cashier/pages/EodPage';
@@ -73,6 +77,38 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={['superAdmin']}>
                             <UserManagement />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/roles"
+                    element={
+                        <ProtectedRoute allowedRoles={['superAdmin']}>
+                            <RolesPermissions />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/reports"
+                    element={
+                        <ProtectedRoute allowedRoles={['superAdmin', 'admin']}>
+                            <Reports />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/notifications"
+                    element={
+                        <ProtectedRoute allowedRoles={['superAdmin', 'admin']}>
+                            <Notifications />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/settings"
+                    element={
+                        <ProtectedRoute allowedRoles={['superAdmin']}>
+                            <Settings />
                         </ProtectedRoute>
                     }
                 />

@@ -131,7 +131,10 @@ export default function ProductCatalog() {
                                     <td className="fw-600">LKR {p.price.toLocaleString()}</td>
                                     <td>
                                         <div className="stock-level-cell">
-                                            <span className={`stock-count ${p.stock < 20 ? 'danger' : ''}`}>{p.stock}</span>
+                                            <div className="stock-numeric-wrap">
+                                                <span className={`stock-count ${p.stock < 20 ? 'danger' : ''}`}>{p.stock}</span>
+                                                <span className="stock-unit">Units</span>
+                                            </div>
                                             <div className="stock-bar-bg">
                                                 <div
                                                     className={`stock-bar-fill ${p.stock < 20 ? 'danger' : ''}`}

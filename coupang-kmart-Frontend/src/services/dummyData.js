@@ -69,3 +69,29 @@ export const DUMMY_SALES_DATA = [
     { name: 'Sat', sales: 124000 },
     { name: 'Sun', sales: 98000 },
 ];
+
+export const DUMMY_REPORTS = [
+    { id: 1, name: 'March_Monthly_Sales.pdf', status: 'Ready', date: '2026-03-31' },
+    { id: 2, name: 'Inventory_Audit_Q1.pdf', status: 'Ready', date: '2026-04-05' },
+    { id: 3, name: 'Tax_Liability_Report.pdf', status: 'Pending', date: '2026-04-10' },
+];
+
+export const DUMMY_NOTIFICATIONS = [
+    { id: 1, type: 'warning', title: 'Low Stock Alert', msg: 'MAC Studio Fix Foundation is below threshold (5 items left).', time: '12 mins ago' },
+    { id: 2, type: 'info', title: 'System Core Update', msg: 'V3.0 Executive Build deployed successfully.', time: '3 hours ago' },
+    { id: 3, type: 'success', title: 'Nightly Data Sync', msg: 'Branch data synchronized for all 4 locations.', time: 'Today, 8:15 AM' },
+    { id: 4, type: 'warning', title: 'Pricing Conflict', msg: 'Detected price mismatch for SKU CK-008.', time: 'Yesterday' },
+];
+
+export const DUMMY_SETTINGS = [
+    { id: 'reg', icon: 'Globe', title: 'Regional Settings', desc: 'Currency (LKR), Timezone (IST), and GST configurations.' },
+    { id: 'sec', icon: 'Shield', title: 'Privacy & Security', desc: 'Control system access and audit log retention (90 days).' },
+    { id: 'hard', icon: 'Printer', title: 'Hardware Integration', desc: 'Manage Epson Thermal Printers and QR Scanners.' },
+    { id: 'data', icon: 'Database', title: 'Data Management', desc: 'Auto-backup enabled (Cloud Sync) every 24 hours.' },
+];
+
+export const DUMMY_ROLES = [
+    { id: 'sa', title: 'Super Admin', desc: 'Total system control. Cross-branch configuration.', level: 'Level 10', permissions: ['View', 'Edit', 'Global', 'Safe'] },
+    { id: 'ba', title: 'Branch Admin', desc: 'Assigned branch management. Inventory & Sales view.', level: 'Level 5', permissions: ['View', 'Edit', 'Local'] },
+    { id: 'ca', title: 'Cashier', desc: 'POS access. Billing and basic refund operations.', level: 'Level 1', permissions: ['View', 'Local'] },
+];

@@ -1,13 +1,19 @@
-import { DUMMY_PRODUCTS, CATEGORIES, DUMMY_SHIFT_REPORT } from './dummyData';
+import {
+    DUMMY_PRODUCTS,
+    CATEGORIES,
+    DUMMY_SHIFT_REPORT,
+    DUMMY_REPORTS,
+    DUMMY_NOTIFICATIONS,
+    DUMMY_SETTINGS,
+    DUMMY_ROLES
+} from './dummyData';
 
 /**
  * Dummy API Service
  * Simulate network latency and async data fetching.
- * Use these functions in your components instead of direct dummyData imports
- * to prepare for a real REST/GraphQL API.
  */
 
-const delay = (ms = 800) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms = 600) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const apiService = {
     // Products
@@ -22,6 +28,30 @@ export const apiService = {
         return CATEGORIES;
     },
 
+    // Reports
+    getReports: async () => {
+        await delay(900);
+        return DUMMY_REPORTS;
+    },
+
+    // Notifications
+    getNotifications: async () => {
+        await delay(400);
+        return DUMMY_NOTIFICATIONS;
+    },
+
+    // Settings
+    getSettings: async () => {
+        await delay(500);
+        return DUMMY_SETTINGS;
+    },
+
+    // Roles
+    getRoles: async () => {
+        await delay(600);
+        return DUMMY_ROLES;
+    },
+
     // Shift/EOD
     getShiftReport: async () => {
         await delay(1000);
@@ -32,10 +62,8 @@ export const apiService = {
     getDashboardStats: async () => {
         await delay(600);
         const lowStockCount = DUMMY_PRODUCTS.filter(p => p.stock < 20).length;
-        const totalProducts = DUMMY_PRODUCTS.length;
-        // Simple calculation mock
         return {
-            totalSales: 'LKR 964,800',
+            totalSales: 'LKR 1,240,800',
             salesTrend: '+18.5%',
             totalOrders: 342,
             orderTrend: '+5.2%',
@@ -47,7 +75,6 @@ export const apiService = {
     // Authentication (Simulated)
     login: async (email, password) => {
         await delay(1200);
-        // Add real login logic here later
-        return { success: true, user: { email, role: 'cashier' } };
+        return { success: true, user: { email, role: 'superAdmin' } };
     }
 };

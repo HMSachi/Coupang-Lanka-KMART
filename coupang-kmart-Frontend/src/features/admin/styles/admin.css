@@ -7,3 +7,6 @@
 @import './modules/dashboard.css';
 @import './modules/inventory.css';
 @import './modules/users.css';
+@import './modules/features.css';
+@import './modules/branches.css';
+@import './modules/transfers.css';

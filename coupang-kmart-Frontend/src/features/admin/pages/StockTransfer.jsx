@@ -22,54 +22,79 @@ export default function StockTransfer() {
             </div>
 
             <div className="transfer-summary-grid">
-                <Card glass className="summary-stat-card">
-                    <div className="stat-label">Total Transfers (MTD)</div>
-                    <div className="stat-value">124</div>
-                </Card>
-                <Card glass className="summary-stat-card">
-                    <div className="stat-label">Active / In-Transit</div>
-                    <div className="stat-value color-blue">12</div>
-                </Card>
-                <Card glass className="summary-stat-card">
-                    <div className="stat-label">Pending Approval</div>
-                    <div className="stat-value warning">3</div>
-                </Card>
+                <div className="kpi-card">
+                    <div className="kpi-icon blue">
+                        <ArrowLeftRight size={24} />
+                    </div>
+                    <div className="kpi-details">
+                        <h3>Total Transfers (MTD)</h3>
+                        <div className="kpi-val">124</div>
+                        <div className="kpi-trend success">Monthly Throughput</div>
+                    </div>
+                </div>
+                <div className="kpi-card">
+                    <div className="kpi-icon primary">
+                        <Clock size={24} />
+                    </div>
+                    <div className="kpi-details">
+                        <h3>Active / In-Transit</h3>
+                        <div className="kpi-val color-blue">12</div>
+                        <div className="kpi-trend success">Active Logistics</div>
+                    </div>
+                </div>
+                <div className="kpi-card">
+                    <div className="kpi-icon red">
+                        <CheckCircle2 size={24} />
+                    </div>
+                    <div className="kpi-details">
+                        <h3>Pending Approval</h3>
+                        <div className="kpi-val warning">3</div>
+                        <div className="kpi-trend danger">Action Required</div>
+                    </div>
+                </div>
             </div>
 
-            <Card title="Recent History" padding="none" glass>
+            <Card glass padding="none">
                 <div className="table-responsive">
-                    <table className="admin-table">
+                    <table className="admin-table-v2">
                         <thead>
                             <tr>
-                                <th>Transfer ID</th>
-                                <th>Route</th>
-                                <th>Items Count</th>
-                                <th>Status</th>
-                                <th>Request Date</th>
+                                <th>Logistics ID</th>
+                                <th>Route Visualization</th>
+                                <th>Cargo Load</th>
+                                <th>Track Status</th>
+                                <th>Timeline</th>
                                 <th className="text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {DUMMY_TRANSFERS.map(t => (
-                                <tr key={t.id}>
-                                    <td className="fw-600">{t.id}</td>
+                                <tr key={t.id} className="row-hover-premium">
+                                    <td className="fw-800 color-main">{t.id}</td>
                                     <td>
-                                        <div className="route-cell">
-                                            <span>{t.from}</span>
-                                            <ArrowLeftRight size={14} className="color-muted" />
-                                            <span>{t.to}</span>
+                                        <div className="route-badge-v2">
+                                            <span className="node-text">{t.from}</span>
+                                            <div className="node-sep">
+                                                <ArrowLeftRight size={14} />
+                                            </div>
+                                            <span className="node-text">{t.to}</span>
                                         </div>
                                     </td>
-                                    <td>{t.items} Items</td>
                                     <td>
-                                        <span className={`status-pill-small ${t.status.toLowerCase().replace(' ', '-')}`}>
-                                            {t.status === 'Completed' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
+                                        <div className="items-count-pill">
+                                            <span>{t.items} Units</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span className={`transfer-status-chip ${t.status.toLowerCase().replace(' ', '-')}`}>
                                             {t.status}
                                         </span>
                                     </td>
-                                    <td className="color-muted">{t.date}</td>
+                                    <td className="color-muted fw-600">{t.date}</td>
                                     <td className="text-right">
-                                        <Button size="sm" variant="secondary">Details</Button>
+                                        <button className="action-btn-link">
+                                            Track Hub <Plus size={14} />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

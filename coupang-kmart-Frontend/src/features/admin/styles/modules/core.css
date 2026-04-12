@@ -30,6 +30,11 @@
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 20px;
+
+    /* Executive Spacing Tokens */
+    --page-padding: 40px;
+    --section-gap: 32px;
+    --header-margin: 28px;
 }
 
 * {
@@ -204,6 +209,34 @@ body {
 
 .admin-content>* {
     animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Page Header Alignment */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: var(--header-margin);
+    gap: 20px;
+}
+
+.header-info h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.04em;
+    margin-bottom: 6px;
+}
+
+.header-info p {
+    font-size: 1rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Feature Padding Standardization */
+.management-actions {
+    margin-bottom: var(--section-gap);
 }
 
 /* Premium Action Buttons */
