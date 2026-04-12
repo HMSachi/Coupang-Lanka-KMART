@@ -1,29 +1,33 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Mail, Lock, ShieldCheck } from 'lucide-react'
+import Button from '../../../components/shared/Button'
+import Input from '../../../components/shared/Input'
+import Card from '../../../components/shared/Card'
 import logo from '../../../assets/logo.jpeg'
 import '../styles/auth.css'
-import AdminDashboard from '../../admin/pages/AdminDashboard'
-import CashierDashboard from '../../cashier/pages/CashierDashboard'
 
-const HARDCODED_USERS = {
-  'admin@g.com': {
-    password: '1234ab',
-    role: 'superAdmin'
-  },
-  'cashier@g.com': {
-    password: '1234ab',
-    role: 'cashier'
-  }
-}
+import { DUMMY_USERS } from '../../../services/dummyData';
+
+const HARDCODED_USERS = DUMMY_USERS;
 
 export default function LoginPage() {
   const pageRef = useRef(null)
+  const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [activeRole, setActiveRole] = useState('')
   const [theme, setTheme] = useState('light')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    // Check if user is already logged in
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (user) {
+      if (user.role === 'superAdmin') navigate('/admin')
+      else if (user.role === 'cashier') navigate('/pos')
+    }
+
     const savedTheme = window.localStorage.getItem('posTheme')
     if (savedTheme === 'light' || savedTheme === 'dark') {
       setTheme(savedTheme)
@@ -42,104 +46,110 @@ export default function LoginPage() {
 
     window.addEventListener('pointermove', handlePointer)
     return () => window.removeEventListener('pointermove', handlePointer)
-  }, [])
-
-  function toggleTheme() {
-    setTheme((prev) => {
-      const next = prev === 'dark' ? 'light' : 'dark'
-      window.localStorage.setItem('posTheme', next)
-      return next
-    })
-  }
+  }, [navigate])
 
   function handleSubmit(e) {
     e.preventDefault()
-
-    const userKey = username.trim().toLowerCase()
-    const account = HARDCODED_USERS[userKey]
-
-    if (account && password === account.password) {
-      setActiveRole(account.role)
-      setError('')
-      return
-    }
-
-    setError('Invalid login credentials. Use admin@g.com or cashier@g.com with password 1234ab.')
-  }
-
-  function handleLogout() {
-    setActiveRole('')
-    setUsername('')
-    setPassword('')
+    setLoading(true)
     setError('')
-  }
 
-  if (activeRole === 'superAdmin') {
-    return <AdminDashboard onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} />;
-  }
+    // Artificial delay for premium feel
+    setTimeout(() => {
+      const userKey = username.trim().toLowerCase()
+      const account = HARDCODED_USERS[userKey]
 
-  if (activeRole === 'cashier') {
-    return <CashierDashboard onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} />;
+      if (account && password === account.password) {
+        const userData = { email: userKey, role: account.role }
+        localStorage.setItem('user', JSON.stringify(userData))
+
+        if (account.role === 'cashier') {
+          localStorage.setItem('shift_status', 'open')
+          navigate('/pos')
+        } else if (account.role === 'superAdmin') {
+          navigate('/admin')
+        }
+        return
+      }
+
+      setError('Invalid credentials. Hint: use admin@g.com or cashier@g.com')
+      setLoading(false)
+    }, 1000)
   }
 
   return (
-    <div className={`login-page ${theme === 'dark' ? 'theme-dark' : 'theme-light'}`} ref={pageRef}>
-      <div className="login-card" role="main" aria-label="POS login">
-        <div className="logo-shell" aria-hidden>
-          <img src={logo} alt="Coupang Kmart logo" className="logo-img" />
+    <div className={`login-container-new ${theme}`} ref={pageRef}>
+      <div className="login-bg-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+      </div>
+
+      <div className="login-content">
+        <div className="brand-section">
+          <div className="brand-badge">
+            <ShieldCheck size={20} />
+            <span>Secure POS Entry</span>
+          </div>
+          <h1>Coupang <span>Kmart</span></h1>
+          <p>Streamlined Retail Management & High-Speed POS Solutions</p>
         </div>
-        <h1 className="login-welcome">Welcome Back</h1>
-        <p className="login-sub">Sign in to your POS account to continue billing and operations.</p>
 
-        <form className="card-form" onSubmit={handleSubmit} autoComplete="off" noValidate>
-          <div className="input-with-icon">
-            <span className="input-icon" aria-hidden>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8.5v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/><path d="M21 8.5l-9 6-9-6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </span>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              placeholder="Email ID"
-              aria-label="Email ID"
-              autoComplete="off"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+        <Card glass className="login-form-card" padding="none">
+          <div className="form-inner">
+            <div className="form-header-premium">
+              <h2>Welcome Back</h2>
+              <p>Please enter your credentials to access the system</p>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              <Input
+                label="Email Address"
+                placeholder="name@company.com"
+                icon={Mail}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+
+              <div style={{ marginTop: '1.25rem' }}>
+                <Input
+                  label="Password"
+                  type="password"
+                  placeholder="••••••••"
+                  icon={Lock}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              {error && (
+                <div className="login-error-premium">
+                  {error}
+                </div>
+              )}
+
+              <div className="form-options">
+                <label className="checkbox-label">
+                  <input type="checkbox" />
+                  <span>Remember me</span>
+                </label>
+                <a href="#" className="forgot-link">Forgot Password?</a>
+              </div>
+
+              <Button
+                type="submit"
+                fullWidth
+                size="lg"
+                disabled={loading}
+              >
+                {loading ? 'Authenticating...' : 'Sign In'}
+              </Button>
+            </form>
           </div>
-
-          <div className="input-with-icon">
-            <span className="input-icon" aria-hidden>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/><path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </span>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Password"
-              aria-label="Password"
-              autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+          <div className="form-footer">
+            <p>Protected by Coupang Enterprise Security</p>
           </div>
-
-          {error && <p className="login-error">{error}</p>}
-
-          <div className="form-row">
-            <label className="remember-control" htmlFor="remember-me">
-              <input id="remember-me" name="remember" type="checkbox" />
-              <span>Remember me</span>
-            </label>
-            <a className="forgot-link" href="#">Forgot Password?</a>
-          </div>
-
-          <div className="btn-row">
-            <button className="btn-primary" type="submit">LOGIN</button>
-          </div>
-        </form>
+        </Card>
       </div>
     </div>
   )

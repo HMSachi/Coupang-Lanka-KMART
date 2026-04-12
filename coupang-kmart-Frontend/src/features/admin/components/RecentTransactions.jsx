@@ -1,12 +1,8 @@
 import React from 'react';
 
-const MOCK_TRANSACTIONS = [
-  { id: 'TRX-1092', cashier: 'Sara K.', amount: 'LKR 12,500', method: 'Credit Card', time: '10:42 AM', status: 'completed' },
-  { id: 'TRX-1093', cashier: 'John D.', amount: 'LKR 4,200', method: 'Cash', time: '10:45 AM', status: 'completed' },
-  { id: 'TRX-1094', cashier: 'Sara K.', amount: 'LKR 8,900', method: 'Debit Card', time: '10:55 AM', status: 'completed' },
-  { id: 'TRX-1095', cashier: 'Amila W.', amount: 'LKR 11,500', method: 'Cash', time: '11:02 AM', status: 'completed' },
-  { id: 'TRX-1096', cashier: 'Amila W.', amount: 'LKR 22,000', method: 'Credit Card', time: '11:15 AM', status: 'completed' },
-];
+import { DUMMY_TRANSACTIONS } from '../../../services/dummyData';
+
+const TRXS = DUMMY_TRANSACTIONS;
 
 export default function RecentTransactions() {
   return (
@@ -27,7 +23,7 @@ export default function RecentTransactions() {
             </tr>
           </thead>
           <tbody>
-            {MOCK_TRANSACTIONS.map(trx => (
+            {TRXS.map(trx => (
               <tr key={trx.id}>
                 <td className="fw-600">{trx.id}</td>
                 <td>{trx.cashier}</td>

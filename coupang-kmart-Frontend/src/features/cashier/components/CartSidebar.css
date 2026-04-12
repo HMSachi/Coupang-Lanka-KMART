@@ -1,0 +1,326 @@
+.cart-sidebar-premium {
+    height: 100%;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.cart-header-premium {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cart-header-premium h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.cart-count {
+    background: var(--bg-1);
+    color: var(--brand);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.cart-items-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.cart-item-premium {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-0);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.cart-item-premium:hover {
+    background: white;
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.cart-item-img {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: var(--radius-sm);
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-info h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.cart-item-price {
+    font-size: 0.8rem;
+    color: var(--brand);
+    font-weight: 700;
+}
+
+.cart-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.qty-control {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: white;
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+.qty-control button {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-1);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+.qty-val {
+    font-size: 0.825rem;
+    font-weight: 700;
+    min-width: 1.5ch;
+    text-align: center;
+}
+
+.remove-item {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.remove-item:hover {
+    color: var(--danger);
+}
+
+.cart-summary-premium {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.summary-row.total {
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--border);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.summary-details-premium {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 0.5rem 0;
+}
+
+.discount-control-premium {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.825rem;
+    color: var(--brand);
+    font-weight: 600;
+}
+
+.disc-input-premium {
+    width: 50px;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    text-align: right;
+    font-weight: 700;
+}
+
+.discount-row {
+    color: var(--success) !important;
+    font-weight: 700;
+}
+
+.drawer-check-premium {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.drawer-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.drawer-field label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.readonly-val {
+    padding: 0.75rem 1rem;
+    background: var(--bg-1);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.drawer-field input {
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 1.15rem;
+    font-weight: 700;
+    transition: border-color 0.2s;
+}
+
+.drawer-field input:focus {
+    outline: none;
+    border-color: var(--brand);
+}
+
+/* Payment Modal Styles */
+.payment-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.payment-methods label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.methods-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.method-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.method-card:hover {
+    border-color: var(--brand-light);
+    background: var(--bg-0);
+}
+
+.method-card.active {
+    border-color: var(--brand);
+    background: rgba(37, 99, 235, 0.05);
+    color: var(--brand);
+}
+
+.method-card span {
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.receipt-dummy {
+    font-family: 'Courier New', Courier, monospace;
+    background: white;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    color: #333;
+}
+
+.receipt-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.receipt-header p {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+.receipt-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.receipt-line.total {
+    font-size: 1rem;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+}
+
+.divider {
+    border-top: 1px dashed #ccc;
+    margin: 1rem 0;
+}
+
+.receipt-footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.75rem;
+}
