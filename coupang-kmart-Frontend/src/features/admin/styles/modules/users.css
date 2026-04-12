@@ -1,0 +1,126 @@
+/* User Management & Shared Admin Elements */
+
+.user-info-premium {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-avatar-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.user-role-superAdmin {
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+}
+
+.user-role-admin {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+}
+
+.user-role-cashier {
+    background: linear-gradient(135deg, #475569, #1e293b);
+}
+
+.user-details-main {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-display-name {
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 0.95rem;
+}
+
+.user-id-sub {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.email-cell-premium {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.branch-pill {
+    padding: 4px 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.table-actions-premium {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.icon-btn-refined {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #94a3b8;
+}
+
+.icon-btn-refined:hover {
+    background: #f8fafc;
+    color: var(--admin-primary);
+    border-color: var(--admin-border);
+    transform: scale(1.05);
+}
+
+.icon-btn-refined.delete:hover {
+    background: #fef2f2;
+    color: var(--admin-danger);
+    border-color: #fee2e2;
+}
+
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.role-badge.superAdmin {
+    background: #f5f3ff;
+    color: #7c3aed;
+}
+
+.role-badge.admin {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.role-badge.cashier {
+    background: #f8fafc;
+    color: #64748b;
+}

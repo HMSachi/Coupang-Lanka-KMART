@@ -1,0 +1,129 @@
+/* Dashboard Specific Styles */
+
+.dashboard-grid-premium {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    margin-top: 32px;
+}
+
+/* Dashboard KPI Perfection */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 28px;
+    margin-bottom: 32px;
+}
+
+.kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.kpi-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.kpi-icon.blue {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+
+.kpi-icon.green {
+    background: #f0fdf4;
+    color: #22c55e;
+}
+
+.kpi-icon.primary {
+    background: #f5f3ff;
+    color: #8b5cf6;
+}
+
+.kpi-icon.red {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.kpi-details h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+}
+
+.kpi-val {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+}
+
+.kpi-trend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.kpi-trend.success {
+    color: #10b981;
+}
+
+.kpi-trend.danger {
+    color: #ef4444;
+}
+
+.kpi-trend.neutral {
+    color: #94a3b8;
+}
+
+.kpi-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    color: #94a3b8;
+    gap: 16px;
+    background: #fff;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--admin-border);
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 1400px) {
+    .dashboard-grid-premium {
+        grid-template-columns: 1fr;
+    }
+}

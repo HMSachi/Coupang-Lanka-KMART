@@ -1,0 +1,225 @@
+/* Inventory & Product Catalog Styles */
+
+.product-info-premium {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.product-icon-wrap {
+    width: 44px;
+    height: 44px;
+    background: #f8fafc;
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.product-name {
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 0.95rem;
+}
+
+.product-sku {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* Category Management V2 */
+.category-management-v2 {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 8px 0;
+}
+
+.modal-form-row {
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    gap: 16px;
+}
+
+.existing-categories-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.input-label-premium {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.category-manage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+}
+
+.category-chip-manage {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 8px 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.category-chip-manage:hover {
+    border-color: var(--admin-primary);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+    transform: translateY(-1px);
+}
+
+.chip-icon {
+    font-size: 1.1rem;
+}
+
+.chip-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+    flex: 1;
+}
+
+.chip-remove {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 2px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.chip-remove:hover {
+    color: var(--admin-danger);
+    background: #fef2f2;
+}
+
+.category-tag {
+    display: inline-flex;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid transparent;
+}
+
+/* Dynamic Category Colors */
+.cat-face {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #dbeafe;
+}
+
+.cat-lips {
+    background: #fdf2f8;
+    color: #be185d;
+    border-color: #fce7f3;
+}
+
+.cat-eyes {
+    background: #f5f3ff;
+    color: #6d28d9;
+    border-color: #ede9fe;
+}
+
+.cat-fragrances {
+    background: #fffbeb;
+    color: #b45309;
+    border-color: #fef3c7;
+}
+
+.cat-skincare {
+    background: #f0fdf4;
+    color: #15803d;
+    border-color: #dcfce7;
+}
+
+.table-controls-premium {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: #fff;
+    border-bottom: 1px solid var(--admin-border);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.inventory-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding: 6px;
+    background: #f1f5f9;
+    width: fit-content;
+    border-radius: 12px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 10px 20px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-btn:hover {
+    color: var(--admin-primary);
+}
+
+.tab-btn.active {
+    background: #ffffff;
+    color: var(--admin-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.tab-count {
+    margin-left: 8px;
+    padding: 2px 10px;
+    background: #f1f5f9;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #64748b;
+    transition: all 0.3s;
+}
+
+.tab-btn.active .tab-count {
+    background: var(--admin-primary);
+    color: #fff;
+}
+
+.tab-count.warning {
+    background: #fff1f2;
+    color: #e11d48;
+}
