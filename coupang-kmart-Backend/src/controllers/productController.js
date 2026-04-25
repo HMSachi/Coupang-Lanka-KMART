@@ -112,12 +112,56 @@ exports.deleteProduct = async (req, res) => {
 };
 
 // Inventory
+exports.getBranchInventory = async (req, res) => {
+    const { branch_id } = req.params;
+
+    // Security check: Restricted roles can only see THEIR branch
+    if (req.user.role !== 'admin') {
+        const userBranchId = req.user.branch_id;
+        if (!userBranchId || parseInt(branch_id) !== parseInt(userBranchId)) {
+            return res.status(403).json({ error: 'Unauthorized access to other branch inventory.' });
+        }
+    }
+
+    try {
+        const result = await pool.query(`
+            SELECT pi.id as inventory_id, p.id as product_id, p.name, c.name as category_name, p.base_price, pi.stock_quantity, pi.low_stock_threshold, p.image_url
+            FROM product_inventory pi
+            JOIN products p ON pi.product_id = p.id
+            LEFT JOIN categories c ON p.category_id = c.id
+            WHERE pi.branch_id = $1
+            ORDER BY p.name ASC
+        `, [branch_id]);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.addBranchInventory = async (req, res) => {
+    const { product_id, branch_id, stock_quantity, low_stock_threshold } = req.body;
+    try {
+        const existing = await pool.query('SELECT id FROM product_inventory WHERE product_id = $1 AND branch_id = $2', [product_id, branch_id]);
+        if (existing.rows.length > 0) {
+            return res.status(400).json({ error: 'This product is already linked to your branch inventory. Please just update the stock instead.' });
+        }
+
+        const result = await pool.query(
+            'INSERT INTO product_inventory (product_id, branch_id, stock_quantity, low_stock_threshold) VALUES ($1, $2, $3, $4) RETURNING *',
+            [product_id, branch_id, stock_quantity, low_stock_threshold]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.updateInventory = async (req, res) => {
-    const { id } = req.params; // product id
+    const { id } = req.params; // inventory record id
     const { stock_quantity, low_stock_threshold } = req.body;
     try {
         const result = await pool.query(
-            'UPDATE product_inventory SET stock_quantity = $1, low_stock_threshold = $2, updated_at = CURRENT_TIMESTAMP WHERE product_id = $3 RETURNING *',
+            'UPDATE product_inventory SET stock_quantity = $1, low_stock_threshold = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING *',
             [stock_quantity, low_stock_threshold, id]
         );
         res.json(result.rows[0]);

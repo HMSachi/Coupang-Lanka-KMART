@@ -1,10 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
-const { authenticateToken, isAdmin } = require('../middlewares/authMiddleware');
-
-// Wrap with authenticateToken and authorizeRole('admin') if needed, 
-// for now anyone can view but only admins can modify
+const { authenticateToken, isAdmin, isStaff } = require('../middlewares/authMiddleware');
 
 router.get('/categories', productController.getCategories);
 router.post('/categories', authenticateToken, isAdmin, productController.createCategory);
@@ -16,6 +13,9 @@ router.post('/items', authenticateToken, isAdmin, productController.createProduc
 router.put('/items/:id', authenticateToken, isAdmin, productController.updateProduct);
 router.delete('/items/:id', authenticateToken, isAdmin, productController.deleteProduct);
 
-router.put('/inventory/:id', authenticateToken, isAdmin, productController.updateInventory);
+// Staff branch control
+router.get('/branch-inventory/:branch_id', authenticateToken, isStaff, productController.getBranchInventory);
+router.post('/branch-inventory', authenticateToken, isStaff, productController.addBranchInventory);
+router.put('/inventory/:id', authenticateToken, isStaff, productController.updateInventory);
 
 module.exports = router;
