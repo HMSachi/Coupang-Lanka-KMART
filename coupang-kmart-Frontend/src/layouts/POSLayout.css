@@ -635,3 +635,12 @@ body {
         height: 500px;
     }
 }
+.pos-header-cart-btn { display: flex; align-items: center; gap: 0.5rem; background: var(--brand); color: white; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.2s; }
+.pos-header-cart-btn:hover { background: var(--brand-dark); transform: scale(1.05); }
+.pos-header-actions { margin-right: 1rem; }
+
+.cart-icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
+.cart-badge { position: absolute; top: -8px; right: -8px; background: #EF4444; color: white; font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 10px; border: 2px solid var(--brand); line-height: 1; min-width: 16px; text-align: center; }
+
+.pos-header-cart-btn-mini { display: flex; align-items: center; justify-content: center; background: var(--brand); color: white; width: 44px; height: 44px; border-radius: 12px; text-decoration: none; transition: all 0.2s; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+.pos-header-cart-btn-mini:hover { background: var(--brand-dark); transform: scale(1.1); }
