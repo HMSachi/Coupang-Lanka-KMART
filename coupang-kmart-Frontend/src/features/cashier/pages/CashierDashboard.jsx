@@ -5,14 +5,19 @@ import ProductGrid from '../components/ProductGrid';
 import CartSidebar from '../components/CartSidebar';
 import '../styles/cashier.css';
 
-import { CATEGORIES, DUMMY_PRODUCTS } from '../../../services/dummyData';
+// Removed static dummy data as per request - will fetch dynamically in the future
+// import { CATEGORIES, DUMMY_PRODUCTS } from '../../../services/dummyData';
 
 export default function CashierDashboard() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState([]);
 
-  const filteredProducts = DUMMY_PRODUCTS.filter(p => {
+  // Empty inventory states, ready for backend integration later
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState(['All']);
+
+  const filteredProducts = products.filter(p => {
     const matchCat = activeCategory === 'All' || p.category === activeCategory;
     const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchCat && matchSearch;
@@ -50,19 +55,27 @@ export default function CashierDashboard() {
 
   return (
     <POSLayout>
-      <div className="pos-content-grid">
-        <div className="pos-left-panel">
-          <div className="pos-search-bar">
-            <input
-              type="text"
-              placeholder="Scan Barcode or Search Product (F1)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+      <div className="pos-dashboard-grid">
+
+        {/* Left Side: Products and Search */}
+        <div className="pos-dashboard-main">
+          {/* Search Box */}
+          <div className="pos-search-wrapper">
+            <div className="pos-search-glow"></div>
+            <div className="pos-search-inner">
+              <input
+                type="text"
+                placeholder="Scan Barcode or Search Product (F1)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pos-search-input"
+              />
+              <svg className="pos-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
           </div>
 
           <CategoryTabs
-            categories={CATEGORIES}
+            categories={categories}
             activeCategory={activeCategory}
             setActiveCategory={setActiveCategory}
           />
@@ -75,7 +88,8 @@ export default function CashierDashboard() {
           </div>
         </div>
 
-        <div className="pos-right-panel">
+        {/* Right Side: Cart Summary */}
+        <div className="pos-dashboard-cart">
           <CartSidebar
             cart={cart}
             updateQty={updateQty}
@@ -85,6 +99,7 @@ export default function CashierDashboard() {
             total={total}
           />
         </div>
+
       </div>
     </POSLayout>
   );
