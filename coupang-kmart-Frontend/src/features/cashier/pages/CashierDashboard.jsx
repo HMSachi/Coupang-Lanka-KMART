@@ -12,6 +12,7 @@ export default function CashierDashboard() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Empty inventory states, ready for backend integration later
   const [products, setProducts] = useState([]);
@@ -70,10 +71,14 @@ export default function CashierDashboard() {
   const addToCart = (product) => {
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
+      let newCart;
       if (existing) {
-        return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
+        newCart = prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
+      } else {
+        newCart = [...prev, { ...product, qty: 1 }];
       }
-      return [...prev, { ...product, qty: 1 }];
+      window.dispatchEvent(new Event('cartUpdated'));
+      return newCart;
     });
   };
 
@@ -93,57 +98,56 @@ export default function CashierDashboard() {
     setCart(prev => prev.filter(item => item.id !== id));
   };
 
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem('pos_cart');
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('pos_cart', JSON.stringify(cart));
+    }
+  }, [cart, isLoaded]);
+
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const tax = subtotal * 0.05;
   const total = subtotal + tax;
 
   return (
     <POSLayout>
-      <div className="pos-dashboard-grid">
-
-        {/* Left Side: Products and Search */}
-        <div className="pos-dashboard-main">
-          {/* Search Box */}
-          <div className="pos-search-wrapper">
-            <div className="pos-search-glow"></div>
-            <div className="pos-search-inner">
-              <input
-                type="text"
-                placeholder="Scan Barcode or Search Product (F1)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pos-search-input"
-              />
-              <svg className="pos-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            </div>
-          </div>
-
-          <CategoryTabs
-            categories={categories}
-            activeCategory={activeCategory}
-            setActiveCategory={setActiveCategory}
-          />
-
-          <div className="pos-product-scroller">
-            <ProductGrid
-              products={filteredProducts}
-              onAddToCart={addToCart}
+      <div className="pos-dashboard-full">
+        {/* Search Box */}
+        <div className="pos-search-wrapper">
+          <div className="pos-search-glow"></div>
+          <div className="pos-search-inner">
+            <input
+              type="text"
+              placeholder="Scan Barcode or Search Product (F1)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pos-search-input"
             />
+            <svg className="pos-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </div>
         </div>
 
-        {/* Right Side: Cart Summary */}
-        <div className="pos-dashboard-cart">
-          <CartSidebar
-            cart={cart}
-            updateQty={updateQty}
-            removeFromCart={removeFromCart}
-            subtotal={subtotal}
-            tax={tax}
-            total={total}
+        <CategoryTabs
+          categories={categories}
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+        />
+
+        <div className="pos-product-scroller">
+          <ProductGrid
+            products={filteredProducts}
+            onAddToCart={addToCart}
           />
         </div>
-
       </div>
     </POSLayout>
   );
