@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const { Pool } = require('pg');
 require('dotenv').config();
 
@@ -6,23 +8,15 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-const sql = `
-CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    role VARCHAR(20) DEFAULT 'user',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-`;
+const sqlFile = path.join(__dirname, 'db_scripts.sql');
+const sql = fs.readFileSync(sqlFile, 'utf8');
 
 pool.query(sql)
     .then(() => {
-        console.log('Table users created successfully');
+        console.log('Database schema successfully updated based on db_scripts.sql');
         process.exit(0);
     })
     .catch((err) => {
-        console.error('Error creating table:', err);
+        console.error('Error updating database schema:', err);
         process.exit(1);
     });

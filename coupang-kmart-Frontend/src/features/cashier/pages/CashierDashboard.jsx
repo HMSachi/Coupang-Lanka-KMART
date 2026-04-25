@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import POSLayout from '../../../layouts/POSLayout';
 import CategoryTabs from '../components/CategoryTabs';
 import ProductGrid from '../components/ProductGrid';
@@ -16,6 +16,38 @@ export default function CashierDashboard() {
   // Empty inventory states, ready for backend integration later
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(['All']);
+
+  // Fetch Live Inventory from DB 
+  useEffect(() => {
+    const fetchLiveInventory = async () => {
+      try {
+        const [catRes, prodRes] = await Promise.all([
+          fetch('http://localhost:5000/api/products/categories'),
+          fetch('http://localhost:5000/api/products/items')
+        ]);
+
+        const catData = await catRes.json();
+        const prodData = await prodRes.json();
+
+        const liveCategories = ['All', ...catData.map(c => c.name)];
+        const liveProducts = prodData.map(p => ({
+          id: p.id,
+          name: p.name,
+          category: p.category_name || 'All',
+          price: parseFloat(p.base_price),
+          image: p.image_url || '🛒',
+          color: 'bg-gradient-to-r from-blue-500 to-indigo-500'
+        }));
+
+        setCategories(liveCategories);
+        setProducts(liveProducts);
+
+      } catch (err) {
+        console.error('Error fetching live inventory:', err);
+      }
+    };
+    fetchLiveInventory();
+  }, []);
 
   const filteredProducts = products.filter(p => {
     const matchCat = activeCategory === 'All' || p.category === activeCategory;
