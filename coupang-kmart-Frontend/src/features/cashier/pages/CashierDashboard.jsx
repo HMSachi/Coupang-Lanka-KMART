@@ -20,10 +20,21 @@ export default function CashierDashboard() {
   // Fetch Live Inventory from DB 
   useEffect(() => {
     const fetchLiveInventory = async () => {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const branchId = user.branch_id;
+
+      if (!branchId) {
+        console.warn('No branch_id found in session.');
+        return;
+      }
+
       try {
+        const token = localStorage.getItem('token');
+        const headers = { 'Authorization': `Bearer ${token}` };
+
         const [catRes, prodRes] = await Promise.all([
-          fetch('http://localhost:5000/api/products/categories'),
-          fetch('http://localhost:5000/api/products/items')
+          fetch('http://localhost:5000/api/products/categories', { headers }),
+          fetch(`http://localhost:5000/api/products/branch-inventory/${branchId}`, { headers })
         ]);
 
         const catData = await catRes.json();
@@ -31,11 +42,12 @@ export default function CashierDashboard() {
 
         const liveCategories = ['All', ...catData.map(c => c.name)];
         const liveProducts = prodData.map(p => ({
-          id: p.id,
+          id: p.product_id || p.id,
           name: p.name,
           category: p.category_name || 'All',
-          price: parseFloat(p.base_price),
+          price: parseFloat(p.price || p.base_price),
           image: p.image_url || '🛒',
+          branch_stock: p.stock_quantity || 0,
           color: 'bg-gradient-to-r from-blue-500 to-indigo-500'
         }));
 

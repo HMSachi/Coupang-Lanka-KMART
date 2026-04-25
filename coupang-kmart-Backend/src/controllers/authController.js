@@ -50,7 +50,7 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: 'Email and password are required' });
         }
 
-        const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+        const result = await db.query('SELECT u.*, b.name as branch_name FROM users u LEFT JOIN branches b ON u.branch_id = b.id WHERE u.email = $1', [email]);
         if (result.rows.length === 0) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
@@ -71,9 +71,9 @@ exports.login = async (req, res) => {
             user.role = role;
         }
 
-        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET || 'secret123', { expiresIn: '7d' });
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role, branch_name: user.branch_name, branch_id: user.branch_id }, process.env.JWT_SECRET || 'secret123', { expiresIn: '7d' });
 
-        res.status(200).json({ message: 'Logged in successfully', user: { id: user.id, name: user.name, email: user.email, role: user.role }, token });
+        res.status(200).json({ message: 'Logged in successfully', user: { id: user.id, name: user.name, email: user.email, role: user.role, branch_name: user.branch_name, branch_id: user.branch_id }, token });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -82,7 +82,7 @@ exports.login = async (req, res) => {
 
 exports.getMe = async (req, res) => {
     try {
-        const result = await db.query('SELECT id, name, email, role FROM users WHERE id = $1', [req.user.id]);
+        const result = await db.query('SELECT u.id, u.name, u.email, u.role, u.branch_id, b.name as branch_name FROM users u LEFT JOIN branches b ON u.branch_id = b.id WHERE u.id = $1', [req.user.id]);
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'User not found' });
         }

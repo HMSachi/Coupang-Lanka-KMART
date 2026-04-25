@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS products (
 CREATE TABLE IF NOT EXISTS product_inventory (
     id SERIAL PRIMARY KEY,
     product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+    branch_id INTEGER REFERENCES branches(id) ON DELETE CASCADE,
     branch_name VARCHAR(100) DEFAULT 'Main Branch',
     stock_quantity INTEGER DEFAULT 0,
     low_stock_threshold INTEGER DEFAULT 5,
@@ -42,3 +43,15 @@ CREATE TABLE IF NOT EXISTS product_addons (
     addon_name VARCHAR(100) NOT NULL,
     price DECIMAL(10, 2) NOT NULL
 );
+
+-- NEW TABLES: Branches and SubAdmin Updates
+CREATE TABLE IF NOT EXISTS branches (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    location VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ADD branch_id format (ALTER users securely if it exists, otherwise define it)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS branch_id INTEGER REFERENCES branches(id) ON DELETE SET NULL;
+ALTER TABLE product_inventory ADD COLUMN IF NOT EXISTS branch_id INTEGER REFERENCES branches(id) ON DELETE CASCADE;

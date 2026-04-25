@@ -96,7 +96,7 @@ const POSLayout = ({ children }) => {
                         </h1>
                         <span className="pos-branch-badge">
                             <Store size={12} />
-                            Colombo Branch
+                            {user.branch_name || 'Main Branch'}
                         </span>
                     </div>
 

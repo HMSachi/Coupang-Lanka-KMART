@@ -48,32 +48,41 @@ export default function LoginPage() {
     return () => window.removeEventListener('pointermove', handlePointer)
   }, [navigate])
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    // Artificial delay for premium feel
-    setTimeout(() => {
-      const userKey = username.trim().toLowerCase()
-      const account = HARDCODED_USERS[userKey]
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: username, password })
+      });
 
-      if (account && password === account.password) {
-        const userData = { email: userKey, role: account.role }
-        localStorage.setItem('user', JSON.stringify(userData))
+      const data = await response.json();
 
-        if (account.role === 'cashier') {
-          localStorage.setItem('shift_status', 'open')
-          navigate('/pos')
-        } else if (account.role === 'superAdmin') {
-          navigate('/admin')
-        }
-        return
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
       }
 
-      setError('Invalid credentials. Hint: use admin@g.com or cashier@g.com')
-      setLoading(false)
-    }, 1000)
+      // Save user data including branch_id and branch_name
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', data.token);
+
+      if (data.user.role === 'cashier') {
+        localStorage.setItem('shift_status', 'open');
+        navigate('/pos');
+      } else if (data.user.role === 'superAdmin' || data.user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        setError('Unauthorized role for POS access');
+      }
+    } catch (err) {
+      setError(err.message || 'Connection error. Is backend running?');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

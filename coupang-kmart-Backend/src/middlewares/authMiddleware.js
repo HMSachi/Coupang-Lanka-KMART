@@ -21,3 +21,11 @@ exports.isAdmin = (req, res, next) => {
         res.status(403).json({ message: 'Admin access required' });
     }
 };
+
+exports.isStaff = (req, res, next) => {
+    if (req.user && (req.user.role === 'admin' || req.user.role === 'subadmin' || req.user.role === 'cashier')) {
+        next();
+    } else {
+        res.status(403).json({ message: 'Staff access required' });
+    }
+};
