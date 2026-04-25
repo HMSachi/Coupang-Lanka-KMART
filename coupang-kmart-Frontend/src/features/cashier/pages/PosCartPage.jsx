@@ -7,6 +7,9 @@ import { useNavigate } from 'react-router-dom';
 export default function PosCartPage() {
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const [discountPercent, setDiscountPercent] = useState(0);
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -14,12 +17,16 @@ export default function PosCartPage() {
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
+    setIsLoaded(true);
   }, []);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('pos_cart', JSON.stringify(cart));
-  }, [cart]);
+    if (isLoaded) {
+      localStorage.setItem('pos_cart', JSON.stringify(cart));
+      window.dispatchEvent(new Event('cartUpdated')); // Keep badge in sync
+    }
+  }, [cart, isLoaded]);
 
   const updateQty = (id, delta) => {
     setCart(prev => prev.map(item => {
@@ -36,8 +43,10 @@ export default function PosCartPage() {
   };
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const tax = subtotal * 0.05;
-  const total = subtotal + tax;
+  const discountAmount = (subtotal * discountPercent) / 100;
+  const taxableAmount = subtotal - discountAmount;
+  const tax = taxableAmount * 0.05;
+  const total = taxableAmount + tax;
 
   return (
     <POSLayout>
@@ -58,6 +67,8 @@ export default function PosCartPage() {
             subtotal={subtotal}
             tax={tax}
             total={total}
+            discountPercent={discountPercent}
+            setDiscountPercent={setDiscountPercent}
           />
         </div>
       </div>

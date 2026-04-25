@@ -12,6 +12,7 @@ export default function CashierDashboard() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Empty inventory states, ready for backend integration later
   const [products, setProducts] = useState([]);
@@ -64,7 +65,6 @@ export default function CashierDashboard() {
       } else {
         newCart = [...prev, { ...product, qty: 1 }];
       }
-      localStorage.setItem('pos_cart', JSON.stringify(newCart));
       window.dispatchEvent(new Event('cartUpdated'));
       return newCart;
     });
@@ -92,12 +92,15 @@ export default function CashierDashboard() {
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
+    setIsLoaded(true);
   }, []);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('pos_cart', JSON.stringify(cart));
-  }, [cart]);
+    if (isLoaded) {
+      localStorage.setItem('pos_cart', JSON.stringify(cart));
+    }
+  }, [cart, isLoaded]);
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const tax = subtotal * 0.05;

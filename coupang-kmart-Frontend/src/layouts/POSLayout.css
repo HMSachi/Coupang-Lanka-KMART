@@ -644,3 +644,29 @@ body {
 
 .pos-header-cart-btn-mini { display: flex; align-items: center; justify-content: center; background: var(--brand); color: white; width: 44px; height: 44px; border-radius: 12px; text-decoration: none; transition: all 0.2s; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
 .pos-header-cart-btn-mini:hover { background: var(--brand-dark); transform: scale(1.1); }
+
+body { font-size: 11px !important; }
+h1, h2, h3, h4, h5, h6 { font-size: 13px !important; }
+.pos-nav-label { font-size: 11px !important; }
+.pos-sidebar-title span { font-size: 13px !important; }
+.branch-name { font-size: 13px !important; }
+.time-text { font-size: 11px !important; }
+.pos-sidebar-new { padding: 1rem !important; }
+.pos-nav-item { padding: 0.6rem 0.8rem !important; margin-bottom: 0.2rem !important; }
+.pos-top-header { padding: 0.6rem 1.5rem !important; height: auto !important; min-height: 50px !important; }
+.pos-header-left h1 { margin-bottom: 0 !important; }
+
+body { font-size: 12px !important; line-height: 1.4; }
+h1, h2, h3, h4, h5, h6 { font-size: 14px !important; }
+.pos-nav-label { font-size: 12px !important; }
+.time-text { font-size: 12px !important; }
+
+body { font-size: 10.5px !important; }
+h1, h2, h3, h4, h5, h6 { font-size: 12px !important; }
+.pos-nav-label { font-size: 10.5px !important; }
+.time-text { font-size: 10.5px !important; }
+
+body { font-size: 11px !important; }
+h1, h2, h3, h4, h5, h6 { font-size: 13px !important; }
+.pos-nav-label { font-size: 11px !important; }
+.time-text { font-size: 11px !important; }
