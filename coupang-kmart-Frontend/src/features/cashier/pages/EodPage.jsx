@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import POSLayout from '../../../layouts/POSLayout';
-import Card from '../../../components/shared/Card';
-import Button from '../../../components/shared/Button';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 import { DUMMY_SHIFT_REPORT } from '../../../services/dummyData';
+import './EodPage.css';
 
 export default function EodPage() {
     const [isClosing, setIsClosing] = useState(false);
@@ -21,74 +20,75 @@ export default function EodPage() {
 
     return (
         <POSLayout>
-            <div className="eod-container">
+            <div className="eod-page-wrapper">
                 <div className="content-header">
                     <h1>End of Day (EOD) Close</h1>
                     <p>Review today's shift performance and close the register.</p>
                 </div>
 
-                <div className="eod-grid">
-                    <div className="eod-summary">
-                        <Card title="Shift Summary" subtitle="Total sales for current session">
-                            <div className="eod-stats">
-                                <div className="stat-item">
+                <div className="eod-grid-new">
+                    <div className="eod-card-unified">
+                        <div className="eod-section-card">
+                            <h2>Shift Summary</h2>
+                            <p className="subtitle">Total sales for current session</p>
+                            <div className="eod-stats-packed">
+                                <div className="packed-stat">
                                     <label>Cash Sales</label>
                                     <div className="val">LKR {report.cashSales.toLocaleString()}</div>
                                 </div>
-                                <div className="stat-item">
+                                <div className="packed-stat">
                                     <label>Card Sales</label>
                                     <div className="val">LKR {report.cardSales.toLocaleString()}</div>
                                 </div>
-                                <div className="stat-item total">
+                                <div className="packed-stat full">
                                     <label>Total Collected</label>
                                     <div className="val">LKR {report.totalCollected.toLocaleString()}</div>
                                 </div>
                             </div>
-                        </Card>
+                        </div>
 
-                        <div style={{ marginTop: '1.5rem' }}>
-                            <Card title="Cash Drawer" subtitle="Physical cash reconciliation">
-                                <div className="drawer-check-premium">
-                                    <div className="drawer-field">
-                                        <label>Opening Balance</label>
-                                        <div className="readonly-val">LKR {report.openingBalance.toLocaleString()}</div>
-                                    </div>
-                                    <div className="drawer-field">
-                                        <label>Actual Cash in Drawer</label>
-                                        <input type="number" placeholder="0.00" />
-                                    </div>
+                        <div className="eod-section-card">
+                            <h2>Cash Drawer</h2>
+                            <p className="subtitle">Physical cash reconciliation</p>
+                            <div className="drawer-check-packed">
+                                <div className="packed-field">
+                                    <label>Opening Balance</label>
+                                    <div className="packed-readonly">LKR {report.openingBalance.toLocaleString()}</div>
                                 </div>
-                            </Card>
+                                <div className="packed-field">
+                                    <label>Actual Cash in Drawer</label>
+                                    <input type="number" className="packed-input" placeholder="0.00" />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="eod-actions">
-                        <Card glass title="Finalize Shift">
-                            <div className="eod-alerts">
-                                <div className="alert-item success">
-                                    <CheckCircle2 size={16} />
+                    <div className="eod-actions-sidebar">
+                        <div className="eod-sidebar-card">
+                            <h2>Finalize Shift</h2>
+                            <div className="packed-alerts">
+                                <div className="packed-alert-item success">
+                                    <CheckCircle2 size={14} />
                                     <span>All transactions synced</span>
                                 </div>
-                                <div className="alert-item warning">
-                                    <AlertCircle size={16} />
+                                <div className="packed-alert-item warning">
+                                    <AlertCircle size={14} />
                                     <span>{report.pendingAlerts} Pending low stock alerts</span>
                                 </div>
                             </div>
 
-                            <p className="eod-notice">
-                                Closing the day will generate the daily report and sign you out of this register. You cannot re-open this shift.
+                            <p className="packed-notice">
+                                Closing the day will generate the daily report and sign you out. You cannot re-open this shift.
                             </p>
 
-                            <Button
-                                variant="primary"
-                                fullWidth
-                                size="lg"
+                            <button
+                                className="complete-eod-btn-new"
                                 onClick={handleCompleteEod}
                                 disabled={isClosing}
                             >
                                 {isClosing ? 'Closing Register...' : 'Complete EOD Close'}
-                            </Button>
-                        </Card>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
