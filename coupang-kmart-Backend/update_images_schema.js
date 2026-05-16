@@ -7,15 +7,15 @@ const pool = new Pool({
 });
 
 const sql = `
-ALTER TABLE products ADD COLUMN IF NOT EXISTS global_stock_quantity INTEGER DEFAULT 0;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS image_urls TEXT[] DEFAULT '{}';
 `;
 
 pool.query(sql)
     .then(() => {
-        console.log('product_inventory successfully updated to support branch_id');
+        console.log('Products table updated with image_urls array');
         process.exit(0);
     })
     .catch((err) => {
-        console.error('Error updating:', err);
+        console.error('Error migrating image_urls:', err);
         process.exit(1);
     });

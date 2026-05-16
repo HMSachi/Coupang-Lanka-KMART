@@ -3,6 +3,7 @@ import POSLayout from '../../../layouts/POSLayout';
 import CategoryTabs from '../components/CategoryTabs';
 import ProductGrid from '../components/ProductGrid';
 import CartSidebar from '../components/CartSidebar';
+import ProductDetailModal from '../components/ProductDetailModal';
 import '../styles/cashier.css';
 
 // Removed static dummy data as per request - will fetch dynamically in the future
@@ -12,6 +13,7 @@ export default function CashierDashboard() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Empty inventory states, ready for backend integration later
@@ -49,6 +51,13 @@ export default function CashierDashboard() {
           price: parseFloat(p.price || p.base_price),
           image: p.image_url || '🛒',
           branch_stock: p.stock_quantity || 0,
+          description: p.description,
+          unit_type: p.unit_type,
+          discount_value: p.discount_value,
+          discount_type: p.discount_type,
+          tax_percentage: p.tax_percentage,
+          expiry_date: p.expiry_date,
+          image_urls: p.image_urls || [],
           color: 'bg-gradient-to-r from-blue-500 to-indigo-500'
         }));
 
@@ -159,6 +168,11 @@ export default function CashierDashboard() {
               </p>
             </div>
 
+          <div className="pos-product-scroller">
+            <ProductGrid
+              products={filteredProducts}
+              onAddToCart={addToCart}
+              onShowDetails={setSelectedProduct}
             {/* Stat Card 2 */}
             <div style={{ background: 'white', borderRadius: '16px', padding: '20px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
@@ -216,6 +230,22 @@ export default function CashierDashboard() {
           </div>
         </div>
 
+        {/* Product Detail Modal */}
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={addToCart}
+        />
+
+        {/* Right Side: Cart Summary */}
+        <div className="pos-dashboard-cart">
+          <CartSidebar
+            cart={cart}
+            updateQty={updateQty}
+            removeFromCart={removeFromCart}
+            subtotal={subtotal}
+            tax={tax}
+            total={total}
         <CategoryTabs
           categories={categories}
           activeCategory={activeCategory}
