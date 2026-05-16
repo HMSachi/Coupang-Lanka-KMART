@@ -130,7 +130,7 @@ export default function CashierDashboard() {
   return (
     <POSLayout>
       <div className="pos-dashboard-full" style={{ padding: '24px', backgroundColor: '#f8fafc', height: '100%', overflowY: 'auto' }}>
-        
+
         {/* Dashboard Overview Section */}
         <div style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
@@ -168,11 +168,6 @@ export default function CashierDashboard() {
               </p>
             </div>
 
-          <div className="pos-product-scroller">
-            <ProductGrid
-              products={filteredProducts}
-              onAddToCart={addToCart}
-              onShowDetails={setSelectedProduct}
             {/* Stat Card 2 */}
             <div style={{ background: 'white', borderRadius: '16px', padding: '20px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
@@ -230,22 +225,6 @@ export default function CashierDashboard() {
           </div>
         </div>
 
-        {/* Product Detail Modal */}
-        <ProductDetailModal
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          onAddToCart={addToCart}
-        />
-
-        {/* Right Side: Cart Summary */}
-        <div className="pos-dashboard-cart">
-          <CartSidebar
-            cart={cart}
-            updateQty={updateQty}
-            removeFromCart={removeFromCart}
-            subtotal={subtotal}
-            tax={tax}
-            total={total}
         <CategoryTabs
           categories={categories}
           activeCategory={activeCategory}
@@ -256,8 +235,28 @@ export default function CashierDashboard() {
           <ProductGrid
             products={filteredProducts}
             onAddToCart={addToCart}
+            onShowDetails={setSelectedProduct}
           />
         </div>
+
+        {/* Product Detail Modal */}
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={addToCart}
+        />
+
+        {/* Optional: Cart Sidebar if you want it on the dashboard too */}
+        {/* <div className="pos-dashboard-cart">
+          <CartSidebar
+            cart={cart}
+            updateQty={updateQty}
+            removeFromCart={removeFromCart}
+            subtotal={subtotal}
+            tax={tax}
+            total={total}
+          />
+        </div> */}
       </div>
     </POSLayout>
   );
