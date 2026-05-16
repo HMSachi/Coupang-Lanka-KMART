@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, User, Clock, RotateCcw, BarChart2, MonitorIcon, ChevronRight, Store } from 'lucide-react';
+import { LogOut, User, Clock, RotateCcw, BarChart2, MonitorIcon, ChevronRight, Store, ShoppingCart } from 'lucide-react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import './POSLayout.css';
 
@@ -8,9 +8,31 @@ const POSLayout = ({ children }) => {
     const location = useLocation();
     const [time, setTime] = useState(new Date());
 
+    const [cartCount, setCartCount] = useState(0);
+
     useEffect(() => {
         const timer = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timer);
+    }, []);
+
+    useEffect(() => {
+        const updateCount = () => {
+            const savedCart = localStorage.getItem('pos_cart');
+            if (savedCart) {
+                const cartItems = JSON.parse(savedCart);
+                setCartCount(cartItems.reduce((sum, item) => sum + item.qty, 0));
+            } else {
+                setCartCount(0);
+            }
+        };
+
+        updateCount();
+        window.addEventListener('storage', updateCount);
+        window.addEventListener('cartUpdated', updateCount);
+        return () => {
+            window.removeEventListener('storage', updateCount);
+            window.removeEventListener('cartUpdated', updateCount);
+        };
     }, []);
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -30,6 +52,7 @@ const POSLayout = ({ children }) => {
 
     const navItems = [
         { path: '/pos', icon: <MonitorIcon size={20} />, label: 'Create Order' },
+        { path: '/pos/cart', icon: <ShoppingCart size={20} />, label: 'Cart' },
         { path: '/pos/refund', icon: <RotateCcw size={20} />, label: 'Returns & Refunds' },
         { path: '/pos/eod', icon: <BarChart2 size={20} />, label: 'My Session / EOD' }
     ];
@@ -101,6 +124,14 @@ const POSLayout = ({ children }) => {
                     </div>
 
                     <div className="pos-header-right">
+                        <div className="pos-header-actions">
+                            <Link to="/pos/cart" className="pos-header-cart-btn-mini" title="View Current Order">
+                                <div className="cart-icon-wrapper">
+                                    <ShoppingCart size={22} />
+                                    {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+                                </div>
+                            </Link>
+                        </div>
                         <div className="pos-time-widget">
                             <Clock size={16} className="time-icon" />
                             <span className="time-text">{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>

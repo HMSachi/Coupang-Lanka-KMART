@@ -5,13 +5,21 @@ import Modal from '../../../components/shared/Modal';
 import Card from '../../../components/shared/Card';
 import './CartSidebar.css';
 
-export default function CartSidebar({ cart, updateQty, removeFromCart, subtotal, tax, total }) {
+export default function CartSidebar({ 
+  cart, 
+  updateQty, 
+  removeFromCart, 
+  subtotal, 
+  tax, 
+  total, 
+  discountPercent, 
+  setDiscountPercent 
+}) {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('cash');
-  const [discountPercent, setDiscountPercent] = useState(0);
 
   const discountAmount = (subtotal * discountPercent) / 100;
-  const finalTotal = total - discountAmount;
+  const finalTotal = total; // Already calculated in parent
 
   const handleCheckout = () => {
     if (cart.length === 0) return;
@@ -20,8 +28,10 @@ export default function CartSidebar({ cart, updateQty, removeFromCart, subtotal,
 
   const handleCompleteOrder = () => {
     alert('Order completed successfully!');
+    localStorage.removeItem('pos_cart');
+    window.dispatchEvent(new Event('cartUpdated'));
     setIsPaymentOpen(false);
-    // In a real app, we would clear the cart and save the transaction here
+    window.location.href = '/pos'; // Start fresh
   };
 
   return (
@@ -31,32 +41,48 @@ export default function CartSidebar({ cart, updateQty, removeFromCart, subtotal,
         <span className="cart-count">{cart.length} Items</span>
       </div>
 
-      <div className="cart-items-container">
-        {cart.length === 0 ? (
-          <div className="cart-empty-state">
-            <ShoppingCart size={48} />
-            <p>Your cart is empty</p>
-          </div>
-        ) : (
-          cart.map((item) => (
-            <div key={item.id} className="cart-item-premium">
-              <div className="cart-item-info">
-                <h4>{item.name}</h4>
-                <div className="cart-item-price">LKR {item.price.toLocaleString()}</div>
-              </div>
-              <div className="cart-item-actions">
-                <div className="qty-control">
-                  <button onClick={() => updateQty(item.id, -1)} type="button"><Minus size={14} /></button>
-                  <span className="qty-val">{item.qty}</span>
-                  <button onClick={() => updateQty(item.id, 1)} type="button"><Plus size={14} /></button>
-                </div>
-                <button className="remove-item" onClick={() => removeFromCart(item.id)} type="button">
-                  <Trash2 size={16} />
-                </button>
-              </div>
+      <div className="cart-bill-container">
+        <div className="bill-header">
+          <span>Item Description</span>
+          <span>Price</span>
+        </div>
+        
+        <div className="cart-items-container">
+          {cart.length === 0 ? (
+            <div className="cart-empty-state">
+              <ShoppingCart size={48} />
+              <p>Your cart is empty</p>
             </div>
-          ))
-        )}
+          ) : (
+            cart.map((item) => (
+              <div key={item.id} className="cart-item-bill">
+                <div className="bill-item-main">
+                  <div className="bill-item-title">
+                    <span className="bill-qty">{item.qty}x</span>
+                    <div className="bill-name-wrapper">
+                      <span className="bill-name">{item.name}</span>
+                      <small className="bill-unit-price">@ LKR {item.price.toLocaleString()}</small>
+                    </div>
+                  </div>
+                  <div className="bill-item-price">
+                    LKR {(item.price * item.qty).toLocaleString()}
+                  </div>
+                </div>
+                <div className="bill-item-actions">
+                  <div className="qty-control-mini">
+                    <button onClick={() => updateQty(item.id, -1)} type="button"><Minus size={10} /></button>
+                    <span className="qty-val-mini">{item.qty}</span>
+                    <button onClick={() => updateQty(item.id, 1)} type="button"><Plus size={10} /></button>
+                  </div>
+                  <button className="remove-item-mini" onClick={() => removeFromCart(item.id)} type="button">
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+                <div className="bill-divider-dotted"></div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       <div className="cart-summary-premium">
@@ -64,7 +90,6 @@ export default function CartSidebar({ cart, updateQty, removeFromCart, subtotal,
           <span>Subtotal</span>
           <span>LKR {subtotal.toLocaleString()}</span>
         </div>
-
         <div className="summary-details-premium">
           <div className="summary-row">
             <span>Tax (5%)</span>
@@ -91,7 +116,7 @@ export default function CartSidebar({ cart, updateQty, removeFromCart, subtotal,
           )}
         </div>
 
-        <div className="summary-row total">
+        <div className="summary-row total-payable-large">
           <span>Total Payable</span>
           <span>LKR {finalTotal.toLocaleString()}</span>
         </div>
