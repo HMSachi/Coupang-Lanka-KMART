@@ -124,8 +124,8 @@ export default function CashierDashboard() {
   }, [cart, isLoaded]);
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const tax = subtotal * 0.05;
-  const total = subtotal + tax;
+  const total = subtotal;
+  const tax = 0;
 
   return (
     <POSLayout>
