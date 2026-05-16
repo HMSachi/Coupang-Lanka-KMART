@@ -74,23 +74,23 @@ export default function PosCartPage() {
 
       <style jsx>{`
         .pos-cart-page-container {
-          padding: 1.5rem;
-          max-width: 1000px;
+          padding: 0.75rem;
+          max-width: 1400px;
           margin: 0 auto;
         }
 
         .cart-page-header {
           display: flex;
           align-items: center;
-          gap: 2rem;
-          margin-bottom: 2rem;
+          gap: 1rem;
+          margin-bottom: 0.75rem;
         }
 
         .back-to-products {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
-          padding: 0.75rem 1.25rem;
+          gap: 0.4rem;
+          padding: 0.4rem 0.8rem;
           background: white;
           border: 1px solid var(--sidebar-border);
           border-radius: var(--radius-md);
@@ -98,6 +98,7 @@ export default function PosCartPage() {
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s;
+          font-size: 0.85rem;
         }
 
         .back-to-products:hover {
