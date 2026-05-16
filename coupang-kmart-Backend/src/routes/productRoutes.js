@@ -1,7 +1,17 @@
 const express = require('express');
-const router = express.Router();
 const productController = require('../controllers/productController');
 const { authenticateToken, isAdmin, isStaff } = require('../middlewares/authMiddleware');
+const multer = require('multer');
+const path = require('path');
+
+// Multer storage config
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads/'),
+    filename: (req, file, cb) => cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname))
+});
+const upload = multer({ storage });
+
+const router = express.Router();
 
 router.get('/categories', productController.getCategories);
 router.post('/categories', authenticateToken, isAdmin, productController.createCategory);
@@ -12,6 +22,11 @@ router.get('/items', productController.getProducts);
 router.post('/items', authenticateToken, isAdmin, productController.createProduct);
 router.put('/items/:id', authenticateToken, isAdmin, productController.updateProduct);
 router.delete('/items/:id', authenticateToken, isAdmin, productController.deleteProduct);
+
+router.post('/upload-images', authenticateToken, isAdmin, upload.array('images', 3), (req, res) => {
+    const filePaths = req.files.map(file => `/uploads/${file.filename}`);
+    res.json({ urls: filePaths });
+});
 
 // Staff branch control
 router.get('/branch-inventory/:branch_id', authenticateToken, isStaff, productController.getBranchInventory);

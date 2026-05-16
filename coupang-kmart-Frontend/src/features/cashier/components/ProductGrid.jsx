@@ -2,14 +2,31 @@ import React from 'react';
 import Button from '../../../components/shared/Button';
 import { Plus } from 'lucide-react';
 
-const ProductItem = ({ product, onAddToCart }) => {
-  const isOutOfStock = product.stock === 0;
-  const isLowStock = product.stock > 0 && product.stock < 10;
+const ProductItem = ({ product, onAddToCart, onShowDetails }) => {
+  const isOutOfStock = product.stock === 0 || product.branch_stock === 0;
+  const isLowStock = product.branch_stock > 0 && product.branch_stock < 10;
 
   return (
-    <div className={`product-card-premium ${isOutOfStock ? 'out-of-stock' : ''}`}>
+    <div
+      className={`product-card-premium ${isOutOfStock ? 'out-of-stock' : ''}`}
+      onClick={(e) => {
+        // Only show details if the click wasn't on the plus button
+        if (!e.target.closest('.add-to-cart-bubble')) {
+          onShowDetails(product);
+        }
+      }}
+      style={{ cursor: 'pointer' }}
+    >
       <div className="product-image-container">
-        <span className="product-emoji">{product.image}</span>
+        {product.image_urls && product.image_urls.length > 0 ? (
+          <img
+            src={`http://localhost:5000${product.image_urls[0]}`}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+          />
+        ) : (
+          <span className="product-emoji">{product.image}</span>
+        )}
         {isOutOfStock && <div className="stock-overlay">Out of Stock</div>}
         {isLowStock && <div className="stock-badge-low">Low Stock</div>}
       </div>
@@ -27,7 +44,10 @@ const ProductItem = ({ product, onAddToCart }) => {
           <Button
             variant="primary"
             size="sm"
-            onClick={() => onAddToCart(product)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToCart(product);
+            }}
             disabled={isOutOfStock}
             className="add-to-cart-bubble"
           >
@@ -39,7 +59,7 @@ const ProductItem = ({ product, onAddToCart }) => {
   );
 };
 
-export default function ProductGrid({ products, onAddToCart }) {
+export default function ProductGrid({ products, onAddToCart, onShowDetails }) {
   return (
     <div className="product-grid-premium">
       {products.map((product) => (
@@ -47,6 +67,7 @@ export default function ProductGrid({ products, onAddToCart }) {
           key={product.id}
           product={product}
           onAddToCart={onAddToCart}
+          onShowDetails={onShowDetails}
         />
       ))}
       {products.length === 0 && (

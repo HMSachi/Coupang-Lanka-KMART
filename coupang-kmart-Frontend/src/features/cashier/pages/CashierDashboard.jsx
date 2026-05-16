@@ -3,6 +3,7 @@ import POSLayout from '../../../layouts/POSLayout';
 import CategoryTabs from '../components/CategoryTabs';
 import ProductGrid from '../components/ProductGrid';
 import CartSidebar from '../components/CartSidebar';
+import ProductDetailModal from '../components/ProductDetailModal';
 import '../styles/cashier.css';
 
 // Removed static dummy data as per request - will fetch dynamically in the future
@@ -12,6 +13,7 @@ export default function CashierDashboard() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Empty inventory states, ready for backend integration later
   const [products, setProducts] = useState([]);
@@ -48,6 +50,13 @@ export default function CashierDashboard() {
           price: parseFloat(p.price || p.base_price),
           image: p.image_url || '🛒',
           branch_stock: p.stock_quantity || 0,
+          description: p.description,
+          unit_type: p.unit_type,
+          discount_value: p.discount_value,
+          discount_type: p.discount_type,
+          tax_percentage: p.tax_percentage,
+          expiry_date: p.expiry_date,
+          image_urls: p.image_urls || [],
           color: 'bg-gradient-to-r from-blue-500 to-indigo-500'
         }));
 
@@ -128,9 +137,17 @@ export default function CashierDashboard() {
             <ProductGrid
               products={filteredProducts}
               onAddToCart={addToCart}
+              onShowDetails={setSelectedProduct}
             />
           </div>
         </div>
+
+        {/* Product Detail Modal */}
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={addToCart}
+        />
 
         {/* Right Side: Cart Summary */}
         <div className="pos-dashboard-cart">
