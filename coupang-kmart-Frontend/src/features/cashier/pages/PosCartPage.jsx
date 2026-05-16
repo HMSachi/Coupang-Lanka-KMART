@@ -44,9 +44,8 @@ export default function PosCartPage() {
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const discountAmount = (subtotal * discountPercent) / 100;
-  const taxableAmount = subtotal - discountAmount;
-  const tax = taxableAmount * 0.05;
-  const total = taxableAmount + tax;
+  const total = subtotal - discountAmount;
+  const tax = 0;
 
   return (
     <POSLayout>
@@ -56,9 +55,9 @@ export default function PosCartPage() {
             <ArrowLeft size={18} />
             <span>Add More Products</span>
           </button>
-          <h1>Complete Your Order</h1>
+          <h1>Review Order</h1>
         </div>
-        
+
         <div className="cart-page-content">
           <CartSidebar
             cart={cart}
@@ -118,8 +117,8 @@ export default function PosCartPage() {
           border-radius: var(--radius-lg);
           box-shadow: var(--shadow-md);
           border: 1px solid var(--sidebar-border);
-          overflow: hidden;
           min-height: 600px;
+          padding-bottom: 2rem;
         }
 
         /* Adjusting CartSidebar for full page width */
