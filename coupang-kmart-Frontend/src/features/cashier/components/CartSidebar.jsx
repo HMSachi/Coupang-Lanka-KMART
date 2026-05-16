@@ -5,15 +5,15 @@ import Modal from '../../../components/shared/Modal';
 import Card from '../../../components/shared/Card';
 import './CartSidebar.css';
 
-export default function CartSidebar({ 
-  cart, 
-  updateQty, 
-  removeFromCart, 
-  subtotal, 
-  tax, 
-  total, 
-  discountPercent, 
-  setDiscountPercent 
+export default function CartSidebar({
+  cart,
+  updateQty,
+  removeFromCart,
+  subtotal,
+  tax,
+  total,
+  discountPercent,
+  setDiscountPercent
 }) {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('cash');
@@ -23,15 +23,7 @@ export default function CartSidebar({
 
   const handleCheckout = () => {
     if (cart.length === 0) return;
-    setIsPaymentOpen(true);
-  };
-
-  const handleCompleteOrder = () => {
-    alert('Order completed successfully!');
-    localStorage.removeItem('pos_cart');
-    window.dispatchEvent(new Event('cartUpdated'));
-    setIsPaymentOpen(false);
-    window.location.href = '/pos'; // Start fresh
+    window.location.href = '/pos/checkout';
   };
 
   return (
@@ -46,7 +38,7 @@ export default function CartSidebar({
           <span>Item Description</span>
           <span>Price</span>
         </div>
-        
+
         <div className="cart-items-container">
           {cart.length === 0 ? (
             <div className="cart-empty-state">
@@ -91,10 +83,12 @@ export default function CartSidebar({
           <span>LKR {subtotal.toLocaleString()}</span>
         </div>
         <div className="summary-details-premium">
-          <div className="summary-row">
-            <span>Tax (5%)</span>
-            <span>LKR {tax.toLocaleString()}</span>
-          </div>
+          {tax > 0 && (
+            <div className="summary-row">
+              <span>Tax</span>
+              <span>LKR {tax.toLocaleString()}</span>
+            </div>
+          )}
 
           <div className="discount-control-premium">
             <span>Apply Discount (%)</span>
@@ -128,80 +122,10 @@ export default function CartSidebar({
           disabled={cart.length === 0}
           className="checkout-btn"
         >
-          Pay LKR {finalTotal.toLocaleString()}
+          Complete Order
         </Button>
       </div>
 
-      {/* Payment Modal */}
-      <Modal
-        isOpen={isPaymentOpen}
-        onClose={() => setIsPaymentOpen(false)}
-        title="Payment & Checkout"
-        size="lg"
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setIsPaymentOpen(false)}>Cancel</Button>
-            <Button variant="primary" onClick={handleCompleteOrder}>Complete Order</Button>
-          </>
-        }
-      >
-        <div className="payment-grid">
-          <div className="payment-methods">
-            <label>Select Payment Method</label>
-            <div className="methods-list">
-              <div
-                className={`method-card ${paymentMethod === 'cash' ? 'active' : ''}`}
-                onClick={() => setPaymentMethod('cash')}
-              >
-                <Banknote size={24} />
-                <span>Cash</span>
-              </div>
-              <div
-                className={`method-card ${paymentMethod === 'card' ? 'active' : ''}`}
-                onClick={() => setPaymentMethod('card')}
-              >
-                <CreditCard size={24} />
-                <span>Card</span>
-              </div>
-              <div
-                className={`method-card ${paymentMethod === 'qr' ? 'active' : ''}`}
-                onClick={() => setPaymentMethod('qr')}
-              >
-                <QrCode size={24} />
-                <span>QR Pay</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="order-receipt-preview">
-            <Card title="Receipt Preview" padding="md" glass>
-              <div className="receipt-dummy">
-                <div className="receipt-header">
-                  <strong>COUPANG KMART</strong>
-                  <p>Colombo Branch</p>
-                </div>
-                <div className="receipt-body">
-                  {cart.map(item => (
-                    <div key={item.id} className="receipt-line">
-                      <span>{item.qty}x {item.name}</span>
-                      <span>LKR {(item.price * item.qty).toLocaleString()}</span>
-                    </div>
-                  ))}
-                  <div className="divider"></div>
-                  <div className="receipt-line total">
-                    <strong>Total</strong>
-                    <strong>LKR {total.toLocaleString()}</strong>
-                  </div>
-                </div>
-                <div className="receipt-footer">
-                  <p>Thank you for shopping!</p>
-                  <p>{new Date().toLocaleString()}</p>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </Modal>
-    </aside>
+    </aside >
   );
 }

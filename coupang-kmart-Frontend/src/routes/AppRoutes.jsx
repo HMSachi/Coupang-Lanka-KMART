@@ -12,6 +12,8 @@ import Settings from '../features/admin/pages/Settings';
 import RolesPermissions from '../features/admin/pages/RolesPermissions';
 import CashierDashboard from '../features/cashier/pages/CashierDashboard';
 import PosCartPage from '../features/cashier/pages/PosCartPage';
+import CheckoutPage from '../features/cashier/pages/CheckoutPage';
+import PaymentPage from '../features/cashier/pages/PaymentPage';
 import RefundPage from '../features/cashier/pages/RefundPage';
 import EodPage from '../features/cashier/pages/EodPage';
 
@@ -136,6 +138,22 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={['cashier']}>
                             <PosCartPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/pos/checkout"
+                    element={
+                        <ProtectedRoute allowedRoles={['cashier']}>
+                            <CheckoutPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/pos/payment"
+                    element={
+                        <ProtectedRoute allowedRoles={['cashier']}>
+                            <PaymentPage />
                         </ProtectedRoute>
                     }
                 />
