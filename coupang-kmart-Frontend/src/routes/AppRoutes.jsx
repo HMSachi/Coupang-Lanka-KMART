@@ -16,6 +16,7 @@ import CheckoutPage from '../features/cashier/pages/CheckoutPage';
 import PaymentPage from '../features/cashier/pages/PaymentPage';
 import RefundPage from '../features/cashier/pages/RefundPage';
 import EodPage from '../features/cashier/pages/EodPage';
+import SessionStartPage from '../features/cashier/pages/SessionStartPage';
 
 /**
  * Protected Route Wrapper
@@ -154,6 +155,14 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={['cashier']}>
                             <PaymentPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/pos/session-start"
+                    element={
+                        <ProtectedRoute allowedRoles={['cashier']}>
+                            <SessionStartPage />
                         </ProtectedRoute>
                     }
                 />
