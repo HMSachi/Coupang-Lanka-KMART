@@ -46,86 +46,102 @@ export default function CartSidebar({
               <p>Your cart is empty</p>
             </div>
           ) : (
-            cart.map((item) => (
-              <div key={item.id} className="cart-item-bill">
-                <div className="bill-item-main">
-                  <div className="bill-item-title">
-                    <span className="bill-qty">{item.qty}x</span>
-                    <div className="bill-name-wrapper">
-                      <span className="bill-name">{item.name}</span>
-                      <small className="bill-unit-price">@ LKR {item.price.toLocaleString()}</small>
+            <>
+              {cart.map((item) => (
+                <div key={item.id} className="cart-item-bill-premium">
+                  <div className="bill-item-main">
+                    <div className="bill-item-visual">
+                      {item.image_urls && item.image_urls.length > 0 ? (
+                        <img src={`http://localhost:5000${item.image_urls[0]}`} alt={item.name} className="bill-item-img" />
+                      ) : (
+                        <div className="bill-item-emoji-box">
+                          <span>{item.image || '📦'}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="bill-item-details">
+                      <div className="bill-item-title">
+                        <span className="bill-qty">{item.qty}x</span>
+                        <div className="bill-name-wrapper">
+                          <span className="bill-name">{item.name}</span>
+                          <small className="bill-unit-price">@ LKR {item.price.toLocaleString()}</small>
+                        </div>
+                      </div>
+
+                      <div className="bill-item-right">
+                        <div className="qty-control-mini">
+                          <button onClick={() => updateQty(item.id, -1)} type="button"><Minus size={10} /></button>
+                          <span className="qty-val-mini">{item.qty}</span>
+                          <button onClick={() => updateQty(item.id, 1)} type="button"><Plus size={10} /></button>
+                        </div>
+                        
+                        <div className="bill-item-price">
+                          LKR {(item.price * item.qty).toLocaleString()}
+                        </div>
+
+                        <button className="remove-item-mini" onClick={() => removeFromCart(item.id)} type="button">
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  <div className="bill-item-price">
-                    LKR {(item.price * item.qty).toLocaleString()}
-                  </div>
                 </div>
-                <div className="bill-item-actions">
-                  <div className="qty-control-mini">
-                    <button onClick={() => updateQty(item.id, -1)} type="button"><Minus size={10} /></button>
-                    <span className="qty-val-mini">{item.qty}</span>
-                    <button onClick={() => updateQty(item.id, 1)} type="button"><Plus size={10} /></button>
-                  </div>
-                  <button className="remove-item-mini" onClick={() => removeFromCart(item.id)} type="button">
-                    <Trash2 size={12} />
-                  </button>
+              ))}
+
+              {/* Calculation area and Final Action */}
+              <div className="cart-scroll-summary">
+                <div className="summary-row">
+                  <span>Subtotal</span>
+                  <span>LKR {subtotal.toLocaleString()}</span>
                 </div>
-                <div className="bill-divider-dotted"></div>
+                
+                <div className="discount-control-premium">
+                  <span>Apply Discount (%)</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={discountPercent}
+                    onChange={(e) => setDiscountPercent(Number(e.target.value))}
+                    className="disc-input-premium"
+                  />
+                </div>
+
+                {discountPercent > 0 && (
+                  <div className="summary-row discount-row">
+                    <span>Discount Savings</span>
+                    <span>- LKR {discountAmount.toLocaleString()}</span>
+                  </div>
+                )}
+                
+                {tax > 0 && (
+                  <div className="summary-row">
+                    <span>Estimated Tax</span>
+                    <span>LKR {tax.toLocaleString()}</span>
+                  </div>
+                )}
+
+                <div className="summary-divider"></div>
+
+                <div className="total-payable-small">
+                  <span>Total Payable</span>
+                  <span>LKR {finalTotal.toLocaleString()}</span>
+                </div>
+
+                <Button
+                  fullWidth
+                  size="md"
+                  onClick={handleCheckout}
+                  disabled={cart.length === 0}
+                  className="checkout-btn"
+                >
+                  Complete Order
+                </Button>
               </div>
-            ))
+            </>
           )}
         </div>
       </div>
-
-      <div className="cart-summary-premium">
-        <div className="summary-row">
-          <span>Subtotal</span>
-          <span>LKR {subtotal.toLocaleString()}</span>
-        </div>
-        <div className="summary-details-premium">
-          {tax > 0 && (
-            <div className="summary-row">
-              <span>Tax</span>
-              <span>LKR {tax.toLocaleString()}</span>
-            </div>
-          )}
-
-          <div className="discount-control-premium">
-            <span>Apply Discount (%)</span>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              value={discountPercent}
-              onChange={(e) => setDiscountPercent(Number(e.target.value))}
-              className="disc-input-premium"
-            />
-          </div>
-
-          {discountPercent > 0 && (
-            <div className="summary-row discount-row">
-              <span>Savings</span>
-              <span>- LKR {discountAmount.toLocaleString()}</span>
-            </div>
-          )}
-        </div>
-
-        <div className="summary-row total-payable-large">
-          <span>Total Payable</span>
-          <span>LKR {finalTotal.toLocaleString()}</span>
-        </div>
-
-        <Button
-          fullWidth
-          size="lg"
-          onClick={handleCheckout}
-          disabled={cart.length === 0}
-          className="checkout-btn"
-        >
-          Complete Order
-        </Button>
-      </div>
-
     </aside >
   );
 }

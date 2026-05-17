@@ -109,110 +109,117 @@ export default function CheckoutPage() {
 
                     {/* RIGHT: Customer & Adjustment Forms */}
                     <div className="checkout-actions">
-                        {/* Customer Section */}
-                        <div className="checkout-card">
-                            <div className="card-header">
-                                <User size={20} className="text-blue-600" />
-                                <h2>Customer Details</h2>
-                            </div>
-                            <div className="input-group-grid">
-                                <div className="pos-field">
-                                    <label>Customer Name</label>
-                                    <div className="input-wrapper">
-                                        <User size={16} className="input-icon" />
-                                        <input
-                                            type="text"
-                                            placeholder="Enter name..."
-                                            value={customer.name}
-                                            onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                                        />
-                                    </div>
+                        {/* Unified Action Card */}
+                        <div className="checkout-card action-card-unified">
+                            {/* Customer Section */}
+                            <div className="unified-section">
+                                <div className="card-header">
+                                    <User size={18} className="text-blue-500" />
+                                    <h2>Customer Details</h2>
                                 </div>
-                                <div className="pos-field">
-                                    <label>Phone Number</label>
-                                    <div className="input-wrapper">
-                                        <Phone size={16} className="input-icon" />
-                                        <input
-                                            type="text"
-                                            placeholder="Enter phone..."
-                                            value={customer.phone}
-                                            onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Discount Section */}
-                        <div className="checkout-card">
-                            <div className="card-header">
-                                <Tag size={20} className="text-blue-600" />
-                                <h2>Discount System</h2>
-                            </div>
-                            <div className="discount-type-selector">
-                                <button className={discountType === 'percentage' ? 'active' : ''} onClick={() => setDiscountType('percentage')}>
-                                    <Percent size={14} /> Percentage
-                                </button>
-                                <button className={discountType === 'fixed' ? 'active' : ''} onClick={() => setDiscountType('fixed')}>
-                                    <Tag size={14} /> Fixed Amount
-                                </button>
-                                <button className={discountType === 'coupon' ? 'active' : ''} onClick={() => setDiscountType('coupon')}>
-                                    <Info size={14} /> Coupon
-                                </button>
-                            </div>
-
-                            {discountType !== 'none' && (
-                                <div className="discount-input-area mt-4">
-                                    {discountType === 'coupon' ? (
-                                        <div className="pos-field">
-                                            <label>Coupon Code</label>
+                                <div className="input-group-grid">
+                                    <div className="pos-field">
+                                        <label>Customer Name</label>
+                                        <div className="input-wrapper">
+                                            <User size={14} className="input-icon" />
                                             <input
                                                 type="text"
-                                                className="modern-input"
-                                                placeholder="Enter code..."
-                                                value={couponCode}
-                                                onChange={(e) => setCouponCode(e.target.value)}
+                                                placeholder="Enter name..."
+                                                value={customer.name}
+                                                onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
                                             />
                                         </div>
-                                    ) : (
-                                        <div className="pos-field">
-                                            <label>{discountType === 'percentage' ? 'Discount Percentage (%)' : 'Fixed Amount (LKR)'}</label>
+                                    </div>
+                                    <div className="pos-field">
+                                        <label>Phone Number</label>
+                                        <div className="input-wrapper">
+                                            <Phone size={14} className="input-icon" />
                                             <input
-                                                type="number"
-                                                className="modern-input"
-                                                value={discountVal}
-                                                onChange={(e) => setDiscountVal(Number(e.target.value))}
+                                                type="text"
+                                                placeholder="Enter phone..."
+                                                value={customer.phone}
+                                                onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
                                             />
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
-                            )}
-                        </div>
-
-                        {/* Tax Section */}
-                        <div className="checkout-card">
-                            <div className="card-header">
-                                <Calculator size={20} className="text-blue-600" />
-                                <h2>Taxes & Charges</h2>
                             </div>
-                            <div className="input-group-grid">
-                                <div className="pos-field">
-                                    <label>VAT (%)</label>
-                                    <input
-                                        type="number"
-                                        className="modern-input"
-                                        value={vatPercent}
-                                        onChange={(e) => setVatPercent(Number(e.target.value))}
-                                    />
+
+                            <div className="section-divider"></div>
+
+                            {/* Discount Section */}
+                            <div className="unified-section">
+                                <div className="card-header">
+                                    <Tag size={18} className="text-blue-500" />
+                                    <h2>Discount System</h2>
                                 </div>
-                                <div className="pos-field">
-                                    <label>Service Charge (Fixed)</label>
-                                    <input
-                                        type="number"
-                                        className="modern-input"
-                                        value={serviceCharge}
-                                        onChange={(e) => setServiceCharge(Number(e.target.value))}
-                                    />
+                                <div className="discount-type-selector">
+                                    <button className={discountType === 'percentage' ? 'active' : ''} onClick={() => setDiscountType('percentage')}>
+                                        <Percent size={13} /> Percentage
+                                    </button>
+                                    <button className={discountType === 'fixed' ? 'active' : ''} onClick={() => setDiscountType('fixed')}>
+                                        <Tag size={13} /> Fixed Amount
+                                    </button>
+                                    <button className={discountType === 'coupon' ? 'active' : ''} onClick={() => setDiscountType('coupon')}>
+                                        <Info size={13} /> Coupon
+                                    </button>
+                                </div>
+
+                                {discountType !== 'none' && (
+                                    <div className="discount-input-area">
+                                        {discountType === 'coupon' ? (
+                                            <div className="pos-field">
+                                                <label>Coupon Code</label>
+                                                <input
+                                                    type="text"
+                                                    className="modern-input"
+                                                    placeholder="Enter code..."
+                                                    value={couponCode}
+                                                    onChange={(e) => setCouponCode(e.target.value)}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="pos-field">
+                                                <label>{discountType === 'percentage' ? 'Discount Percentage (%)' : 'Fixed Amount (LKR)'}</label>
+                                                <input
+                                                    type="number"
+                                                    className="modern-input"
+                                                    value={discountVal}
+                                                    onChange={(e) => setDiscountVal(Number(e.target.value))}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="section-divider"></div>
+
+                            {/* Tax Section */}
+                            <div className="unified-section">
+                                <div className="card-header">
+                                    <Calculator size={18} className="text-blue-500" />
+                                    <h2>Taxes & Charges</h2>
+                                </div>
+                                <div className="input-group-grid">
+                                    <div className="pos-field">
+                                        <label>VAT (%)</label>
+                                        <input
+                                            type="number"
+                                            className="modern-input"
+                                            value={vatPercent}
+                                            onChange={(e) => setVatPercent(Number(e.target.value))}
+                                        />
+                                    </div>
+                                    <div className="pos-field">
+                                        <label>Service Charge (Fixed)</label>
+                                        <input
+                                            type="number"
+                                            className="modern-input"
+                                            value={serviceCharge}
+                                            onChange={(e) => setServiceCharge(Number(e.target.value))}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>

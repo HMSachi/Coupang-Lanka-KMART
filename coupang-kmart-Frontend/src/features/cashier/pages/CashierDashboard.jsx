@@ -23,8 +23,8 @@ export default function CashierDashboard() {
   const [session, setSession] = useState(null);
   const [drawerMetrics, setDrawerMetrics] = useState({
     openingBalance: 0,
-    cashSales: 45200, // Dummy data for now, will connect to logs
-    cardSales: 128400,
+    cashSales: 0,
+    cardSales: 0,
     bankTransfers: 0,
     refunds: 0,
     cashIn: 0,

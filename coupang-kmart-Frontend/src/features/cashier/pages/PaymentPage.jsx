@@ -284,19 +284,19 @@ export default function PaymentPage() {
                             </div>
                             <div className="methods-selector-grid">
                                 <button className={selectedMethod === 'cash' ? 'active' : ''} onClick={() => setSelectedMethod('cash')}>
-                                    <Banknote size={24} /> <span>Cash</span>
+                                    <Banknote size={20} /> <span>Cash</span>
                                 </button>
                                 <button className={selectedMethod === 'card' ? 'active' : ''} onClick={() => setSelectedMethod('card')}>
-                                    <CreditCard size={24} /> <span>Card</span>
+                                    <CreditCard size={20} /> <span>Card</span>
                                 </button>
                                 <button className={selectedMethod === 'qr' ? 'active' : ''} onClick={() => setSelectedMethod('qr')}>
-                                    <QrCode size={24} /> <span>QR Pay</span>
+                                    <QrCode size={20} /> <span>QR Pay</span>
                                 </button>
                                 <button className={selectedMethod === 'bank' ? 'active' : ''} onClick={() => setSelectedMethod('bank')}>
-                                    <Building2 size={24} /> <span>Bank</span>
+                                    <Building2 size={20} /> <span>Bank</span>
                                 </button>
                                 <button className={selectedMethod === 'wallet' ? 'active' : ''} onClick={() => setSelectedMethod('wallet')}>
-                                    <Wallet size={24} /> <span>Wallet</span>
+                                    <Wallet size={20} /> <span>Wallet</span>
                                 </button>
                             </div>
 
