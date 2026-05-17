@@ -4,10 +4,23 @@ import { DollarSign, Hash } from 'lucide-react';
 
 const DENOMINATIONS = [5000, 1000, 500, 100, 50, 20, 10, 5, 2, 1];
 
+const SAVED_DENOMS_KEY = 'eod_saved_denominations';
+
 const DenominationCounter = ({ onTotalChange, onDenominationsChange }) => {
-    const [counts, setCounts] = useState(
-        DENOMINATIONS.reduce((acc, denom) => ({ ...acc, [denom]: '' }), {})
-    );
+    const [counts, setCounts] = useState(() => {
+        const saved = localStorage.getItem(SAVED_DENOMS_KEY);
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        return DENOMINATIONS.reduce((acc, denom) => ({ ...acc, [denom]: '' }), {});
+    });
+
+    useEffect(() => {
+        // Run once on load to sync loaded totals
+        const total = calculateTotal(counts);
+        onTotalChange(total);
+        onDenominationsChange(counts);
+    }, []);
 
     const calculateTotal = (newCounts) => {
         return Object.entries(newCounts).reduce((total, [denom, count]) => {
@@ -22,6 +35,7 @@ const DenominationCounter = ({ onTotalChange, onDenominationsChange }) => {
 
         const newCounts = { ...counts, [denom]: value };
         setCounts(newCounts);
+        localStorage.setItem(SAVED_DENOMS_KEY, JSON.stringify(newCounts));
 
         const total = calculateTotal(newCounts);
         onTotalChange(total);

@@ -32,6 +32,9 @@ export default function EodPage() {
     const [loading, setLoading] = useState(true);
     const [viewMode, setViewMode] = useState('current'); // 'current' or 'history'
     const [selectedReport, setSelectedReport] = useState(null);
+    const [reportSent, setReportSent] = useState(false);
+    const [isSelectReportModalOpen, setIsSelectReportModalOpen] = useState(false);
+    const [draftsList, setDraftsList] = useState([]);
 
     // Financial metrics
     const [drawerMetrics, setDrawerMetrics] = useState({
@@ -78,6 +81,13 @@ export default function EodPage() {
     const expectedCash = session ? (session.openingBalance + drawerMetrics.sales + drawerMetrics.cashIn - drawerMetrics.cashOut - drawerMetrics.refunds) : 0;
     const difference = physicalCount - expectedCash;
 
+    useEffect(() => {
+        // If money counts change, invalidate the sent report so they must resend
+        if (reportSent) {
+            setReportSent(false);
+        }
+    }, [physicalCount, expectedCash]);
+
     const handleCompleteEod = () => {
         const finalReport = {
             id: `REP_${Date.now()}`,
@@ -92,7 +102,8 @@ export default function EodPage() {
             difference: difference,
             denominations: denominations,
             notes: session.notes,
-            status: difference === 0 ? 'BALANCED' : 'DISCREPANCY'
+            status: difference === 0 ? 'BALANCED' : 'DISCREPANCY',
+            sentToAdmin: reportSent
         };
 
         // Update History
@@ -108,6 +119,32 @@ export default function EodPage() {
         // Show success / History
         setViewMode('history');
         setSession(null);
+        setReportSent(false); // reset
+    };
+
+    const handleSendReportInit = () => {
+        const liveDraft = {
+            id: `DRAFT_LIVE_${Date.now()}`,
+            cashier: session.cashier,
+            endTime: new Date().toISOString(),
+            expectedCash: expectedCash,
+            actualCash: physicalCount,
+            difference: difference,
+            isLive: true
+        };
+
+        const historyDrafts = reportsHistory.filter(r => r.status === 'DRAFT' && !r.sentToAdmin);
+        setDraftsList([liveDraft, ...historyDrafts]);
+        setIsSelectReportModalOpen(true);
+    };
+
+    const confirmSendReport = (id) => {
+        if (window.confirm('Are you sure you want to securely transmit this End-of-Day report to the Admin for final reconciliation?')) {
+            // Here you would implement backend call
+            setReportSent(true);
+            setIsSelectReportModalOpen(false);
+            alert('Report successfully sent to Admin!');
+        }
     };
 
     const downloadReport = (report) => {
@@ -209,8 +246,8 @@ export default function EodPage() {
                 {/* Header with Navigation */}
                 <div className="eod-header-section animate-fade-in">
                     <div className="title-area">
-                        <h1>Shift Closing & EOD Reports</h1>
-                        <p>Generate financial summaries and reconcile cash drawer</p>
+                        <h1 style={{ fontFamily: '"Inter", system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.03em', color: '#0f172a' }}>Shift Closing & EOD Reports</h1>
+                        <p style={{ fontFamily: '"Inter", system-ui, sans-serif', fontSize: '1.1rem', color: '#64748b' }}>Prepare end-of-day (EOD) reports for management</p>
                     </div>
 
                     <div className="header-view-toggle">
@@ -349,7 +386,7 @@ export default function EodPage() {
                                     </div>
                                 </Card>
 
-                                <Card white title="Shift Meta" subtitle="Session identification">
+                                <Card white title="Session Identification">
                                     <div className="reconcile-card">
                                         <div className="reconcile-item">
                                             <label>Session ID</label>
@@ -444,8 +481,8 @@ export default function EodPage() {
                                     <div className="final-report-card">
                                         <div className="final-header">
                                             <div className="shield-icon"><ShieldCheck size={40} /></div>
-                                            <h2>Final Reconciliation Report</h2>
-                                            <p>All financial logs and denominations have been verified.</p>
+                                            <h2 style={{ fontFamily: '"Inter", system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.02em', color: '#0f172a' }}>Final Report</h2>
+                                            <p style={{ fontFamily: '"Inter", system-ui, sans-serif', color: '#64748b' }}>All financial logs have been verified.</p>
                                         </div>
 
                                         <div className="report-summary-bits">
@@ -455,21 +492,32 @@ export default function EodPage() {
                                         </div>
 
                                         <div className="final-confirmation-list">
-                                            <div className="conf-check">
-                                                <CheckCircle2 size={18} /> Inventory levels synced to backend
+                                            <div className={`conf-check ${difference !== 0 ? 'warning' : 'success'}`}>
+                                                {difference === 0 ? <CheckCircle2 size={18} className="text-green-500" /> : <X size={18} className="text-red-500" />}
+                                                <span className={difference === 0 ? "font-bold text-gray-800" : "font-bold text-red-600"}>Cash balanced</span>
+                                                {difference !== 0 && <span className="ml-2 text-xs text-red-500">(Discrepancy: LKR {difference})</span>}
                                             </div>
-                                            <div className="conf-check">
-                                                <CheckCircle2 size={18} /> Financial logs encrypted and backup created
-                                            </div>
-                                            <div className={`conf-check ${difference !== 0 ? 'warning' : ''}`}>
-                                                {difference === 0 ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
-                                                {difference === 0 ? 'No cash discrepancies detected' : `Detected LKR ${difference} discrepancy - Flagged for review`}
+                                            <div className={`conf-check ${!reportSent ? 'warning text-orange-500' : 'success text-green-500'}`}>
+                                                {reportSent ? <CheckCircle2 size={18} /> : <X size={18} />}
+                                                <span className="font-bold text-gray-800">Send the report to admin</span>
                                             </div>
                                         </div>
 
                                         <div className="final-actions">
-                                            <Button variant="primary" fullWidth size="lg" onClick={handleCompleteEod}>
-                                                🔥 FINAL SAVE & CLOSE REGISTER
+                                            {!reportSent && (
+                                                <Button variant="primary" fullWidth size="lg" onClick={handleSendReportInit}>
+                                                    Send Report to Admin
+                                                </Button>
+                                            )}
+                                            <Button
+                                                variant="primary"
+                                                fullWidth
+                                                size="lg"
+                                                onClick={handleCompleteEod}
+                                                disabled={!reportSent}
+                                                style={reportSent ? { background: '#ef4444' } : {}}
+                                            >
+                                                End shift
                                             </Button>
                                             <Button variant="secondary" fullWidth onClick={() => setStep(2)}>
                                                 <ArrowLeft size={18} /> Modify Denominations
@@ -514,11 +562,22 @@ export default function EodPage() {
                                         </div>
 
                                         <div className="report-h-actions">
+                                            <button
+                                                className={`h-action-btn ${report.sentToAdmin ? 'text-green-500' : ''}`}
+                                                onClick={() => {
+                                                    if (report.sentToAdmin) return;
+                                                    const updated = reportsHistory.map(r => r.id === report.id ? { ...r, sentToAdmin: true } : r);
+                                                    setReportsHistory(updated);
+                                                    localStorage.setItem('eod_reports', JSON.stringify(updated));
+                                                    alert('Report sent to Admin!');
+                                                }}
+                                                disabled={report.sentToAdmin}
+                                            >
+                                                {report.sentToAdmin ? <CheckCircle2 size={14} /> : <FileText size={14} />}
+                                                {report.sentToAdmin ? 'Sent' : 'Send to Admin'}
+                                            </button>
                                             <button className="h-action-btn" onClick={() => downloadReport(report)}>
                                                 <Download size={14} /> Download
-                                            </button>
-                                            <button className="h-action-btn">
-                                                <Printer size={14} /> Print
                                             </button>
                                             <button className="h-action-btn view-btn" onClick={() => setSelectedReport(report)}>
                                                 View Details <ChevronRight size={14} />
@@ -785,6 +844,49 @@ export default function EodPage() {
                             >
                                 {isClosing ? 'Closing Register...' : 'Complete EOD Close'}
                             </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* SELECT REPORT MODAL */}
+                {isSelectReportModalOpen && (
+                    <div className="report-modal-overlay">
+                        <div className="report-modal-container animate-scale" style={{ maxWidth: '600px' }}>
+                            <div className="report-modal-header" style={{ borderBottom: 'none' }}>
+                                <h3>Select Report to Transmit</h3>
+                                <button onClick={() => setIsSelectReportModalOpen(false)} className="close-modal-btn">
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <p className="modal-desc-text">
+                                Please select the physical count draft that you would like to submit to the admin for final reconciliation.
+                            </p>
+
+                            <div className="report-select-list custom-scrollbar">
+                                {draftsList.map((draft, idx) => (
+                                    <div
+                                        key={draft.id}
+                                        className={`report-select-card ${draft.isLive ? 'live-state' : ''}`}
+                                        onClick={() => confirmSendReport(draft.id)}
+                                    >
+                                        <div className="report-select-info">
+                                            <h4>
+                                                {draft.isLive ? <Clock size={18} color="#3b82f6" /> : <History size={18} color="#64748b" />}
+                                                {draft.isLive ? 'Current Live Register State' : `Saved Draft: ${new Date(draft.endTime).toLocaleTimeString()}`}
+                                            </h4>
+                                            <p>Cash Counted: LKR {draft.actualCash.toLocaleString()}</p>
+                                        </div>
+                                        <div className={`report-select-status ${draft.difference === 0 ? 'balanced' : 'discrepancy'}`}
+                                            style={draft.difference === 0 ? { background: '#dcfce7', color: '#166534' } : { background: '#fee2e2', color: '#991b1b' }}>
+                                            {draft.difference === 0 ? 'Balanced' : 'Discrepancy'}
+                                        </div>
+                                    </div>
+                                ))}
+                                {draftsList.length === 0 && (
+                                    <div className="text-center text-gray-500 text-sm py-4">No drafts available.</div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}
