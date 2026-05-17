@@ -57,7 +57,7 @@ exports.getProducts = async (req, res) => {
     try {
         const result = await pool.query(`
             SELECT p.*, c.name as category_name,
-            (SELECT stock_quantity FROM product_inventory WHERE product_id = p.id LIMIT 1) as stock_qty
+            COALESCE((SELECT SUM(stock_quantity) FROM product_inventory WHERE product_id = p.id), 0) as total_stock_qty
             FROM products p
             LEFT JOIN categories c ON p.category_id = c.id
             ORDER BY p.id ASC
@@ -67,6 +67,22 @@ exports.getProducts = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.getProductBranchStock = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query(`
+            SELECT b.name as branch_name, COALESCE(pi.stock_quantity, 0) as stock_quantity, b.location
+            FROM branches b
+            LEFT JOIN product_inventory pi ON pi.branch_id = b.id AND pi.product_id = $1
+            ORDER BY b.name ASC
+        `, [id]);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 
 exports.createProduct = async (req, res) => {
     const {

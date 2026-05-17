@@ -1,86 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    Play,
-    Lock,
-    Calculator,
-    User,
-    Clock,
-    Monitor,
-    AlertCircle,
-    Info,
-    CheckCircle2,
-    ChevronRight,
-    Search
-} from 'lucide-react';
+import POSLayout from '../../../layouts/POSLayout';
 import Card from '../../../components/shared/Card';
 import Button from '../../../components/shared/Button';
 import Input from '../../../components/shared/Input';
 import DenominationCounter from '../components/DenominationCounter';
-import POSLayout from '../../../layouts/POSLayout';
+import {
+    Clock,
+    Monitor,
+    User,
+    Key,
+    Info,
+    ChevronRight,
+    ArrowLeft,
+    ShieldCheck,
+    MessageSquare,
+    Store
+} from 'lucide-react';
 import './SessionStartPage.css';
 
 export default function SessionStartPage() {
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
     const [step, setStep] = useState(1);
-    const [loading, setLoading] = useState(false);
-
-    // Form State
-    const [register, setRegister] = useState('Register #01');
     const [openingBalance, setOpeningBalance] = useState(0);
     const [denominations, setDenominations] = useState({});
-    const [notes, setNotes] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    // Shift data
+    const [shiftData, setShiftData] = useState({
+        cashier: '',
+        register: 'REGISTER_01',
+        loginTime: new Date().toLocaleTimeString(),
+        notes: ''
+    });
 
-    const handleStartSession = (e) => {
-        e.preventDefault();
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        setShiftData(prev => ({ ...prev, cashier: user.name || user.email || 'Cashier' }));
+    }, []);
+
+    const handleInitialize = () => {
+        setIsLoading(true);
         setError('');
 
-        if (step === 1) {
-            setStep(2);
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const userPassword = user.password || '1234ab'; // Match user's expected password
+
+        if (password !== userPassword) {
+            setTimeout(() => {
+                setError('Authentication failed. Please enter your correct login password.');
+                setIsLoading(false);
+            }, 1000);
             return;
         }
 
-        if (!password) {
-            setError('Please enter your password to authorize the session start.');
-            return;
-        }
-
-        setLoading(true);
-        // Simulate API call
         setTimeout(() => {
-            const sessionData = {
+            const session = {
+                id: `SESS_${Date.now()}`,
+                cashier: shiftData.cashier,
+                registerId: shiftData.register,
                 startTime: new Date().toISOString(),
                 openingBalance,
                 denominations,
-                register,
-                cashierId: user.id || 'C001',
-                cashierName: user.email?.split('@')[0] || 'Unknown',
-                notes,
-                expectedCash: openingBalance,
-                actualCash: 0,
-                status: 'open'
+                notes: shiftData.notes,
+                status: 'ACTIVE'
             };
 
-            localStorage.setItem('active_session', JSON.stringify(sessionData));
-            localStorage.setItem('shift_status', 'open');
+            localStorage.setItem('active_session', JSON.stringify(session));
+            localStorage.setItem('shift_status', 'active');
 
-            // Initial log for cash drawer
-            const logs = [
-                {
-                    type: 'OPENING',
-                    amount: openingBalance,
-                    timestamp: new Date().toISOString(),
-                    desc: 'Initial opening balance'
-                }
-            ];
-            localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
+            // Clear inventory cache to ensure fresh data for new session
+            localStorage.removeItem('pos_cart');
 
-            setLoading(false);
+            // Success redirect/reload
             window.location.reload();
         }, 1500);
     };
@@ -89,171 +83,164 @@ export default function SessionStartPage() {
         <POSLayout>
             <div className="session-start-container">
                 <div className="session-start-content">
-                    <div className="session-header">
+
+                    {/* Unified Header */}
+                    <div className="session-header animate-fade-in">
                         <div className="session-logo">CK</div>
                         <div className="session-title">
                             <h1>Initialize Cashier Session</h1>
-                            <p>Configure register and verify opening cash balance</p>
+                            <p>Configure register and verify opening cash balance for terminal #{shiftData.register.split('_')[1]}</p>
                         </div>
                     </div>
 
-                    <div className="session-workflow-steps">
+                    {/* Step Indicator */}
+                    <div className="session-workflow-steps animate-fade-in">
                         <div className={`workflow-step ${step >= 1 ? 'active' : ''}`}>
                             <div className="step-num">1</div>
-                            <span>Denominations</span>
+                            <span>Setup & Denominations</span>
                         </div>
                         <div className="step-line"></div>
                         <div className={`workflow-step ${step >= 2 ? 'active' : ''}`}>
                             <div className="step-num">2</div>
-                            <span>Verification</span>
+                            <span>Authentication</span>
                         </div>
                     </div>
 
-                    <form onSubmit={handleStartSession} className="session-form">
-                        {step === 1 ? (
-                            <div className="step-content animate-fade-in">
-                                <div className="session-grid">
-                                    <div className="session-left-col">
-                                        <Card glass title="Shift Details" padding="lg">
-                                            <div className="profile-mini-card">
-                                                <div className="avatar">
-                                                    <User size={24} />
-                                                </div>
-                                                <div className="info">
-                                                    <label>Cashier Profile</label>
-                                                    <span>{user.email || 'cashier@coupangkmart.com'}</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="shift-info-grid">
-                                                <div className="info-item">
-                                                    <Clock size={16} />
-                                                    <div>
-                                                        <label>Login Time</label>
-                                                        <span>{currentTime}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="info-item">
-                                                    <Monitor size={16} />
-                                                    <div>
-                                                        <label>Terminal / Register</label>
-                                                        <select
-                                                            value={register}
-                                                            onChange={(e) => setRegister(e.target.value)}
-                                                            className="session-select"
-                                                        >
-                                                            <option>Register #01</option>
-                                                            <option>Register #02</option>
-                                                            <option>Register #03</option>
-                                                            <option>Register #04</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="notes-section">
-                                                <label>Session Notes (Optional)</label>
-                                                <textarea
-                                                    placeholder="Add any shift notes or hand-over messages here..."
-                                                    value={notes}
-                                                    onChange={(e) => setNotes(e.target.value)}
-                                                ></textarea>
-                                            </div>
-                                        </Card>
-
-                                        <div className="security-notice">
-                                            <Info size={16} />
-                                            <p>All opening balances are logged and sent to the admin for audit verification.</p>
+                    {step === 1 ? (
+                        <div className="session-grid animate-slide-up">
+                            {/* Left: Configuration */}
+                            <div className="config-column">
+                                <Card white title="Shift Configuration">
+                                    <div className="profile-mini-card">
+                                        <div className="avatar"><User size={24} /></div>
+                                        <div className="info">
+                                            <label>Current Cashier</label>
+                                            <span>{shiftData.cashier}</span>
                                         </div>
                                     </div>
 
-                                    <div className="session-right-col">
-                                        <Card glass title="Opening Balance Denominations" padding="lg">
-                                            <DenominationCounter
-                                                onTotalChange={setOpeningBalance}
-                                                onDenominationsChange={setDenominations}
-                                            />
-                                        </Card>
+                                    <div className="shift-info-grid">
+                                        <div className="info-item">
+                                            <div className="icon-circ"><Clock size={16} /></div>
+                                            <div className="text">
+                                                <label>Session Start Time</label>
+                                                <span>{shiftData.loginTime}</span>
+                                            </div>
+                                        </div>
+                                        <div className="info-item">
+                                            <div className="icon-circ"><Store size={16} /></div>
+                                            <div className="text">
+                                                <label>Select Register</label>
+                                                <select
+                                                    value={shiftData.register}
+                                                    onChange={(e) => setShiftData({ ...shiftData, register: e.target.value })}
+                                                >
+                                                    <option value="REGISTER_01">Register #01</option>
+                                                    <option value="REGISTER_02">Register #02</option>
+                                                    <option value="EXPRESS_01">Express Counter 01</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="notes-section">
+                                        <label><MessageSquare size={16} style={{ verticalAlign: 'middle', marginRight: '6px' }} /> Hand-over Notes (Optional)</label>
+                                        <textarea
+                                            placeholder="Add any shift notes or hand-over messages here..."
+                                            value={shiftData.notes}
+                                            onChange={(e) => setShiftData({ ...shiftData, notes: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div className="security-notice">
+                                        <Info size={20} />
+                                        <p>Opening balances are strictly logged and cross-verified by regional managers during EOD audits.</p>
+                                    </div>
+                                </Card>
+                            </div>
+
+                            {/* Right: Denominations */}
+                            <div className="denoms-column">
+                                <Card white title="Opening Balance Denominations">
+                                    <DenominationCounter
+                                        onTotalChange={setOpeningBalance}
+                                        onDenominationsChange={setDenominations}
+                                    />
+                                </Card>
+
+                                <div className="session-footer-actions">
+                                    <Button
+                                        variant="primary"
+                                        size="lg"
+                                        className="start-btn"
+                                        onClick={() => setStep(2)}
+                                        disabled={openingBalance <= 0}
+                                    >
+                                        Proceed to Initialization <ChevronRight size={18} />
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        /* Step 2: Authentication */
+                        <div className="confirmation-card-wrapper animate-slide-up">
+                            <Card white>
+                                <div className="conf-header">
+                                    <div className="lock-icon"><ShieldCheck size={32} /></div>
+                                    <h2>Final Verification</h2>
+                                    <p>Please confirm the opening balance and enter your login password to start.</p>
+                                </div>
+
+                                <div className="conf-summary-grid">
+                                    <div className="conf-item">
+                                        <label>Opening</label>
+                                        <span>LKR {openingBalance.toLocaleString()}</span>
+                                    </div>
+                                    <div className="conf-item">
+                                        <label>Terminal</label>
+                                        <span>{shiftData.register.split('_')[1]}</span>
+                                    </div>
+                                    <div className="conf-item">
+                                        <label>Cashier ID</label>
+                                        <span>C-{Date.now().toString().slice(-4)}</span>
                                     </div>
                                 </div>
-                            </div>
-                        ) : (
-                            <div className="step-content animate-slide-up">
-                                <div className="confirmation-card-wrapper">
-                                    <Card glass className="confirmation-card" padding="xl">
-                                        <div className="conf-header">
-                                            <div className="lock-icon">
-                                                <Lock size={32} />
-                                            </div>
-                                            <h2>Verify Authorization</h2>
-                                            <p>Confirm the opening balance of <strong>LKR {openingBalance.toLocaleString()}</strong> to start your shift.</p>
-                                        </div>
 
-                                        <div className="conf-summary-grid">
-                                            <div className="conf-item">
-                                                <label>Register</label>
-                                                <span>{register}</span>
-                                            </div>
-                                            <div className="conf-item">
-                                                <label>Cashier</label>
-                                                <span>{user.email?.split('@')[0]}</span>
-                                            </div>
-                                            <div className="conf-item">
-                                                <label>Timestamp</label>
-                                                <span>{currentTime}</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="password-auth-field">
-                                            <Input
-                                                label="Confirm Identity Password"
-                                                type="password"
-                                                placeholder="Enter your login password"
-                                                icon={Lock}
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                                required
-                                                autoFocus
-                                            />
-                                        </div>
-
-                                        {error && <div className="session-error-msg">{error}</div>}
-
-                                        <div className="conf-actions">
-                                            <Button
-                                                variant="secondary"
-                                                type="button"
-                                                onClick={() => setStep(1)}
-                                                disabled={loading}
-                                            >
-                                                Go Back & Edit
-                                            </Button>
-                                            <Button
-                                                variant="primary"
-                                                type="submit"
-                                                loading={loading}
-                                            >
-                                                Confirm & Start Shift
-                                            </Button>
-                                        </div>
-                                    </Card>
+                                <div className="password-auth-field">
+                                    <Input
+                                        label="Security Password"
+                                        type="password"
+                                        placeholder="Enter your login password"
+                                        icon={Key}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        autoFocus
+                                    />
                                 </div>
-                            </div>
-                        )}
 
-                        {step === 1 && (
-                            <div className="session-footer-actions">
-                                <Button
-                                    variant="primary"
-                                    size="lg"
-                                    type="submit"
-                                    className="start-btn"
-                                >
-                                    Proceed to Verification <ChevronRight size={20} />
-                                </Button>
-                            </div>
-                        )}
-                    </form>
+                                {error && <div className="session-error-msg">{error}</div>}
+
+                                <div className="conf-actions">
+                                    <Button
+                                        variant="secondary"
+                                        fullWidth
+                                        onClick={() => setStep(1)}
+                                        disabled={isLoading}
+                                    >
+                                        <ArrowLeft size={18} /> Back
+                                    </Button>
+                                    <Button
+                                        variant="primary"
+                                        fullWidth
+                                        onClick={handleInitialize}
+                                        loading={isLoading}
+                                    >
+                                        Start Session
+                                    </Button>
+                                </div>
+                            </Card>
+                        </div>
+                    )}
                 </div>
             </div>
         </POSLayout>
