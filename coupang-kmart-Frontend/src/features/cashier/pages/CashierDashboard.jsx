@@ -9,12 +9,61 @@ import '../styles/cashier.css';
 // Removed static dummy data as per request - will fetch dynamically in the future
 // import { CATEGORIES, DUMMY_PRODUCTS } from '../../../services/dummyData';
 
+import { useNavigate } from 'react-router-dom';
+import '../styles/cashier.css';
+
 export default function CashierDashboard() {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const [session, setSession] = useState(null);
+  const [drawerMetrics, setDrawerMetrics] = useState({
+    openingBalance: 0,
+    cashSales: 45200, // Dummy data for now, will connect to logs
+    cardSales: 128400,
+    bankTransfers: 0,
+    refunds: 0,
+    cashIn: 0,
+    cashOut: 0,
+    expectedCash: 0,
+    drawerBalance: 0
+  });
+
+  // Session Check
+  useEffect(() => {
+    const activeSession = localStorage.getItem('active_session');
+    if (activeSession) {
+      const sess = JSON.parse(activeSession);
+      setSession(sess);
+
+      // Calculate metrics from logs
+      const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
+      const cashSales = logs.filter(l => l.type === 'CASH_SALE').reduce((sum, l) => sum + l.amount, 0);
+      const cardSales = logs.filter(l => l.type === 'CARD_SALE').reduce((sum, l) => sum + l.amount, 0);
+      const refunds = logs.filter(l => l.type === 'REFUND').reduce((sum, l) => sum + l.amount, 0);
+      const cashIn = logs.filter(l => l.type === 'CASH_IN').reduce((sum, l) => sum + l.amount, 0);
+      const cashOut = logs.filter(l => l.type === 'CASH_OUT').reduce((sum, l) => sum + l.amount, 0);
+      const opening = sess.openingBalance || 0;
+
+      const expectedCash = opening + cashSales + cashIn - refunds - cashOut;
+
+      setDrawerMetrics({
+        openingBalance: opening,
+        cashSales,
+        cardSales,
+        bankTransfers: 0,
+        refunds,
+        cashIn,
+        cashOut,
+        expectedCash,
+        drawerBalance: expectedCash
+      });
+    }
+  }, [navigate]);
 
   // Empty inventory states, ready for backend integration later
   const [products, setProducts] = useState([]);
@@ -141,15 +190,87 @@ export default function CashierDashboard() {
             </span>
           </div>
 
-          <div style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)', borderRadius: '16px', padding: '32px', color: 'white', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 10px 25px -5px rgba(59, 130, 246, 0.3)' }}>
-            <div>
-              <h2 style={{ fontSize: '28px', fontWeight: '700', margin: '0 0 8px 0' }}>Good afternoon, Cashier!</h2>
-              <p style={{ fontSize: '15px', color: '#e0e7ff', margin: 0, opacity: 0.9 }}>Here is what's happening with your shift today.</p>
+          <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '16px', padding: '32px', color: 'white', marginBottom: '24px', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2)' }}>
+            <div style={{ position: 'absolute', top: 0, right: 0, padding: '20px', opacity: 0.1 }}>
+              <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z" /></svg>
             </div>
-            <button style={{ background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', color: 'white', padding: '10px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-              View Storefront
-            </button>
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <h2 style={{ fontSize: '24px', fontWeight: '800', margin: '0 0 4px 0' }}>Live Cash Drawer Tracker</h2>
+                  <p style={{ fontSize: '14px', color: '#94a3b8', margin: '0 0 24px 0' }}>Real-time monitoring of all financial movements in this session</p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '4px' }}>Expected Cash</div>
+                  <div style={{ fontSize: '32px', fontWeight: '900', color: '#10b981' }}>Rs. {drawerMetrics.expectedCash.toLocaleString()}</div>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px', marginTop: '12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', marginBottom: '8px' }}>OPENING</div>
+                  <div style={{ fontSize: '16px', fontWeight: '700' }}>Rs. {drawerMetrics.openingBalance.toLocaleString()}</div>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', marginBottom: '8px' }}>CASH SALES</div>
+                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#10b981' }}>+Rs. {drawerMetrics.cashSales.toLocaleString()}</div>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', marginBottom: '8px' }}>CARD SALES</div>
+                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#3b82f6' }}>Rs. {drawerMetrics.cardSales.toLocaleString()}</div>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', marginBottom: '8px' }}>CASH IN / OUT</div>
+                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#f59e0b' }}>
+                    {drawerMetrics.cashIn > 0 ? `+${drawerMetrics.cashIn}` : ''}
+                    {drawerMetrics.cashOut > 0 ? ` -${drawerMetrics.cashOut}` : ''}
+                    {drawerMetrics.cashIn === 0 && drawerMetrics.cashOut === 0 ? 'Rs. 0' : ''}
+                  </div>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', marginBottom: '8px' }}>REFUNDS</div>
+                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#ef4444' }}>-Rs. {drawerMetrics.refunds.toLocaleString()}</div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ fontSize: '12px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ background: '#334155', padding: '2px 8px', borderRadius: '4px', color: '#e2e8f0' }}>Formula</span>
+                  <span>Expected = Opening + Cash Sales + Cash In - Refunds - Cash Out</span>
+                </div>
+
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    onClick={() => {
+                      const amount = prompt('Enter Cash IN amount:');
+                      if (amount && !isNaN(amount)) {
+                        const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
+                        logs.push({ type: 'CASH_IN', amount: parseFloat(amount), timestamp: new Date().toISOString(), desc: 'Manual Cash In' });
+                        localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
+                        window.location.reload();
+                      }
+                    }}
+                    style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', color: '#10b981', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
+                  >
+                    + Cash In
+                  </button>
+                  <button
+                    onClick={() => {
+                      const amount = prompt('Enter Cash OUT amount:');
+                      if (amount && !isNaN(amount)) {
+                        const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
+                        logs.push({ type: 'CASH_OUT', amount: parseFloat(amount), timestamp: new Date().toISOString(), desc: 'Manual Cash Out' });
+                        localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
+                        window.location.reload();
+                      }
+                    }}
+                    style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#ef4444', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
+                  >
+                    - Cash Out
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
@@ -258,6 +379,6 @@ export default function CashierDashboard() {
           />
         </div> */}
       </div>
-    </POSLayout>
+    </POSLayout >
   );
 }

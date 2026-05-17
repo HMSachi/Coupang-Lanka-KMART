@@ -1,0 +1,308 @@
+.eod-premium-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    color: white;
+}
+
+.eod-header-section {
+    margin-bottom: 2.5rem;
+}
+
+.title-area h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.title-area p {
+    color: #94a3b8;
+    margin-top: 0.5rem;
+}
+
+.eod-workflow-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.workflow-item {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64748b;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.workflow-item.active {
+    color: white;
+    background: var(--primary-color, #6366f1);
+}
+
+.workflow-connector {
+    flex: 1;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.summary-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.eod-metric-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.metric label {
+    display: block;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.metric .val {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.val.green {
+    color: #10b981;
+}
+
+.val.blue {
+    color: #3b82f6;
+}
+
+.metric-total-box {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.metric-total-box label {
+    display: block;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+}
+
+.metric-total-box .total-val {
+    font-size: 2.25rem;
+    font-weight: 900;
+}
+
+.calculation-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.calc-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+}
+
+.calc-row span:first-child {
+    color: #94a3b8;
+}
+
+.calc-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0.5rem 0;
+}
+
+.calc-row.result {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #10b981;
+}
+
+.denoms-wrapper-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2rem;
+}
+
+.reconcile-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.reconcile-item label {
+    display: block;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.reconcile-item span {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.reconcile-item.highlight span {
+    font-size: 1.75rem;
+    color: #6366f1;
+}
+
+.reconcile-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.reconcile-diff {
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.reconcile-diff.mismatch {
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.reconcile-diff.perfect {
+    background: rgba(16, 185, 129, 0.05);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.reconcile-diff.surplus {
+    background: rgba(245, 158, 11, 0.05);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.diff-val {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin: 0.5rem 0;
+}
+
+.diff-alert,
+.diff-success {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.finalize-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.final-report-card {
+    text-align: center;
+}
+
+.final-header {
+    margin-bottom: 2rem;
+}
+
+.shield-icon {
+    color: #10b981;
+    margin-bottom: 1.5rem;
+}
+
+.final-header h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.report-summary-bits {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.bit {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.final-confirmation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    text-align: left;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.conf-check {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.conf-check svg {
+    color: #10b981;
+}
+
+.conf-check.warning svg {
+    color: #f59e0b;
+}
+
+.final-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.report-actions-mini {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.ra-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.ra-btn:hover {
+    color: white;
+}
+
+.step-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}

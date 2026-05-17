@@ -73,9 +73,22 @@ export default function PaymentPage() {
     const handleFinalizeOrder = () => {
         setIsProcessing(true);
         setTimeout(() => {
+            // Log payments to session
+            const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
+            appliedPayments.forEach(p => {
+                logs.push({
+                    type: p.method === 'cash' ? 'CASH_SALE' : (p.method === 'card' ? 'CARD_SALE' : 'BANK_TRANSFER'),
+                    amount: p.amount,
+                    timestamp: new Date().toISOString(),
+                    desc: `Sale Transaction #${Math.floor(Math.random() * 10000)}`
+                });
+            });
+            localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
+
             setIsProcessing(false);
             setIsSuccess(true);
             localStorage.removeItem('pos_cart');
+            localStorage.removeItem('pending_order_summary');
             window.dispatchEvent(new Event('cartUpdated'));
         }, 1500);
     };
