@@ -49,3 +49,17 @@
 .card-p-none .card-content {
     padding: 0;
 }
+
+.card-white {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.card-white .card-title {
+    color: #1e293b !important;
+}
+
+.card-white .card-subtitle {
+    color: #64748b !important;
+}

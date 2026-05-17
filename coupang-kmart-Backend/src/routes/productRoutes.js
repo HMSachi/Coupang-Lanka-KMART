@@ -19,6 +19,7 @@ router.put('/categories/:id', authenticateToken, isAdmin, productController.upda
 router.delete('/categories/:id', authenticateToken, isAdmin, productController.deleteCategory);
 
 router.get('/items', productController.getProducts);
+router.get('/items/:id/branch-stock', productController.getProductBranchStock);
 router.post('/items', authenticateToken, isAdmin, productController.createProduct);
 router.put('/items/:id', authenticateToken, isAdmin, productController.updateProduct);
 router.delete('/items/:id', authenticateToken, isAdmin, productController.deleteProduct);

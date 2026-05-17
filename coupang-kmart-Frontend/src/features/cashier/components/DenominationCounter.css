@@ -1,23 +1,23 @@
 .denomination-counter-premium {
-    background: rgba(255, 255, 255, 0.03);
+    background: #f8fafc;
     border-radius: 16px;
     padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1.5px solid #e2e8f0;
 }
 
 .denom-grid {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
 }
 
 .denom-row {
     display: grid;
-    grid-template-columns: 120px 20px 100px 1fr;
+    grid-template-columns: 140px 20px 100px 1fr;
     align-items: center;
     gap: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .denom-row:last-child {
@@ -26,25 +26,26 @@
 
 .denom-label {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 0.5rem;
 }
 
 .denom-prefix {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-weight: 600;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 700;
 }
 
 .denom-value {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-primary);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1e293b;
 }
 
 .denom-x {
-    color: var(--text-muted);
+    color: #cbd5e1;
     font-size: 0.9rem;
+    font-weight: 700;
     text-align: center;
 }
 
@@ -54,46 +55,53 @@
 
 .denom-input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 0.5rem;
-    color: white;
+    background: white;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0.6rem;
+    color: #0f172a;
     text-align: center;
-    font-family: inherit;
-    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
     transition: all 0.2s ease;
 }
 
 .denom-input:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
-    background: rgba(0, 0, 0, 0.3);
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    background: white;
+}
+
+.denom-input:hover {
+    border-color: #94a3b8;
 }
 
 .denom-result {
     text-align: right;
-    font-weight: 600;
-    color: var(--primary-color);
-    font-size: 0.95rem;
+    font-weight: 800;
+    color: #6366f1;
+    font-size: 1rem;
 }
 
 .denom-total-summary {
     margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 2px dashed rgba(255, 255, 255, 0.1);
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
 }
 
 .total-label {
-    font-weight: 600;
-    color: var(--text-muted);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
 }
 
 .total-value {
@@ -104,14 +112,20 @@
 }
 
 .total-value small {
-    font-size: 0.9rem;
-    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .total-value span {
-    font-size: 1.8rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #fff 0%, #aaa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 2rem;
+    font-weight: 900;
+    color: white;
+}
+
+/* Chrome, Safari, Edge, Opera - Remove arrows from number input */
+.denom-input::-webkit-outer-spin-button,
+.denom-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
