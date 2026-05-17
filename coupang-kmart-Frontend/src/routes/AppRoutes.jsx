@@ -17,6 +17,7 @@ import PaymentPage from '../features/cashier/pages/PaymentPage';
 import RefundPage from '../features/cashier/pages/RefundPage';
 import EodPage from '../features/cashier/pages/EodPage';
 import SessionStartPage from '../features/cashier/pages/SessionStartPage';
+import CashierReports from '../features/admin/pages/CashierReports';
 
 /**
  * Protected Route Wrapper
@@ -97,6 +98,14 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={['superAdmin', 'admin']}>
                             <Reports />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/cashier-reports"
+                    element={
+                        <ProtectedRoute allowedRoles={['superAdmin', 'admin']}>
+                            <CashierReports />
                         </ProtectedRoute>
                     }
                 />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogOut, Home, Package, Users, BarChart2, Bell, Settings, Store, ArrowLeftRight, Shield } from 'lucide-react';
+import { LogOut, Home, Package, Users, BarChart2, Bell, Settings, Store, ArrowLeftRight, Shield, FileText } from 'lucide-react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import './AdminLayout.css';
 
@@ -10,6 +10,7 @@ const navItems = [
     { icon: ArrowLeftRight, label: 'Stock Transfer', path: '/admin/transfers' },
     { icon: Users, label: 'User Management', path: '/admin/users' },
     { icon: Shield, label: 'Roles & Permissions', path: '/admin/roles' },
+    { icon: FileText, label: 'Cashier Reports', path: '/admin/cashier-reports' },
     { icon: BarChart2, label: 'Reports', path: '/admin/reports' },
     { icon: Bell, label: 'Notifications', path: '/admin/notifications' },
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
