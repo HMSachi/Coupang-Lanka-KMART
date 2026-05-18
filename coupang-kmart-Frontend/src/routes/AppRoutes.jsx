@@ -17,6 +17,7 @@ import PaymentPage from '../features/cashier/pages/PaymentPage';
 import RefundPage from '../features/cashier/pages/RefundPage';
 import EodPage from '../features/cashier/pages/EodPage';
 import SessionStartPage from '../features/cashier/pages/SessionStartPage';
+import OnlineOrdersPage from '../features/cashier/pages/OnlineOrdersPage';
 import CashierReports from '../features/admin/pages/CashierReports';
 
 /**
@@ -132,6 +133,14 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={['cashier']}>
                             <CashierDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/pos/online-orders"
+                    element={
+                        <ProtectedRoute allowedRoles={['cashier']}>
+                            <OnlineOrdersPage />
                         </ProtectedRoute>
                     }
                 />

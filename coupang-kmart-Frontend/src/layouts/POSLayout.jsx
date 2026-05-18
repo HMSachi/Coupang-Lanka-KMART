@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, User, Clock, RotateCcw, BarChart2, MonitorIcon, ChevronRight, Store, ShoppingCart } from 'lucide-react';
+import { LogOut, User, Clock, RotateCcw, BarChart2, MonitorIcon, ChevronRight, Store, ShoppingCart, ShoppingBag } from 'lucide-react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import './POSLayout.css';
 
@@ -52,6 +52,7 @@ const POSLayout = ({ children }) => {
 
     const navItems = [
         { path: '/pos', icon: <MonitorIcon size={20} />, label: 'Create Order' },
+        { path: '/pos/online-orders', icon: <ShoppingBag size={20} />, label: 'Online Orders' },
         { path: '/pos/cart', icon: <ShoppingCart size={20} />, label: 'Cart' },
         { path: '/pos/refund', icon: <RotateCcw size={20} />, label: 'Returns & Refunds' },
         { path: '/pos/eod', icon: <BarChart2 size={20} />, label: 'My Session / EOD' }
@@ -114,6 +115,7 @@ const POSLayout = ({ children }) => {
                     <div className="pos-header-left">
                         <h1>
                             {location.pathname === '/pos' && 'Create Order'}
+                            {location.pathname === '/pos/online-orders' && 'Online Orders'}
                             {location.pathname === '/pos/refund' && 'Returns & Refunds'}
                             {location.pathname === '/pos/eod' && 'My Session'}
                         </h1>
