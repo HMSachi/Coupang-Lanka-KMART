@@ -53,12 +53,22 @@ export default function EodPage() {
             const sessionData = JSON.parse(active);
             setSession(sessionData);
             calculateDrawerMetrics();
-        }
 
-        // Load reports history
-        const savedHistory = localStorage.getItem('eod_reports');
-        if (savedHistory) {
-            setReportsHistory(JSON.parse(savedHistory));
+            // Load reports history and filter strictly for this session
+            const savedHistory = localStorage.getItem('eod_reports');
+            if (savedHistory) {
+                let parsedHistory = JSON.parse(savedHistory);
+                parsedHistory = parsedHistory.filter(r =>
+                    new Date(r.startTime).getTime() === new Date(sessionData.startTime).getTime()
+                );
+                setReportsHistory(parsedHistory);
+            }
+        } else {
+            // Load all reports if no active session (or none)
+            const savedHistory = localStorage.getItem('eod_reports');
+            if (savedHistory) {
+                setReportsHistory(JSON.parse(savedHistory));
+            }
         }
 
         setLoading(false);
@@ -137,12 +147,28 @@ export default function EodPage() {
         setIsSelectReportModalOpen(true);
     };
 
-    const confirmSendReport = (id) => {
+    const confirmSendReport = async (id) => {
         if (window.confirm('Are you sure you want to securely transmit this End-of-Day report to the Admin for final reconciliation?')) {
-            // Here you would implement backend call
-            setReportSent(true);
-            setIsSelectReportModalOpen(false);
-            alert('Report successfully sent to Admin!');
+            try {
+                const draft = draftsList.find(d => d.id === id);
+                const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+                await fetch(`${apiUrl}/api/reports`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cashier_name: session.cashier,
+                        branch_id: null,
+                        report_data: draft
+                    })
+                });
+
+                setReportSent(true);
+                setIsSelectReportModalOpen(false);
+                alert('Report successfully sent to Admin!');
+            } catch (error) {
+                console.error('Error sending report:', error);
+                alert('Failed to send report. Check connection.');
+            }
         }
     };
 
