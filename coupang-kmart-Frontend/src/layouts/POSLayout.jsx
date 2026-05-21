@@ -112,7 +112,7 @@ const POSLayout = ({ children }) => {
             {/* Main Wrapper */}
             <div className="pos-main-wrapper">
                 <header className="pos-top-header">
-                    <div className="pos-header-left">
+                    <div className="pos-title-section">
                         <h1>
                             {location.pathname === '/pos' && 'Create Order'}
                             {location.pathname === '/pos/online-orders' && 'Online Orders'}
@@ -135,8 +135,10 @@ const POSLayout = ({ children }) => {
                             </Link>
                         </div>
                         <div className="pos-time-widget">
-                            <Clock size={16} className="time-icon" />
-                            <span className="time-text">{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                            <div className="time-row">
+                                <Clock size={18} className="time-icon" />
+                                <span className="time-text">{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                            </div>
                             <div className="time-divider"></div>
                             <span className="register-text">Register #01</span>
                         </div>

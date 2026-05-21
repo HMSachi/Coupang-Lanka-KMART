@@ -52,7 +52,15 @@ export default function CartSidebar({
                   <div className="bill-item-main">
                     <div className="bill-item-visual">
                       {item.image_urls && item.image_urls.length > 0 ? (
-                        <img src={`http://localhost:5000${item.image_urls[0]}`} alt={item.name} className="bill-item-img" />
+                        <img
+                          src={`http://localhost:5000${item.image_urls[0]}`}
+                          alt={item.name}
+                          className="bill-item-img"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = `<div class="bill-item-emoji-box"><span>${item.image || '📦'}</span></div>`;
+                          }}
+                        />
                       ) : (
                         <div className="bill-item-emoji-box">
                           <span>{item.image || '📦'}</span>
@@ -74,7 +82,7 @@ export default function CartSidebar({
                           <span className="qty-val-mini">{item.qty}</span>
                           <button onClick={() => updateQty(item.id, 1)} type="button"><Plus size={10} /></button>
                         </div>
-                        
+
                         <div className="bill-item-price">
                           LKR {(item.price * item.qty).toLocaleString()}
                         </div>
@@ -94,7 +102,7 @@ export default function CartSidebar({
                   <span>Subtotal</span>
                   <span>LKR {subtotal.toLocaleString()}</span>
                 </div>
-                
+
                 <div className="discount-control-premium">
                   <span>Apply Discount (%)</span>
                   <input
@@ -113,7 +121,7 @@ export default function CartSidebar({
                     <span>- LKR {discountAmount.toLocaleString()}</span>
                   </div>
                 )}
-                
+
                 {tax > 0 && (
                   <div className="summary-row">
                     <span>Estimated Tax</span>
