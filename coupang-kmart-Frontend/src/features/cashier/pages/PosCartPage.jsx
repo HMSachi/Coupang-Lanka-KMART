@@ -118,8 +118,7 @@ export default function PosCartPage() {
           border-radius: var(--radius-lg);
           box-shadow: var(--shadow-md);
           border: 1px solid var(--sidebar-border);
-          min-height: 600px;
-          padding-bottom: 2rem;
+          overflow: hidden;
         }
 
         /* Adjusting CartSidebar for full page width */
@@ -131,7 +130,8 @@ export default function PosCartPage() {
         }
 
         :global(.cart-items-container) {
-          max-height: 500px !important;
+          max-height: 400px !important;
+          overflow-y: auto !important;
         }
       `}</style>
     </POSLayout>

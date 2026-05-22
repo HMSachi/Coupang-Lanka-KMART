@@ -29,14 +29,6 @@ export default function CartSidebar({
     window.location.href = '/pos/checkout';
   };
 
-  // Handles both absolute URLs (http/https) and backend-served relative paths (/uploads/..)
-  const resolveProductImageUrl = (raw) => {
-    if (!raw || typeof raw !== 'string') return null;
-    if (/^https?:\/\//i.test(raw)) return raw;
-    // If API returns a relative path like "/uploads/xxx.jpg"
-    return `http://localhost:5000${raw.startsWith('/') ? '' : '/'}${raw}`;
-  };
-
   return (
     <aside className="cart-sidebar-premium" aria-label="Cart Sidebar">
       <div className="cart-header-premium">
@@ -58,65 +50,51 @@ export default function CartSidebar({
             </div>
           ) : (
             <>
-              {cart.map((item) => {
-                const imageUrl = resolveProductImageUrl(item?.image_urls?.[0]);
-                return (
-                  <div key={item.id} className="cart-item-bill-premium">
-                    <div className="bill-item-main">
-                      <div className="bill-item-visual">
-                        {imageUrl ? (
-                          <img
-                            src={imageUrl}
-                            alt={item.name}
-                            className="bill-item-img"
-                            loading="lazy"
-                            onError={(e) => {
-                              // Fallback to emoji without innerHTML injection
-                              e.currentTarget.style.display = 'none';
-                              const parent = e.currentTarget.parentElement;
-                              if (!parent) return;
-                              const existing = parent.querySelector('.bill-item-emoji-box');
-                              if (existing) return;
-                              const box = document.createElement('div');
-                              box.className = 'bill-item-emoji-box';
-                              const span = document.createElement('span');
-                              span.textContent = item.image || '📦';
-                              box.appendChild(span);
-                              parent.appendChild(box);
-                            }}
-                          />
-                        ) : (
-                          <div className="bill-item-emoji-box">
-                            <span>{item.image || '📦'}</span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="bill-item-details">
-                        <div className="bill-item-title">
-                          <div className="bill-name-wrapper">
-                            <span className="bill-name">{item.name}</span>
-                            <small className="bill-unit-price">@ LKR {item.price.toLocaleString()}</small>
-                          </div>
+              {cart.map((item) => (
+                <div key={item.id} className="cart-item-bill-premium">
+                  <div className="bill-item-main">
+                    <div className="bill-item-visual">
+                      {item.image_urls && item.image_urls.length > 0 ? (
+                        <img
+                          src={`http://localhost:5000${item.image_urls[0]}`}
+                          alt={item.name}
+                          className="bill-item-img"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = `<div class="bill-item-emoji-box"><span>${item.image || '📦'}</span></div>`;
+                          }}
+                        />
+                      ) : (
+                        <div className="bill-item-emoji-box">
+                          <span>{item.image || '📦'}</span>
                         </div>
-                      </div>
-
-                      <div className="bill-item-controls">
-                        <div className="qty-control-mini">
-                          <button onClick={() => updateQty(item.id, -1)} type="button"><Minus size={10} /></button>
-                          <span className="qty-val-mini">{item.qty}</span>
-                          <button onClick={() => updateQty(item.id, 1)} type="button"><Plus size={10} /></button>
+                      )}
+                    </div>
+                    <div className="bill-item-details">
+                      <div className="bill-item-title">
+                        <div className="bill-name-wrapper">
+                          <span className="bill-name">{item.name}</span>
+                          <small className="bill-unit-price">@ LKR {item.price.toLocaleString()}</small>
                         </div>
-                        <div className="bill-item-price">
-                          LKR {(item.price * item.qty).toLocaleString()}
-                        </div>
-                        <button className="remove-item-mini" onClick={() => removeFromCart(item.id)} type="button">
-                          <Trash2 size={12} />
-                        </button>
                       </div>
                     </div>
+                    
+                    <div className="bill-item-controls">
+                      <div className="qty-control-mini">
+                        <button onClick={() => updateQty(item.id, -1)} type="button"><Minus size={10} /></button>
+                        <span className="qty-val-mini">{item.qty}</span>
+                        <button onClick={() => updateQty(item.id, 1)} type="button"><Plus size={10} /></button>
+                      </div>
+                      <div className="bill-item-price">
+                        LKR {(item.price * item.qty).toLocaleString()}
+                      </div>
+                      <button className="remove-item-mini" onClick={() => removeFromCart(item.id)} type="button">
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
 
               {/* Calculation area and Final Action */}
               <div className="cart-scroll-summary">
