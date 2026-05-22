@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LogOut, User, Clock, RotateCcw, BarChart2, MonitorIcon, ChevronRight, Store, ShoppingCart, ShoppingBag } from 'lucide-react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import logo from '../assets/logo.jpeg';
 import './POSLayout.css';
 
 const POSLayout = ({ children }) => {
@@ -63,10 +64,15 @@ const POSLayout = ({ children }) => {
             {/* Sidebar */}
             <aside className="pos-sidebar-new">
                 <div className="pos-sidebar-header">
-                    <div className="pos-sidebar-logo">CK</div>
+                    <div className="pos-sidebar-logo">
+                        <img src={logo} alt="Coupang Lanka" className="pos-logo-img" />
+                    </div>
                     <div className="pos-sidebar-title">
-                        <span>Coupang <strong>Kmart</strong></span>
-                        <small>Terminal POS</small>
+                        <div className="pos-brand-wrapper">
+                            <span className="pos-brand-lanka">Coupang Lanka</span>
+                            <span className="pos-brand-kmart">Kmart</span>
+                        </div>
+                        <div className="pos-terminal-tag">Terminal POS</div>
                     </div>
                 </div>
 
@@ -129,7 +135,7 @@ const POSLayout = ({ children }) => {
                         <div className="pos-header-actions">
                             <Link to="/pos/cart" className="pos-header-cart-btn-mini" title="View Current Order">
                                 <div className="cart-icon-wrapper">
-                                    <ShoppingCart size={22} />
+                                    <ShoppingCart size={20} />
                                     {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
                                 </div>
                             </Link>
