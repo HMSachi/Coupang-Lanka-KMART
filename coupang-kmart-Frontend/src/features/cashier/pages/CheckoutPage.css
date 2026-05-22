@@ -21,28 +21,29 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .checkout-header h1 {
-    font-size: 20px;
-    font-weight: 800;
-    color: #475569;
+    font-size: 28px;
+    font-weight: 900;
+    color: #1e293b;
     margin: 0;
+    letter-spacing: -0.5px;
 }
 
 .back-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 16px;
+    padding: 12px 18px;
     background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-weight: 600;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-weight: 700;
     color: #475569;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 14px;
 }
 
@@ -50,7 +51,8 @@
     background: #f8fafc;
     border-color: #3b82f6;
     color: #3b82f6;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 6px 12px rgba(59, 130, 246, 0.15);
+    transform: translateX(-2px);
 }
 
 .checkout-grid {
@@ -60,26 +62,52 @@
 }
 
 .checkout-card {
-    background: white;
-    border: 1px solid #f1f5f9;
-    border-radius: 10px;
-    padding: 0.65rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     margin-bottom: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.checkout-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 0.75rem;
+    gap: 14px;
+    margin-bottom: 1.25rem;
+}
+
+.header-icon-badge {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .card-header h2 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #475569;
+    font-size: 18px;
+    font-weight: 800;
+    color: #1e293b;
     margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.header-subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+    font-weight: 500;
+    margin: 2px 0 0 0;
 }
 
 /* Order Item List Styling */
@@ -88,52 +116,80 @@
     overflow-y: auto;
     margin-bottom: 24px;
     padding-right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
-.order-item-row {
+.order-item-card {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px dashed #f1f5f9;
+    padding: 14px 16px;
+    background: white;
+    border: 1.5px solid #f1f5f9;
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.order-item-row:last-child {
-    border-bottom: none;
+.order-item-card:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
 }
 
-.item-info {
+.order-item-left {
     display: flex;
     gap: 12px;
     align-items: center;
+    flex: 1;
 }
 
-.item-qty {
+.item-qty-badge {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
     font-weight: 800;
-    color: #3b82f6;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    min-width: 24px;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
 
 .item-name {
-    font-weight: 600;
-    color: #64748b;
+    font-weight: 700;
+    color: #1e293b;
     font-size: 14px;
 }
 
-.item-total {
-    font-weight: 700;
-    color: #475569;
-    font-size: 14px;
+.item-unit-price {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.order-item-card .item-total {
+    font-weight: 800;
+    color: #3b82f6;
+    font-size: 15px;
+    letter-spacing: -0.3px;
 }
 
 /* Calculation Table */
 .checkout-calculations {
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 0.75rem;
-    border: 1px solid #f1f5f9;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1.5px solid #e2e8f0;
 }
 
 .calc-row {
@@ -142,7 +198,11 @@
     margin-bottom: 12px;
     font-size: 14px;
     color: #64748b;
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.calc-row:last-child {
+    margin-bottom: 0;
 }
 
 .calc-row.discount {
@@ -152,44 +212,48 @@
 .calc-total {
     display: flex;
     justify-content: space-between;
-    padding-top: 16px;
-    border-top: 2px solid #e2e8f0;
-    margin-top: 8px;
-    color: #1e293b;
+    align-items: center;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 1rem;
+    color: white;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
 }
 
 .calc-total span:first-child {
-    font-weight: 800;
-    font-size: 16px;
+    font-weight: 700;
+    font-size: 15px;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
 }
 
 .calc-total span:last-child {
     font-weight: 900;
-    font-size: 22px;
-    color: #3b82f6;
-    letter-spacing: -0.5px;
+    font-size: 28px;
+    letter-spacing: -1px;
 }
 
 /* Form Styling */
 .input-group-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
+    gap: 1rem;
 }
 
 .pos-field {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
 .pos-field label {
     font-size: 12px;
-    font-weight: 700;
-    color: #64748b;
+    font-weight: 800;
+    color: #475569;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
 }
 
 .input-wrapper {
@@ -198,44 +262,47 @@
 
 .input-icon {
     position: absolute;
-    left: 12px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: #94a3b8;
+    color: #3b82f6;
+    opacity: 0.7;
 }
 
 .input-wrapper input,
 .modern-input {
     width: 100%;
-    padding: 10px 10px 10px 36px;
-    border: 1.5px solid #f1f5f9;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    color: #475569;
+    padding: 12px 12px 12px 40px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: #1e293b;
     outline: none;
-    transition: all 0.2s;
-    background: #fcfdfe;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    font-weight: 500;
 }
 
 .modern-input {
-    padding-left: 12px;
+    padding-left: 14px;
 }
 
 .input-wrapper input:focus,
 .modern-input:focus {
     border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
-    background: white;
+    box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.1);
+    background: #f8fafc;
 }
 
 /* Discount Selector */
 .discount-type-selector {
     display: flex;
-    gap: 12px;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .discount-input-area {
-    margin-top: 0.75rem;
+    margin-top: 1rem;
 }
 
 .discount-type-selector button {
@@ -244,56 +311,58 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 8px;
-    border: 1.5px solid #e2e8f0;
+    padding: 10px 12px;
+    border: 2px solid #e2e8f0;
     background: white;
-    border-radius: 8px;
+    border-radius: 10px;
     font-weight: 700;
     color: #64748b;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 12px;
 }
 
 .discount-type-selector button:hover {
     border-color: #cbd5e1;
     background: #f8fafc;
+    transform: translateY(-1px);
 }
 
 .discount-type-selector button.active {
-    background: #eff6ff;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
     border-color: #3b82f6;
     color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
 }
 
 /* Finalize Button */
 .finalize-btn {
     width: 100%;
-    padding: 10px;
+    padding: 14px 16px;
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
     font-weight: 800;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
-    transition: all 0.3s;
-    margin-top: 0.5rem;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 0.75rem;
 }
 
 .finalize-btn:hover {
-    background: #2563eb;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px -5px rgba(59, 130, 246, 0.5);
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4);
 }
 
 .finalize-btn:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
 }
 
 .checkout-footer-action {
@@ -316,18 +385,50 @@
 .action-card-unified {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .unified-section {
     width: 100%;
 }
 
+.section-icon-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.section-icon-badge.user-badge {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.section-icon-badge.discount-badge {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.section-icon-badge.tax-badge {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.section-subtitle {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+    margin: 3px 0 0 0;
+}
+
 .section-divider {
     height: 1px;
-    background: #f1f5f9;
+    background: linear-gradient(90deg, transparent 0%, #e2e8f0 50%, transparent 100%);
     width: 100%;
-    margin: 0.25rem 0;
+    margin: 0;
 }
 
 .checkout-grid::-webkit-scrollbar {

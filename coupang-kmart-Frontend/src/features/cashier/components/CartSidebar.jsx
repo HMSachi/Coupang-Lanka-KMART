@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Trash2, Plus, Minus, CreditCard, Banknote, QrCode } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, CreditCard, Banknote, QrCode, Gift, ChevronUp, ChevronDown, Tag } from 'lucide-react';
 import Button from '../../../components/shared/Button';
 import Modal from '../../../components/shared/Modal';
 import Card from '../../../components/shared/Card';
@@ -98,7 +98,7 @@ export default function CartSidebar({
 
               {/* Calculation area and Final Action */}
               <div className="cart-scroll-summary">
-                <div className="summary-row">
+                <div className="summary-row subtotal-row">
                   <span>Subtotal</span>
                   <span>LKR {subtotal.toLocaleString()}</span>
                 </div>
@@ -115,22 +115,43 @@ export default function CartSidebar({
                   </div>
 
                   <div className="discount-input-wrapper">
-                    <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={discountPercent}
-                      onChange={(e) => setDiscountPercent(Number(e.target.value))}
-                      className="discount-input-premium"
-                      placeholder="0"
-                    />
-                    <span className="discount-percent-sign">%</span>
+                    <div className="input-area">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={discountPercent}
+                        onChange={(e) => setDiscountPercent(Number(e.target.value))}
+                        className="discount-input-premium"
+                        placeholder="0"
+                      />
+                      <span className="discount-percent-sign">%</span>
+                    </div>
+                    <div className="stepper-buttons">
+                      <button 
+                        type="button" 
+                        className="discount-stepper up"
+                        onClick={() => setDiscountPercent(prev => Math.min(100, prev + 1))}
+                      >
+                        <ChevronUp size={12} />
+                      </button>
+                      <button 
+                        type="button" 
+                        className="discount-stepper down"
+                        onClick={() => setDiscountPercent(prev => Math.max(0, prev - 1))}
+                      >
+                        <ChevronDown size={12} />
+                      </button>
+                    </div>
                   </div>
 
                   {discountPercent > 0 && (
                     <div className="discount-preview">
-                      <span className="discount-label">You save</span>
-                      <span className="discount-amount">LKR {discountAmount.toLocaleString()}</span>
+                      <span className="discount-label">
+                        <Tag size={14} />
+                        Discount
+                      </span>
+                      <span className="discount-amount">- LKR {discountAmount.toLocaleString()}</span>
                     </div>
                   )}
                 </div>
