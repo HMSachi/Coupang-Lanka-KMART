@@ -697,7 +697,7 @@
 .bill-item-main {
     display: flex;
     gap: 12px;
-    align-items: flex-start;
+    align-items: center; /* was flex-start; keeps controls aligned vertically */
     width: 100%;
 }
 
@@ -763,11 +763,12 @@
 }
 
 .bill-item-controls {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(110px, auto) auto;
     align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+    column-gap: 10px;
+    row-gap: 6px;
+    justify-items: end;
     flex-shrink: 0;
 }
 
@@ -813,10 +814,10 @@
     font-weight: 800;
     color: #1e293b;
     font-size: 1rem;
-    min-width: 90px;
+    min-width: 110px; /* more consistent right alignment */
     text-align: right;
     white-space: nowrap;
-    order: 2;
+    order: unset;
 }
 
 .remove-item-mini {
@@ -832,10 +833,40 @@
     cursor: pointer;
     transition: all 0.2s;
     flex-shrink: 0;
-    order: 3;
+    order: unset;
 }
 
 .remove-item-mini:hover {
     background: #e11d48;
     color: white;
+}
+
+@media (max-width: 420px) {
+    .bill-item-main {
+        align-items: flex-start;
+    }
+
+    .bill-item-controls {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "qty remove"
+            "price price";
+        justify-items: end;
+        width: 100%;
+    }
+
+    .qty-control-mini {
+        grid-area: qty;
+        justify-self: start;
+    }
+
+    .remove-item-mini {
+        grid-area: remove;
+    }
+
+    .bill-item-price {
+        grid-area: price;
+        justify-self: end;
+        min-width: 0;
+    }
 }

@@ -4,6 +4,12 @@ import POSLayout from '../../../layouts/POSLayout';
 import { User, Phone, Tag, Percent, Receipt, ArrowLeft, CheckCircle, Calculator, Info } from 'lucide-react';
 import './CheckoutPage.css';
 
+const resolveProductImageUrl = (raw) => {
+    if (!raw || typeof raw !== 'string') return null;
+    if (/^https?:\/\//i.test(raw)) return raw;
+    return `http://localhost:5000${raw.startsWith('/') ? '' : '/'}${raw}`;
+};
+
 export default function CheckoutPage() {
     const navigate = useNavigate();
     const [cart, setCart] = useState([]);
@@ -75,18 +81,28 @@ export default function CheckoutPage() {
                         </div>
 
                         <div className="order-items-list">
-                            {cart.map((item, idx) => (
-                                <div key={idx} className="order-item-card">
-                                    <div className="order-item-left">
-                                        <div className="item-qty-badge">{item.qty}</div>
-                                        <div className="item-details">
-                                            <span className="item-name">{item.name}</span>
-                                            <span className="item-unit-price">@ LKR {item.price.toLocaleString()}</span>
+                            {cart.map((item, idx) => {
+                                const imageUrl = resolveProductImageUrl(item?.image_urls?.[0]);
+                                return (
+                                    <div key={idx} className="order-item-card">
+                                        <div className="order-item-left">
+                                            {imageUrl ? (
+                                                <div className="item-image-wrapper">
+                                                    <img src={imageUrl} alt={item.name} className="product-thumb" />
+                                                    <div className="item-qty-overlay">{item.qty}</div>
+                                                </div>
+                                            ) : (
+                                                <div className="item-qty-badge">{item.qty}</div>
+                                            )}
+                                            <div className="item-details">
+                                                <span className="item-name">{item.name}</span>
+                                                <span className="item-unit-price">@ LKR {item.price.toLocaleString()}</span>
+                                            </div>
                                         </div>
+                                        <span className="item-total">LKR {(item.price * item.qty).toLocaleString()}</span>
                                     </div>
-                                    <span className="item-total">LKR {(item.price * item.qty).toLocaleString()}</span>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                         <div className="checkout-calculations">
