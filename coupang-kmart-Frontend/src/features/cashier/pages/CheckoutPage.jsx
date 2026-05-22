@@ -4,6 +4,12 @@ import POSLayout from '../../../layouts/POSLayout';
 import { User, Phone, Tag, Percent, Receipt, ArrowLeft, CheckCircle, Calculator, Info } from 'lucide-react';
 import './CheckoutPage.css';
 
+const resolveProductImageUrl = (raw) => {
+    if (!raw || typeof raw !== 'string') return null;
+    if (/^https?:\/\//i.test(raw)) return raw;
+    return `http://localhost:5000${raw.startsWith('/') ? '' : '/'}${raw}`;
+};
+
 export default function CheckoutPage() {
     const navigate = useNavigate();
     const [cart, setCart] = useState([]);
@@ -65,20 +71,38 @@ export default function CheckoutPage() {
                     {/* LEFT: Order Intel (Read Only) */}
                     <div className="checkout-card order-preview">
                         <div className="card-header">
-                            <Receipt size={20} className="text-blue-600" />
-                            <h2>Order Summary</h2>
+                            <div className="header-icon-badge">
+                                <Receipt size={20} />
+                            </div>
+                            <div>
+                                <h2>Order Review</h2>
+                                <p className="header-subtitle">Items in your current order</p>
+                            </div>
                         </div>
 
                         <div className="order-items-list">
-                            {cart.map((item, idx) => (
-                                <div key={idx} className="order-item-row">
-                                    <div className="item-info">
-                                        <span className="item-qty">{item.qty}x</span>
-                                        <span className="item-name">{item.name}</span>
+                            {cart.map((item, idx) => {
+                                const imageUrl = resolveProductImageUrl(item?.image_urls?.[0]);
+                                return (
+                                    <div key={idx} className="order-item-card">
+                                        <div className="order-item-left">
+                                            {imageUrl ? (
+                                                <div className="item-image-wrapper">
+                                                    <img src={imageUrl} alt={item.name} className="product-thumb" />
+                                                    <div className="item-qty-overlay">{item.qty}</div>
+                                                </div>
+                                            ) : (
+                                                <div className="item-qty-badge">{item.qty}</div>
+                                            )}
+                                            <div className="item-details">
+                                                <span className="item-name">{item.name}</span>
+                                                <span className="item-unit-price">@ LKR {item.price.toLocaleString()}</span>
+                                            </div>
+                                        </div>
+                                        <span className="item-total">LKR {(item.price * item.qty).toLocaleString()}</span>
                                     </div>
-                                    <span className="item-total">LKR {(item.price * item.qty).toLocaleString()}</span>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                         <div className="checkout-calculations">
@@ -114,8 +138,13 @@ export default function CheckoutPage() {
                             {/* Customer Section */}
                             <div className="unified-section">
                                 <div className="card-header">
-                                    <User size={18} className="text-blue-500" />
-                                    <h2>Customer Details</h2>
+                                    <div className="section-icon-badge user-badge">
+                                        <User size={18} />
+                                    </div>
+                                    <div>
+                                        <h2>Customer Details</h2>
+                                        <p className="section-subtitle">Enter customer information</p>
+                                    </div>
                                 </div>
                                 <div className="input-group-grid">
                                     <div className="pos-field">
@@ -150,8 +179,13 @@ export default function CheckoutPage() {
                             {/* Discount Section */}
                             <div className="unified-section">
                                 <div className="card-header">
-                                    <Tag size={18} className="text-blue-500" />
-                                    <h2>Discount System</h2>
+                                    <div className="section-icon-badge discount-badge">
+                                        <Tag size={18} />
+                                    </div>
+                                    <div>
+                                        <h2>Discount System</h2>
+                                        <p className="section-subtitle">Apply discount to order</p>
+                                    </div>
                                 </div>
                                 <div className="discount-type-selector">
                                     <button className={discountType === 'percentage' ? 'active' : ''} onClick={() => setDiscountType('percentage')}>
@@ -198,8 +232,13 @@ export default function CheckoutPage() {
                             {/* Tax Section */}
                             <div className="unified-section">
                                 <div className="card-header">
-                                    <Calculator size={18} className="text-blue-500" />
-                                    <h2>Taxes & Charges</h2>
+                                    <div className="section-icon-badge tax-badge">
+                                        <Calculator size={18} />
+                                    </div>
+                                    <div>
+                                        <h2>Taxes & Charges</h2>
+                                        <p className="section-subtitle">Configure taxes and fees</p>
+                                    </div>
                                 </div>
                                 <div className="input-group-grid">
                                     <div className="pos-field">

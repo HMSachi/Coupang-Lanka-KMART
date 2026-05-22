@@ -243,12 +243,41 @@
 .session-footer-actions {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 1.5rem;
     margin-top: 1rem;
+    width: 100%;
 }
 
 .start-btn {
     min-width: 300px;
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 24px !important;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-wrap: nowrap !important;
+}
+
+.start-btn .btn-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+}
+
+.start-btn svg {
+    flex-shrink: 0;
+    width: 18px !important;
+    height: 18px !important;
 }
 
 /* Verification State Styles */

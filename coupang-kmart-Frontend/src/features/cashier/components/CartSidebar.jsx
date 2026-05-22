@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Trash2, Plus, Minus, CreditCard, Banknote, QrCode } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, CreditCard, Banknote, QrCode, Gift, ChevronUp, ChevronDown, Tag } from 'lucide-react';
 import Button from '../../../components/shared/Button';
 import Modal from '../../../components/shared/Modal';
 import Card from '../../../components/shared/Card';
@@ -21,6 +21,9 @@ export default function CartSidebar({
   const discountAmount = (subtotal * discountPercent) / 100;
   const finalTotal = total; // Already calculated in parent
 
+  // Calculate total item count (sum of all quantities)
+  const totalItemCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
   const handleCheckout = () => {
     if (cart.length === 0) return;
     window.location.href = '/pos/checkout';
@@ -30,7 +33,7 @@ export default function CartSidebar({
     <aside className="cart-sidebar-premium" aria-label="Cart Sidebar">
       <div className="cart-header-premium">
         <h3>Current Order</h3>
-        <span className="cart-count">{cart.length} Items</span>
+        <span className="cart-count">{totalItemCount} Items</span>
       </div>
 
       <div className="cart-bill-container">
@@ -52,7 +55,15 @@ export default function CartSidebar({
                   <div className="bill-item-main">
                     <div className="bill-item-visual">
                       {item.image_urls && item.image_urls.length > 0 ? (
-                        <img src={`http://localhost:5000${item.image_urls[0]}`} alt={item.name} className="bill-item-img" />
+                        <img
+                          src={`http://localhost:5000${item.image_urls[0]}`}
+                          alt={item.name}
+                          className="bill-item-img"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = `<div class="bill-item-emoji-box"><span>${item.image || '📦'}</span></div>`;
+                          }}
+                        />
                       ) : (
                         <div className="bill-item-emoji-box">
                           <span>{item.image || '📦'}</span>
@@ -61,28 +72,25 @@ export default function CartSidebar({
                     </div>
                     <div className="bill-item-details">
                       <div className="bill-item-title">
-                        <span className="bill-qty">{item.qty}x</span>
                         <div className="bill-name-wrapper">
                           <span className="bill-name">{item.name}</span>
                           <small className="bill-unit-price">@ LKR {item.price.toLocaleString()}</small>
                         </div>
                       </div>
-
-                      <div className="bill-item-right">
-                        <div className="qty-control-mini">
-                          <button onClick={() => updateQty(item.id, -1)} type="button"><Minus size={10} /></button>
-                          <span className="qty-val-mini">{item.qty}</span>
-                          <button onClick={() => updateQty(item.id, 1)} type="button"><Plus size={10} /></button>
-                        </div>
-                        
-                        <div className="bill-item-price">
-                          LKR {(item.price * item.qty).toLocaleString()}
-                        </div>
-
-                        <button className="remove-item-mini" onClick={() => removeFromCart(item.id)} type="button">
-                          <Trash2 size={12} />
-                        </button>
+                    </div>
+                    
+                    <div className="bill-item-controls">
+                      <div className="qty-control-mini">
+                        <button onClick={() => updateQty(item.id, -1)} type="button"><Minus size={10} /></button>
+                        <span className="qty-val-mini">{item.qty}</span>
+                        <button onClick={() => updateQty(item.id, 1)} type="button"><Plus size={10} /></button>
                       </div>
+                      <div className="bill-item-price">
+                        LKR {(item.price * item.qty).toLocaleString()}
+                      </div>
+                      <button className="remove-item-mini" onClick={() => removeFromCart(item.id)} type="button">
+                        <Trash2 size={12} />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -90,30 +98,64 @@ export default function CartSidebar({
 
               {/* Calculation area and Final Action */}
               <div className="cart-scroll-summary">
-                <div className="summary-row">
+                <div className="summary-row subtotal-row">
                   <span>Subtotal</span>
                   <span>LKR {subtotal.toLocaleString()}</span>
                 </div>
-                
-                <div className="discount-control-premium">
-                  <span>Apply Discount (%)</span>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={discountPercent}
-                    onChange={(e) => setDiscountPercent(Number(e.target.value))}
-                    className="disc-input-premium"
-                  />
+
+                <div className="discount-section-enhanced">
+                  <div className="discount-header">
+                    <div className="discount-icon-badge">
+                      <span>%</span>
+                    </div>
+                    <div>
+                      <h4>Apply Discount</h4>
+                      <p className="discount-subtitle">Offer a special discount to your customer</p>
+                    </div>
+                  </div>
+
+                  <div className="discount-input-wrapper">
+                    <div className="input-area">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={discountPercent}
+                        onChange={(e) => setDiscountPercent(Number(e.target.value))}
+                        className="discount-input-premium"
+                        placeholder="0"
+                      />
+                      <span className="discount-percent-sign">%</span>
+                    </div>
+                    <div className="stepper-buttons">
+                      <button 
+                        type="button" 
+                        className="discount-stepper up"
+                        onClick={() => setDiscountPercent(prev => Math.min(100, prev + 1))}
+                      >
+                        <ChevronUp size={12} />
+                      </button>
+                      <button 
+                        type="button" 
+                        className="discount-stepper down"
+                        onClick={() => setDiscountPercent(prev => Math.max(0, prev - 1))}
+                      >
+                        <ChevronDown size={12} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {discountPercent > 0 && (
+                    <div className="discount-preview">
+                      <span className="discount-label">
+                        <Tag size={14} />
+                        Discount
+                      </span>
+                      <span className="discount-amount">- LKR {discountAmount.toLocaleString()}</span>
+                    </div>
+                  )}
                 </div>
 
-                {discountPercent > 0 && (
-                  <div className="summary-row discount-row">
-                    <span>Discount Savings</span>
-                    <span>- LKR {discountAmount.toLocaleString()}</span>
-                  </div>
-                )}
-                
                 {tax > 0 && (
                   <div className="summary-row">
                     <span>Estimated Tax</span>

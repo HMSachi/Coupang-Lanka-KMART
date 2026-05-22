@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '../../../components/shared/Button';
-import { Plus } from 'lucide-react';
+import { Plus, Check } from 'lucide-react';
 
 const ProductItem = ({ product, onAddToCart, onShowDetails }) => {
   const isOutOfStock = product.stock === 0 || product.branch_stock === 0;
   const isLowStock = product.branch_stock > 0 && product.branch_stock < 10;
+  const [justAdded, setJustAdded] = useState(false);
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    onAddToCart(product);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 900);
+  };
 
   return (
     <div
@@ -15,12 +23,24 @@ const ProductItem = ({ product, onAddToCart, onShowDetails }) => {
         }
       }}
     >
+      {/* Added to Cart flash overlay */}
+      {justAdded && (
+        <div className="added-flash-overlay">
+          <Check size={22} strokeWidth={3} />
+          <span>Added!</span>
+        </div>
+      )}
+
       <div className="product-image-container">
         {product.image_urls && product.image_urls.length > 0 ? (
           <img
             src={`http://localhost:5000${product.image_urls[0]}`}
             alt={product.name}
             loading="lazy"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.parentElement.innerHTML = `<div class="flex flex-col items-center justify-center w-full h-full bg-slate-50"><span style="font-size:32px;opacity:0.2">${product.image || '📦'}</span><span style="font-size:9px;color:#94a3b8;font-weight:600;margin-top:4px">No Image</span></div>`;
+            }}
           />
         ) : (
           <div className="flex flex-col items-center justify-center w-full h-full bg-slate-50">
@@ -35,31 +55,28 @@ const ProductItem = ({ product, onAddToCart, onShowDetails }) => {
       <div className="product-info-premium">
         <div className="product-category-label">{product.category}</div>
         <h4 className="product-name-premium" title={product.name}>{product.name}</h4>
-        
+
         <p className="product-desc-mini">
           {product.description || "Fresh premium selection from our KMART inventory."}
         </p>
 
-        <div className="product-footer-premium" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px' }}>
-          <div className="product-price-premium" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <span className="currency" style={{ fontSize: '9px', color: '#94a3b8', fontWeight: '700' }}>TOTAL PRICE</span>
-            <span className="amount" style={{ fontSize: '15px', fontWeight: '900', color: '#1e293b' }}>Rs. {product.price.toLocaleString()}</span>
+        <div className="product-footer-premium">
+          <div className="product-price-premium">
+            <span className="currency">TOTAL PRICE</span>
+            <span className="amount">Rs. {product.price.toLocaleString()}</span>
           </div>
-
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onAddToCart(product);
-            }}
-            disabled={isOutOfStock}
-            className="add-to-cart-bubble"
-          >
-            <Plus size={20} strokeWidth={3} />
-          </Button>
         </div>
       </div>
+
+      <Button
+        variant="primary"
+        size="sm"
+        onClick={handleAddToCart}
+        disabled={isOutOfStock}
+        className={`add-to-cart-bubble ${justAdded ? 'added-success' : ''}`}
+      >
+        {justAdded ? <Check size={28} strokeWidth={3} /> : <Plus size={28} strokeWidth={2.5} />}
+      </Button>
     </div>
   );
 };
