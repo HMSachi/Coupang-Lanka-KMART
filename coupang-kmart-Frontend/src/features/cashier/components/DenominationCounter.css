@@ -1,0 +1,135 @@
+.denomination-counter-premium {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1.5px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.denom-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.denom-row {
+    display: grid;
+    grid-template-columns: 140px 20px 100px 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.denom-row:last-child {
+    border-bottom: none;
+}
+
+.denom-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.denom-prefix {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 700;
+}
+
+.denom-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.denom-x {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.denom-input-wrapper {
+    position: relative;
+}
+
+.denom-input {
+    width: 100%;
+    background: white;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0.6rem;
+    color: #0f172a;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.denom-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    background: white;
+}
+
+.denom-input:hover {
+    border-color: #94a3b8;
+}
+
+.denom-result {
+    text-align: right;
+    font-weight: 800;
+    color: #6366f1;
+    font-size: 1rem;
+}
+
+.denom-total-summary {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+}
+
+.total-label {
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.85rem;
+}
+
+.total-value {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    color: white;
+}
+
+.total-value small {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.total-value span {
+    font-size: 2rem;
+    font-weight: 900;
+    color: white;
+}
+
+/* Chrome, Safari, Edge, Opera - Remove arrows from number input */
+.denom-input::-webkit-outer-spin-button,
+.denom-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

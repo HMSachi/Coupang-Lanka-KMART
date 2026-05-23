@@ -1,8 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-export default function LoginForm() {
+export default function LoginForm({ onLogin, validUsers }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
   function handleSubmit(event) {
-    event.preventDefault()
+    event.preventDefault();
+    
+    const userKey = username.trim().toLowerCase();
+    const account = validUsers[userKey];
+
+    if (account && password === account.password) {
+      onLogin(account.role);
+      setError('');
+      return;
+    }
+
+    setError('Invalid credentials. Use admin@g.com or cashier@g.com w/ 1234ab');
   }
 
   return (
@@ -15,14 +30,32 @@ export default function LoginForm() {
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="input-wrap">
-            <label htmlFor="staff-id">Staff ID</label>
-            <input id="staff-id" name="staffId" type="text" placeholder="e.g. POS-1024" required />
+            <label htmlFor="staff-id">Email ID</label>
+            <input 
+              id="staff-id" 
+              name="staffId" 
+              type="text" 
+              placeholder="admin@g.com" 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required 
+            />
           </div>
 
           <div className="input-wrap">
             <label htmlFor="password">Password</label>
-            <input id="password" name="password" type="password" placeholder="Enter your password" required />
+            <input 
+              id="password" 
+              name="password" 
+              type="password" 
+              placeholder="Enter your password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required 
+            />
           </div>
+
+          {error && <p style={{color: '#ef4444', fontSize: '0.85rem', marginTop: '4px'}}>{error}</p>}
 
           <div className="form-row">
             <label className="remember-control" htmlFor="remember-me">
