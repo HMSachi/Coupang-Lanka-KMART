@@ -8,8 +8,26 @@ const POSLayout = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [time, setTime] = useState(new Date());
-
     const [cartCount, setCartCount] = useState(0);
+
+    const getPageContext = () => {
+        switch (location.pathname) {
+            case '/pos':
+                return { title: 'Create Order', subtitle: 'Manage terminal inventory and checkout' };
+            case '/pos/online-orders':
+                return { title: 'Online Orders', subtitle: 'Manage and fulfill web-originated orders' };
+            case '/pos/cart':
+                return { title: 'Active Cart', subtitle: 'Review items and finalize payment' };
+            case '/pos/refund':
+                return { title: 'Returns & Refunds', subtitle: 'Process customer returns and ledger credits' };
+            case '/pos/eod':
+                return { title: 'Session Control', subtitle: 'Perform terminal audit and closure' };
+            default:
+                return { title: 'POS Terminal', subtitle: 'Lanka Kmart Management System' };
+        }
+    };
+
+    const { title, subtitle } = getPageContext();
 
     useEffect(() => {
         const timer = setInterval(() => setTime(new Date()), 1000);
@@ -119,12 +137,10 @@ const POSLayout = ({ children }) => {
             <div className="pos-main-wrapper">
                 <header className="pos-top-header">
                     <div className="pos-title-section">
-                        <h1>
-                            {location.pathname === '/pos' && 'Create Order'}
-                            {location.pathname === '/pos/online-orders' && 'Online Orders'}
-                            {location.pathname === '/pos/refund' && 'Returns & Refunds'}
-                            {location.pathname === '/pos/eod' && 'My Session'}
-                        </h1>
+                        <div className="pos-title-wrapper">
+                            <h1>{title}</h1>
+                            <p className="pos-page-subtitle">{subtitle}</p>
+                        </div>
                         <span className="pos-branch-badge">
                             <Store size={12} />
                             {user.branch_name || 'Main Branch'}

@@ -90,15 +90,9 @@ const OnlineOrdersPage = () => {
     return (
         <POSLayout>
             <div className="online-orders-container">
-                {/* Header Section */}
-                <div className="orders-header">
-                    <div className="header-info">
-                        <div>
-                            <h2 className="header-title">📦 Incoming Web Orders</h2>
-                            <p className="header-subtitle">Manage and fulfill orders from Coupang Lanka website</p>
-                        </div>
-                    </div>
+                {/* Header Section Removed - Handled by POSLayout */}
 
+                <div className="orders-header-actions-bar">
                     <div className="header-actions">
                         <div className="search-box">
                             <Search className="search-icon" size={18} />
@@ -292,7 +286,7 @@ const OnlineOrdersPage = () => {
                                             <p className="section-subtitle">Review all items in this order</p>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="items-container">
                                         {selectedOrder.items && selectedOrder.items.map((item, idx) => {
                                             const getImageUrl = (url) => {

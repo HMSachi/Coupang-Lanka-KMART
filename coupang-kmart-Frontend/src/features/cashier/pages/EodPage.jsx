@@ -22,7 +22,14 @@ import {
     ChevronRight,
     User,
     X,
-    FileSpreadsheet
+    FileSpreadsheet,
+    Activity,
+    ShoppingBag,
+    PlusCircle,
+    ArrowUpCircle,
+    RotateCcw,
+    Target,
+    Lock
 } from 'lucide-react';
 import './EodPage.css';
 
@@ -174,11 +181,7 @@ export default function EodPage() {
 
     return (
         <POSLayout>
-            <div className="eod-page-wrapper">
-                <div className="content-header">
-                    <h1>End of Day (EOD) Close</h1>
-                    <p>Review today's shift performance and close the register.</p>
-                </div>
+            <div className="eod-container">
 
                 {viewMode === 'current' ? (
                     <>
@@ -192,25 +195,36 @@ export default function EodPage() {
 
                         {step === 1 && (
                             <div className="summary-cards-grid animate-slide-up">
-                                <Card white title="Financial Summary" subtitle="System calculated snapshot">
+                                <Card white title="Financial Audit" subtitle="System accuracy check">
                                     <div className="calculation-stack">
-                                        <div className="calc-row"><span>Opening Balance</span><span>LKR {session.openingBalance.toLocaleString()}</span></div>
-                                        <div className="calc-row"><span>Total Cash Sales (+)</span><span>LKR {drawerMetrics.sales.toLocaleString()}</span></div>
-                                        <div className="calc-row"><span>Cash In (+)</span><span>LKR {drawerMetrics.cashIn.toLocaleString()}</span></div>
-                                        <div className="calc-row"><span>Cash Out (-)</span><span style={{ color: '#ef4444' }}>-LKR {drawerMetrics.cashOut.toLocaleString()}</span></div>
-                                        <div className="calc-row"><span>Refunds (-)</span><span style={{ color: '#ef4444' }}>-LKR {drawerMetrics.refunds.toLocaleString()}</span></div>
+                                        <div className="calc-row"><span><Activity size={14} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Opening Balance</span><span>LKR {session.openingBalance.toLocaleString()}</span></div>
+                                        <div className="calc-row"><span><ShoppingBag size={14} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Cash Sales</span><span>LKR {drawerMetrics.sales.toLocaleString()}</span></div>
+                                        <div className="calc-row"><span><PlusCircle size={14} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Injections</span><span>LKR {drawerMetrics.cashIn.toLocaleString()}</span></div>
+                                        <div className="calc-row"><span><ArrowUpCircle size={14} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Withdrawals</span><span className="text-red-500">-LKR {drawerMetrics.cashOut.toLocaleString()}</span></div>
+                                        <div className="calc-row"><span><RotateCcw size={14} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Refunds</span><span className="text-red-500">-LKR {drawerMetrics.refunds.toLocaleString()}</span></div>
                                         <div className="calc-divider"></div>
-                                        <div className="calc-row result"><span>Expected Drawer Total</span><span>LKR {expectedCash.toLocaleString()}</span></div>
+                                        <div className="calc-row result"><span><Target size={14} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Expected Total</span><span>LKR {expectedCash.toLocaleString()}</span></div>
                                     </div>
-                                    <div className="mt-4 step-actions">
-                                        <Button variant="primary" fullWidth onClick={() => setStep(2)}>Next: Count Physical Cash <ArrowRight size={18} /></Button>
+                                    <div className="mt-6 step-actions">
+                                        <Button variant="primary" fullWidth onClick={() => setStep(2)}>Secure Audit Transfer <ArrowRight size={14} /></Button>
                                     </div>
                                 </Card>
-                                <Card white title="Session Identification">
+                                <Card white title="Session Identity" subtitle="Operator credentials">
                                     <div className="reconcile-card">
-                                        <div className="reconcile-item"><label>Session ID</label><span>{session.id}</span></div>
-                                        <div className="reconcile-item"><label>Cashier</label><span>{session.cashier}</span></div>
-                                        <div className="reconcile-item"><label>Start Time</label><span>{new Date(session.startTime).toLocaleString()}</span></div>
+                                        <div className="reconcile-item"><label>Register Terminal</label><span>{session.registerId || 'POS-01'}</span></div>
+                                        <div className="reconcile-item"><label>Active Cashier</label><span>{session.cashier}</span></div>
+                                        <div style={{ gridColumn: 'span 2', height: '1px', background: 'rgba(0,0,0,0.03)', margin: '4px 0' }}></div>
+                                        <div className="reconcile-item" style={{ gridColumn: 'span 2' }}><label>Session Timestamp</label><span>{new Date(session.startTime).toLocaleString()}</span></div>
+                                        <div className="reconcile-item" style={{ gridColumn: 'span 2' }}><label>Unique Trace ID</label><span style={{ fontSize: '11px', color: '#94a3b8', fontFamily: 'monospace' }}>{session.id}</span></div>
+                                    </div>
+                                    <div style={{ marginTop: '32px', padding: '20px', background: 'rgba(99, 102, 241, 0.03)', borderRadius: '16px', border: '1px solid rgba(99, 102, 241, 0.05)' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <div style={{ width: '32px', height: '32px', background: 'white', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}><Lock size={16} color="#6366f1" /></div>
+                                            <div>
+                                                <h4 style={{ fontSize: '12px', fontWeight: '800', margin: 0 }}>Audit Protocol</h4>
+                                                <p style={{ fontSize: '11px', color: '#64748b', margin: 0 }}>Closure will finalize all ledgers</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </Card>
                             </div>
@@ -219,24 +233,23 @@ export default function EodPage() {
                         {step === 2 && (
                             <div className="denoms-wrapper-grid animate-slide-up">
                                 <div className="denoms-list-col">
-                                    <Card white title="Denomination Verification" subtitle="Count all physical cash in your drawer">
+                                    <Card white title="Physical Inventory" subtitle="Categorized audit">
                                         <DenominationCounter onTotalChange={setPhysicalCount} onDenominationsChange={setDenominations} />
                                     </Card>
                                 </div>
                                 <div className="reconcile-status-side animate-scale">
-                                    <Card white title="Live Balance">
+                                    <Card white title="Archive Validation">
                                         <div className="reconcile-card">
-                                            <div className="reconcile-item"><label>System Expected</label><span>LKR {expectedCash.toLocaleString()}</span></div>
-                                            <div className="reconcile-item highlight"><label>Physical Counted</label><span>LKR {physicalCount.toLocaleString()}</span></div>
-                                            <div className="reconcile-divider"></div>
-                                            <div className={`reconcile-diff ${difference === 0 ? 'perfect' : (difference > 0 ? 'surplus' : 'mismatch')}`}>
-                                                <label>Current Difference</label>
+                                            <div className="reconcile-item"><label>System Ledgers</label><span>{expectedCash.toLocaleString()}</span></div>
+                                            <div className="reconcile-item highlight"><label>Physical Audit</label><span style={{ color: '#6366f1' }}>{physicalCount.toLocaleString()}</span></div>
+                                            <div className="reconcile-diff">
+                                                <label>Audit Discrepancy</label>
                                                 <div className="diff-val">LKR {difference.toLocaleString()}</div>
-                                                {difference === 0 ? <span className="diff-success"><ShieldCheck size={16} /> Verified</span> : <span className="diff-alert"><AlertCircle size={16} /> Mismatch</span>}
+                                                {difference === 0 ? <span className="status-tag balanced">SYSTEMS BALANCED</span> : <span className="status-tag discrepancy">DELTA DETECTED</span>}
                                             </div>
-                                            <div className="step-actions-vertical mt-4">
-                                                <Button variant="primary" fullWidth size="lg" onClick={() => setStep(3)}>Proceed to Finalize <ArrowRight size={18} /></Button>
-                                                <Button variant="secondary" fullWidth onClick={() => setStep(1)}><ArrowLeft size={18} /> Back</Button>
+                                            <div className="step-actions-vertical" style={{ gridColumn: 'span 2', display: 'flex', gap: '12px', marginTop: '16px' }}>
+                                                <Button variant="primary" fullWidth onClick={() => setStep(3)}>Generate Final Report <ArrowRight size={14} /></Button>
+                                                <Button variant="secondary" onClick={() => setStep(1)}><ArrowLeft size={14} /></Button>
                                             </div>
                                         </div>
                                     </Card>
@@ -245,17 +258,19 @@ export default function EodPage() {
                         )}
 
                         {step === 3 && (
-                            <div className="finalize-wrapper animate-slide-up">
+                            <div className="finalize-wrapper animate-slide-up" style={{ maxWidth: '480px', margin: '0 auto' }}>
                                 <Card white>
                                     <div className="final-report-card">
-                                        <div className="final-header">
-                                            <div className="shield-icon"><ShieldCheck size={40} /></div>
-                                            <h2>Final Report</h2>
-                                            <p>All financial logs have been verified.</p>
+                                        <div className="final-header" style={{ textAlign: 'center', padding: '24px 0' }}>
+                                            <div className="shield-icon" style={{ width: '64px', height: '64px', margin: '0 auto 1.5rem', background: 'rgba(99, 102, 241, 0.08)', color: '#6366f1', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheck size={32} /></div>
+                                            <h2 style={{ fontSize: '22px', fontWeight: '950', color: '#1e293b' }}>Shift Secured</h2>
+                                            <p style={{ fontSize: '13.5px', color: '#64748b', lineHeight: '1.6' }}>Audit protocols are synchronized. Terminal will be locked upon transmission.</p>
                                         </div>
-                                        <div className="final-actions">
-                                            {!reportSent && <Button variant="primary" fullWidth size="lg" onClick={handleSendReportInit}>Send Report to Admin</Button>}
-                                            <Button variant="primary" fullWidth size="lg" onClick={handleCompleteEod} disabled={!reportSent} style={reportSent ? { background: '#ef4444' } : {}}>End shift</Button>
+                                        <div className="final-actions" style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
+                                            {!reportSent && <Button variant="primary" fullWidth onClick={handleSendReportInit}>Transmit Cloud Archive</Button>}
+                                            <Button variant="primary" fullWidth onClick={handleCompleteEod} disabled={!reportSent} style={reportSent ? { background: '#f43f5e', color: 'white' } : {}}>
+                                                {reportSent ? 'Terminate Session' : 'Awaiting Encryption'}
+                                            </Button>
                                         </div>
                                     </div>
                                 </Card>
@@ -270,9 +285,25 @@ export default function EodPage() {
                             <div className="history-grid">
                                 {reportsHistory.map(report => (
                                     <Card white key={report.id} className="history-report-card">
-                                        <div className="report-h-top"><div className={`status-tag ${report.status.toLowerCase()}`}>{report.status}</div></div>
+                                        <div className="report-h-top">
+                                            <div className="h-date">{new Date(report.startTime).toLocaleDateString()}</div>
+                                            <div className={`status-tag ${report.status.toLowerCase()}`}>{report.status}</div>
+                                        </div>
+                                        <div className="report-h-main">
+                                            <div className="h-metric">
+                                                <label>Total physical</label>
+                                                <span>LKR {report.actualCash.toLocaleString()}</span>
+                                            </div>
+                                            <div className="h-sub-info">
+                                                <span>{report.cashier}</span>
+                                                <span className={report.difference < 0 ? 'text-red-500' : 'text-green-500'}>
+                                                    Diff: LKR {report.difference.toLocaleString()}
+                                                </span>
+                                            </div>
+                                        </div>
                                         <div className="report-h-actions">
-                                            <button className="h-action-btn view-btn" onClick={() => setSelectedReport(report)}>View Details <ChevronRight size={14} /></button>
+                                            <button className="h-action-btn" onClick={() => downloadReport(report)}><Download size={14} /> Export</button>
+                                            <button className="h-action-btn view-btn" onClick={() => setSelectedReport(report)}>Audit details <ChevronRight size={14} /></button>
                                         </div>
                                     </Card>
                                 ))}
@@ -281,18 +312,85 @@ export default function EodPage() {
                     </div>
                 )}
             </div>
-            
+
             {selectedReport && (
                 <div className="report-modal-overlay">
                     <div className="report-modal-container animate-scale">
                         <div className="report-modal-header">
-                            <h3>Shift Reconciliation Report</h3>
-                            <button onClick={() => setSelectedReport(null)} className="close-modal-btn"><X size={20} /></button>
+                            <div>
+                                <h3 style={{ fontSize: '18px', fontWeight: '900', color: '#0f172a' }}>Audit Reconciliation</h3>
+                                <p style={{ fontSize: '12px', color: '#64748b', fontWeight: '500' }}>Terminal Session Report</p>
+                            </div>
+                            <div className="modal-actions">
+                                <button className="print-trigger-btn" onClick={() => window.print()}><Printer size={16} /> Print Audit</button>
+                                <button onClick={() => setSelectedReport(null)} className="close-modal-btn"><X size={20} /></button>
+                            </div>
                         </div>
                         <div className="report-print-paper" id="eod-printable-report">
                             <div className="p-report-header">
-                                <h2>Coupang Kmart Shift Report</h2>
-                                <div><strong>ID:</strong> {selectedReport.id}</div>
+                                <div className="p-brand">
+                                    <div className="p-logo">K</div>
+                                    <div>
+                                        <h2>Kmart Terminal POS</h2>
+                                        <p style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Session Audit Report</p>
+                                    </div>
+                                </div>
+                                <div className="p-meta">
+                                    <div><strong>Report ID:</strong> {selectedReport.id}</div>
+                                    <div><strong>Generated:</strong> {new Date().toLocaleString()}</div>
+                                </div>
+                            </div>
+                            <div className="p-divider"></div>
+                            <div className="p-info-grid">
+                                <div className="p-info-box">
+                                    <label>Session Context</label>
+                                    <p><strong>Cashier:</strong> {selectedReport.cashier}</p>
+                                    <p><strong>Register:</strong> {selectedReport.registerId || 'Register #01'}</p>
+                                </div>
+                                <div className="p-info-box" style={{ textAlign: 'right' }}>
+                                    <label>Timeline</label>
+                                    <p><strong>Started:</strong> {new Date(selectedReport.startTime).toLocaleString()}</p>
+                                    <p><strong>Closed:</strong> {new Date(selectedReport.endTime).toLocaleString()}</p>
+                                </div>
+                            </div>
+
+                            <div className="p-section">
+                                <h4>Financial Breakdown</h4>
+                                <table className="p-table">
+                                    <tbody>
+                                        <tr><td>Opening Balance</td><td style={{ textAlign: 'right' }}>LKR {selectedReport.openingBalance.toLocaleString()}</td></tr>
+                                        <tr><td>Total Sales</td><td style={{ textAlign: 'right' }}>LKR {selectedReport.metrics.sales.toLocaleString()}</td></tr>
+                                        <tr><td>Cash In/Out</td><td style={{ textAlign: 'right' }}>LKR {(selectedReport.metrics.cashIn - selectedReport.metrics.cashOut).toLocaleString()}</td></tr>
+                                        <tr className="p-expected-row"><td><strong>Expected Total</strong></td><td style={{ textAlign: 'right' }}><strong>LKR {selectedReport.expectedCash.toLocaleString()}</strong></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="p-section" style={{ marginTop: '2rem' }}>
+                                <h4>Physical Verification</h4>
+                                <div className="p-denoms-grid">
+                                    {Object.entries(selectedReport.denominations).map(([val, count]) => (
+                                        <div key={val} className="p-denom-row">
+                                            <span>LKR {val}</span>
+                                            <span>x {count}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="p-actual-row">
+                                    <strong>Actual Counted Total</strong>
+                                    <strong>LKR {selectedReport.actualCash.toLocaleString()}</strong>
+                                </div>
+                            </div>
+
+                            <div className={`p-diff-box ${selectedReport.difference === 0 ? 'p-balanced' : 'p-mismatch'}`}>
+                                <div style={{ fontSize: '12px', fontWeight: '800', textTransform: 'uppercase', marginBottom: '8px' }}>Reconciliation Difference</div>
+                                <div className="p-diff-val">LKR {selectedReport.difference.toLocaleString()}</div>
+                                <div style={{ fontWeight: '700' }}>{selectedReport.difference === 0 ? '✓ Audit Verified' : '⚠ Audit Discrepancy'}</div>
+                            </div>
+
+                            <div className="p-footer-sigs">
+                                <div><div className="p-sig-line"></div><label style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: '800', color: '#94a3b8' }}>Cashier Signature</label></div>
+                                <div><div className="p-sig-line"></div><label style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: '800', color: '#94a3b8' }}>Manager Approval</label></div>
                             </div>
                         </div>
                     </div>

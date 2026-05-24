@@ -31,15 +31,22 @@ export default function CartSidebar({
 
   return (
     <aside className="cart-sidebar-premium" aria-label="Cart Sidebar">
-      <div className="cart-header-premium">
-        <h3>Current Order</h3>
-        <span className="cart-count">{totalItemCount} Items</span>
-      </div>
-
       <div className="cart-bill-container">
-        <div className="bill-header">
-          <span>Item Description</span>
-          <span>Price</span>
+        {/* Customer & Order Context Area */}
+        <div className="qb-context-section">
+          <div className="qb-customer-context">
+            <div className="qb-context-icon"><User size={18} /></div>
+            <div className="qb-context-info">
+              <span className="qb-context-label">Walk-in Customer</span>
+              <span className="qb-context-sub">Select or search customer...</span>
+            </div>
+            <ChevronRight size={16} className="qb-context-arrow" />
+          </div>
+
+          <div className="qb-order-meta">
+            <span className="qb-order-badge">ORD-77492</span>
+            <span className="qb-time-badge">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
         </div>
 
         <div className="cart-items-container">
@@ -51,45 +58,46 @@ export default function CartSidebar({
           ) : (
             <>
               {cart.map((item) => (
-                <div key={item.id} className="cart-item-bill-premium">
-                  <div className="bill-item-main">
-                    <div className="bill-item-visual">
-                      {item.image_urls && item.image_urls.length > 0 ? (
-                        <img
-                          src={`http://localhost:5000${item.image_urls[0]}`}
-                          alt={item.name}
-                          className="bill-item-img"
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                            e.target.parentElement.innerHTML = `<div class="bill-item-emoji-box"><span>${item.image || '📦'}</span></div>`;
-                          }}
-                        />
-                      ) : (
-                        <div className="bill-item-emoji-box">
-                          <span>{item.image || '📦'}</span>
-                        </div>
-                      )}
+                <div key={item.id} className="quickbill-item-card">
+                  <div className="qb-item-visual">
+                    {item.image_urls && item.image_urls.length > 0 ? (
+                      <img
+                        src={`http://localhost:5000${item.image_urls[0]}`}
+                        alt={item.name}
+                        className="qb-item-img"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentElement.innerHTML = `<div class="qb-emoji-box"><span>${item.image || '📦'}</span></div>`;
+                        }}
+                      />
+                    ) : (
+                      <div className="qb-emoji-box">
+                        <span>{item.image || '📦'}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="qb-item-details">
+                    <span className="qb-item-name">{item.name}</span>
+                    <div className="qb-item-meta">
+                      {item.sku && <span className="qb-meta-tag">SKU: {item.sku}</span>}
+                      <span className="qb-unit-price">LKR {item.price.toLocaleString()}</span>
                     </div>
-                    <div className="bill-item-details">
-                      <div className="bill-item-title">
-                        <div className="bill-name-wrapper">
-                          <span className="bill-name">{item.name}</span>
-                          <small className="bill-unit-price">@ LKR {item.price.toLocaleString()}</small>
-                        </div>
-                      </div>
+                  </div>
+
+                  <div className="qb-item-actions">
+                    <div className="qb-action-header">
+                      <span className="qb-total-label">Total:</span>
+                      <span className="qb-line-total">LKR {(item.price * item.qty).toLocaleString()}</span>
                     </div>
-                    
-                    <div className="bill-item-controls">
-                      <div className="qty-control-mini">
-                        <button onClick={() => updateQty(item.id, -1)} type="button"><Minus size={10} /></button>
-                        <span className="qty-val-mini">{item.qty}</span>
-                        <button onClick={() => updateQty(item.id, 1)} type="button"><Plus size={10} /></button>
+                    <div className="qb-action-controls">
+                      <div className="qb-qty-stepper">
+                        <button type="button" onClick={() => updateQty(item.id, -1)} disabled={item.qty <= 1}><Minus size={12} /></button>
+                        <span className="qb-qty-val">{item.qty.toString().padStart(2, '0')}</span>
+                        <button type="button" onClick={() => updateQty(item.id, 1)}><Plus size={12} /></button>
                       </div>
-                      <div className="bill-item-price">
-                        LKR {(item.price * item.qty).toLocaleString()}
-                      </div>
-                      <button className="remove-item-mini" onClick={() => removeFromCart(item.id)} type="button">
-                        <Trash2 size={12} />
+                      <button className="qb-remove-btn" onClick={() => removeFromCart(item.id)} type="button">
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </div>
@@ -97,88 +105,53 @@ export default function CartSidebar({
               ))}
 
               {/* Calculation area and Final Action */}
-              <div className="cart-scroll-summary">
-                <div className="summary-row subtotal-row">
-                  <span>Subtotal</span>
-                  <span>LKR {subtotal.toLocaleString()}</span>
-                </div>
-
-                <div className="discount-section-enhanced">
-                  <div className="discount-header">
-                    <div className="discount-icon-badge">
-                      <span>%</span>
-                    </div>
-                    <div>
-                      <h4>Apply Discount</h4>
-                      <p className="discount-subtitle">Offer a special discount to your customer</p>
-                    </div>
-                  </div>
-
-                  <div className="discount-input-wrapper">
-                    <div className="input-area">
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={discountPercent}
-                        onChange={(e) => setDiscountPercent(Number(e.target.value))}
-                        className="discount-input-premium"
-                        placeholder="0"
-                      />
-                      <span className="discount-percent-sign">%</span>
-                    </div>
-                    <div className="stepper-buttons">
-                      <button 
-                        type="button" 
-                        className="discount-stepper up"
-                        onClick={() => setDiscountPercent(prev => Math.min(100, prev + 1))}
-                      >
-                        <ChevronUp size={12} />
+              <div className="quickbill-summary-console">
+                <div className="qb-discount-section">
+                  <p className="qb-discount-label">Apply Promo / Discount (%)</p>
+                  <div className="qb-discount-input-box">
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={discountPercent}
+                      onChange={(e) => setDiscountPercent(Number(e.target.value))}
+                      placeholder="0"
+                    />
+                    <div className="qb-discount-steppers">
+                      <button type="button" onClick={() => setDiscountPercent(prev => Math.min(100, prev + 1))}>
+                        <ChevronUp size={14} />
                       </button>
-                      <button 
-                        type="button" 
-                        className="discount-stepper down"
-                        onClick={() => setDiscountPercent(prev => Math.max(0, prev - 1))}
-                      >
-                        <ChevronDown size={12} />
+                      <button type="button" onClick={() => setDiscountPercent(prev => Math.max(0, prev - 1))}>
+                        <ChevronDown size={14} />
                       </button>
                     </div>
                   </div>
-
-                  {discountPercent > 0 && (
-                    <div className="discount-preview">
-                      <span className="discount-label">
-                        <Tag size={14} />
-                        Discount
-                      </span>
-                      <span className="discount-amount">- LKR {discountAmount.toLocaleString()}</span>
-                    </div>
-                  )}
                 </div>
 
-                {tax > 0 && (
-                  <div className="summary-row">
-                    <span>Estimated Tax</span>
-                    <span>LKR {tax.toLocaleString()}</span>
+                <div className="qb-summary-details">
+                  <div className="qb-summary-row">
+                    <span>Sub Total</span>
+                    <span>LKR {subtotal.toLocaleString()}</span>
                   </div>
-                )}
-
-                <div className="summary-divider"></div>
-
-                <div className="total-payable-small">
-                  <span>Total Payable</span>
-                  <span>LKR {finalTotal.toLocaleString()}</span>
+                  <div className="qb-summary-row">
+                    <span>Discount</span>
+                    <span className="qb-highlight-text">{discountPercent}%</span>
+                  </div>
+                  <div className="qb-summary-divider"></div>
+                  <div className="qb-summary-row qb-total-row">
+                    <span>Total Amount</span>
+                    <span className="qb-total-amount">LKR {finalTotal.toLocaleString()}</span>
+                  </div>
                 </div>
 
-                <Button
-                  fullWidth
-                  size="md"
+                <button
+                  className="qb-place-order-btn"
                   onClick={handleCheckout}
                   disabled={cart.length === 0}
-                  className="checkout-btn"
                 >
-                  Complete Order
-                </Button>
+                  <CheckCircle size={20} className="qb-btn-icon" />
+                  <span>Place Order</span>
+                </button>
               </div>
             </>
           )}
