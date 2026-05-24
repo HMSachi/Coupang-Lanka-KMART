@@ -147,9 +147,9 @@
 
 .methods-selector-grid button.active {
     background: #eff6ff;
-    border-color: #3b82f6;
-    color: #3b82f6;
-    box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.15);
+    border-color: var(--brand, #e21e26);
+    color: var(--brand, #e21e26);
+    box-shadow: 0 4px 12px -2px rgba(226, 30, 38, 0.15);
 }
 
 .methods-selector-grid button span {
@@ -195,7 +195,7 @@
 }
 
 .entry-field input:focus {
-    border-color: #3b82f6;
+    border-color: var(--brand, #e21e26);
 }
 
 .change-display {
@@ -223,7 +223,7 @@
 }
 
 .add-payment-btn:hover {
-    background: #3b82f6;
+    background: var(--brand, #e21e26);
     color: white;
 }
 
@@ -359,8 +359,8 @@
 
 .action-btn-p:hover {
     background: #f8fafc;
-    border-color: #3b82f6;
-    color: #3b82f6;
+    border-color: var(--brand, #e21e26);
+    color: var(--brand, #e21e26);
 }
 
 .action-btn-p.whatsapp:hover {
@@ -372,7 +372,7 @@
     margin-top: 8px;
     padding: 12px;
     border-radius: 5px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--brand, #e21e26) 0%, var(--brand-dark, #b91c1c) 100%);
     color: white;
     border: none;
     font-weight: 650;
@@ -382,7 +382,7 @@
     justify-content: center;
     gap: 10px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 4px 12px rgba(226, 30, 38, 0.2);
 }
 
 .invoice-preview-card {

@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { Search } from 'lucide-react';
 import POSLayout from '../../../layouts/POSLayout';
 import CategoryTabs from '../components/CategoryTabs';
 import ProductGrid from '../components/ProductGrid';
 import CartSidebar from '../components/CartSidebar';
 import ProductDetailModal from '../components/ProductDetailModal';
 import '../styles/cashier.css';
+import '../styles/cashier-dashboard.css';
 
 // Removed static dummy data as per request - will fetch dynamically in the future
 // import { CATEGORIES, DUMMY_PRODUCTS } from '../../../services/dummyData';
 
 import { useNavigate } from 'react-router-dom';
-import '../styles/cashier.css';
 
 export default function CashierDashboard() {
   const navigate = useNavigate();
@@ -229,7 +230,7 @@ export default function CashierDashboard() {
 
   return (
     <POSLayout>
-      <div className="pos-dashboard-full" style={{ padding: '24px', backgroundColor: '#f8fafc', height: '100%', overflowY: 'auto' }}>
+      <div className="pos-dashboard-full">
 
         {/* Dashboard Overview Section */}
         <div style={{ marginBottom: '24px' }}>
@@ -308,15 +309,16 @@ export default function CashierDashboard() {
         <div className="pos-search-wrapper" style={{ marginTop: '24px' }}>
           <div className="pos-search-glow"></div>
           <div className="pos-search-inner">
+            <Search className="pos-search-icon" size={20} strokeWidth={2.25} aria-hidden="true" />
             <input
               type="text"
               placeholder="Scan Barcode or Search Product (F1)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pos-search-input"
-              style={{ fontSize: '14px', padding: '14px 20px 14px 44px' }}
+              aria-label="Search products"
             />
-            <svg className="pos-search-icon" style={{ width: '18px', height: '18px', left: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <div className="pos-search-glow" aria-hidden="true" />
           </div>
         </div>
 
