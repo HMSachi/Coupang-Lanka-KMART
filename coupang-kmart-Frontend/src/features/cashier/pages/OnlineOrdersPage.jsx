@@ -107,15 +107,38 @@ const OnlineOrdersPage = () => {
     return (
         <POSLayout>
             <div className="online-orders-container">
-                {/* Header Section Removed - Handled by POSLayout */}
+                {/* Enhanced Header Section */}
+                <div className="orders-section-header">
+                    <div className="header-content">
+                        <div className="header-badge">
+                            <ShoppingCart size={24} />
+                        </div>
+                        <div className="header-text">
+                            <h2 className="section-title">Online Orders Management</h2>
+                            <p className="section-subtitle">Track and manage web-originated orders in real-time</p>
+                        </div>
+                        <div className="header-stats">
+                            <div className="stat-item">
+                                <span className="stat-number">{orders.length}</span>
+                                <span className="stat-label">Total Orders</span>
+                            </div>
+                            <div className="stat-divider"></div>
+                            <div className="stat-item">
+                                <span className="stat-number">{orders.filter(o => o.status === 'PENDING').length}</span>
+                                <span className="stat-label">Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                {/* Enhanced Controls Bar */}
                 <div className="orders-header-actions-bar">
                     <div className="header-actions">
                         <div className="search-box">
                             <Search className="search-icon" size={18} />
                             <input
                                 type="text"
-                                placeholder="Order ID or Customer..."
+                                placeholder="Search by Order ID or Customer name..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -136,7 +159,7 @@ const OnlineOrdersPage = () => {
                             </select>
                         </div>
                         <button className="refresh-btn" onClick={fetchOrders}>
-                            🔄 Refresh List
+                            <span className="refresh-icon">🔄</span> Refresh List
                         </button>
                     </div>
                 </div>

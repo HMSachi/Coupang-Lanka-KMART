@@ -38,12 +38,18 @@
 }
 
 .payment-card {
-    background: white;
-    border: 1px solid #f1f5f9;
-    border-radius: 5px;
-    padding: 0.75rem;
-    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.02);
-    margin-bottom: 0.75rem;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 16px;
+    padding: 1rem 1.15rem;
+    box-shadow: 0 12px 32px -12px rgba(15, 23, 42, 0.1);
+    margin-bottom: 0.85rem;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.payment-card:hover {
+    box-shadow: 0 16px 40px -14px rgba(226, 30, 38, 0.1);
 }
 
 .summary-card {
@@ -146,9 +152,9 @@
 
 .methods-selector-grid button.active {
     background: #eff6ff;
-    border-color: #3b82f6;
-    color: #3b82f6;
-    box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.15);
+    border-color: var(--brand, #e21e26);
+    color: var(--brand, #e21e26);
+    box-shadow: 0 4px 12px -2px rgba(226, 30, 38, 0.15);
 }
 
 .methods-selector-grid button span {
@@ -194,7 +200,7 @@
 }
 
 .entry-field input:focus {
-    border-color: #3b82f6;
+    border-color: var(--brand, #e21e26);
 }
 
 .change-display {
@@ -211,8 +217,8 @@
     margin-top: 1rem;
     padding: 10px;
     background: white;
-    border: 1.5px solid #3b82f6;
-    color: #3b82f6;
+    border: 1.5px solid var(--brand, #e21e26);
+    color: var(--brand, #e21e26);
     border-radius: 8px;
     font-weight: 700;
     font-size: 0.85rem;
@@ -221,7 +227,7 @@
 }
 
 .add-payment-btn:hover {
-    background: #3b82f6;
+    background: var(--brand, #e21e26);
     color: white;
 }
 
@@ -356,8 +362,8 @@
 
 .action-btn-p:hover {
     background: #f8fafc;
-    border-color: #3b82f6;
-    color: #3b82f6;
+    border-color: var(--brand, #e21e26);
+    color: var(--brand, #e21e26);
 }
 
 .action-btn-p.whatsapp:hover {
@@ -369,7 +375,7 @@
     margin-top: 8px;
     padding: 12px;
     border-radius: 5px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--brand, #e21e26) 0%, var(--brand-dark, #b91c1c) 100%);
     color: white;
     border: none;
     font-weight: 800;
@@ -379,7 +385,7 @@
     justify-content: center;
     gap: 10px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 4px 12px rgba(226, 30, 38, 0.2);
 }
 
 .invoice-preview-card {

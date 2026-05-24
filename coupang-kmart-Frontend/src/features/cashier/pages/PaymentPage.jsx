@@ -42,10 +42,20 @@ export default function PaymentPage() {
         }
     }, [navigate]);
 
+    const calcCashChange = (received, amountDue) => {
+        const tendered = Number(received) || 0;
+        const due = Number(amountDue) || 0;
+        const applied = Math.min(tendered, due);
+        return Math.max(0, tendered - applied);
+    };
+
     const handleAddPayment = () => {
         let amt = 0;
+        let change = 0;
         if (selectedMethod === 'cash') {
-            amt = Math.min(Number(cashReceived), remainingBalance);
+            const received = Number(cashReceived) || 0;
+            amt = Math.min(received, remainingBalance);
+            change = calcCashChange(received, remainingBalance);
             if (amt <= 0) return;
         } else {
             amt = Number(paymentAmount) || 0;
@@ -56,7 +66,8 @@ export default function PaymentPage() {
             id: Date.now(),
             method: selectedMethod,
             amount: amt,
-            received: selectedMethod === 'cash' ? Number(cashReceived) : amt
+            received: selectedMethod === 'cash' ? Number(cashReceived) : amt,
+            change: selectedMethod === 'cash' ? change : 0,
         };
 
         setAppliedPayments([...appliedPayments, newPayment]);
@@ -176,7 +187,12 @@ export default function PaymentPage() {
         }
     };
 
-    const changeDue = Math.max(0, Number(cashReceived) - remainingBalance);
+    const cashTendered = Number(cashReceived) || 0;
+    const lastCashPayment = [...appliedPayments].reverse().find((p) => p.method === 'cash');
+    const changeDue =
+        remainingBalance > 0 && cashTendered > 0
+            ? calcCashChange(cashTendered, remainingBalance)
+            : lastCashPayment?.change ?? calcCashChange(lastCashPayment?.received, lastCashPayment?.amount);
 
     if (isSuccess) {
         return (

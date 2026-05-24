@@ -5,7 +5,6 @@ import { ArrowLeft, Clock, ShoppingCart, Plus, Edit2, Play } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
 
 export default function PosCartPage() {
-  const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [heldOrders, setHeldOrders] = useState([]);
@@ -176,6 +175,18 @@ export default function PosCartPage() {
   return (
     <POSLayout>
       <div className="pos-cart-page-container">
+        <div className="cart-page-content">
+          <CartSidebar
+            cart={cart}
+            updateQty={updateQty}
+            removeFromCart={removeFromCart}
+            subtotal={subtotal}
+            tax={tax}
+            total={total}
+            discountPercent={discountPercent}
+            setDiscountPercent={setDiscountPercent}
+            discountCollapsible
+          />
         <div className="cart-page-header">
           <div style={{ display: 'flex', gap: '12px' }}>
             <button className="header-btn secondary" onClick={() => navigate('/pos')}>
@@ -559,7 +570,7 @@ export default function PosCartPage() {
           box-shadow: none;
           border: none;
           overflow: visible;
-          margin-top: 1.5rem;
+          margin-top: 0;
           display: flex;
           flex-direction: column;
           gap: 24px;
