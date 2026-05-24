@@ -16,18 +16,20 @@
 }
 
 .cart-header-premium h3 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
 }
 
 .cart-count {
-    background: var(--bg-1);
-    color: var(--brand);
+    background: #fff1f2;
+    color: #c81723;
+    border: 1px solid #fecdd3;
     padding: 0.25rem 0.75rem;
     border-radius: 999px;
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .cart-items-container {
@@ -150,10 +152,10 @@
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
     height: 48px !important;
     font-size: 0.95rem !important;
-    font-weight: 700 !important;
+    font-weight: 650 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
+    box-shadow: 0 10px 20px -14px rgba(37, 99, 235, 0.5) !important;
     transition: all 0.3s ease !important;
     border-radius: 12px !important;
     margin-top: 0.5rem !important;
@@ -161,7 +163,7 @@
 
 .checkout-btn:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 12px 25px -4px rgba(59, 130, 246, 0.5) !important;
+    box-shadow: 0 14px 28px -16px rgba(37, 99, 235, 0.6) !important;
     background: #2563eb !important;
 }
 
@@ -196,7 +198,7 @@
     justify-content: space-between;
     align-items: center;
     font-size: 0.825rem;
-    color: var(--brand);
+    color: #1d4ed8;
     font-weight: 600;
 }
 
@@ -207,7 +209,7 @@
     border-radius: 4px;
     font-size: 0.8rem;
     text-align: right;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .discount-row {
@@ -368,7 +370,7 @@
 .total-payable-small {
     background: #f8fafc;
     padding: 0.65rem 1rem;
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -377,26 +379,26 @@
 }
 
 .total-payable-small span:first-child {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
     color: #64748b;
 }
 
 .total-payable-small span:last-child {
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: #1e293b;
+    font-size: 1rem;
+    font-weight: 650;
+    color: #1f2937;
 }
 
 .checkout-btn {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
     height: 44px !important;
     font-size: 0.875rem !important;
-    font-weight: 700 !important;
+    font-weight: 650 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
-    border-radius: 10px !important;
+    box-shadow: 0 10px 20px -14px rgba(37, 99, 235, 0.5) !important;
+    border-radius: 8px !important;
     border: none !important;
 }
 
@@ -411,7 +413,7 @@
 .cart-item-bill-premium {
     padding: 0.4rem 0.75rem;
     background: #f8fafc;
-    border-radius: 12px;
+    border-radius: 10px;
     margin-bottom: 0.4rem;
     border: 1px solid #f1f5f9;
     transition: all 0.2s ease;
@@ -419,14 +421,14 @@
 
 .cart-item-bill-premium:hover {
     background: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border-color: #3b82f6;
+    box-shadow: 0 10px 20px -16px rgba(229, 31, 42, 0.24);
+    border-color: #fecdd3;
 }
 
 .bill-item-visual {
     width: 50px;
     height: 50px;
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     background: white;
     flex-shrink: 0;
@@ -464,14 +466,14 @@
 }
 
 .bill-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #1e293b;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1f2937;
 }
 
 .bill-qty {
-    color: #3b82f6;
-    font-weight: 800;
+    color: #1d4ed8;
+    font-weight: 600;
     margin-right: 8px;
 }
 
@@ -482,9 +484,9 @@
 }
 
 .bill-item-price {
-    font-weight: 800;
-    color: #1e293b;
-    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.9rem;
 }
 
 .bill-item-right {
@@ -513,17 +515,17 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #3b82f6;
+    color: #1d4ed8;
     transition: all 0.2s;
 }
 
 .qty-control-mini button:hover {
-    background: #3b82f6;
+    background: #2563eb;
     color: white;
 }
 
 .qty-val-mini {
-    font-weight: 700;
+    font-weight: 600;
     font-size: 0.9rem;
     min-width: 20px;
     text-align: center;
@@ -531,7 +533,7 @@
 
 .remove-item-mini {
     background: #fff1f2;
-    color: #e11d48;
+    color: #c81723;
     border: none;
     width: 32px;
     height: 32px;
@@ -544,6 +546,6 @@
 }
 
 .remove-item-mini:hover {
-    background: #e11d48;
+    background: #c81723;
     color: white;
 }

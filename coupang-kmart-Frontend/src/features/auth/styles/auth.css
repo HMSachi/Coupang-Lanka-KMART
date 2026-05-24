@@ -3,35 +3,127 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-1);
+    /* Dark, brand-forward backdrop for login */
+    background: #0b1220;
     position: relative;
     overflow: hidden;
     padding: 2rem;
+
+    /* Local theme tokens for this screen */
+    --text-primary: #e5e7eb;
+    --text-muted: rgba(226, 232, 240, 0.78);
+    --bg-0: rgba(2, 6, 23, 0.35);
+    --border: rgba(148, 163, 184, 0.22);
+    --brand: #2563eb;
+    --brand-light: #60a5fa;
+    --danger: #ef4444;
+
+    /* Shared component tokens used by Card/Input/Button */
+    --surface: rgba(15, 23, 42, 0.62);
+    --glass-bg: rgba(15, 23, 42, 0.52);
+    --glass-border: rgba(148, 163, 184, 0.22);
+    --glass-blur: blur(18px);
+    --radius-xl: 18px;
+    --radius-md: 12px;
+    --shadow-premium: 0 26px 60px -46px rgba(0, 0, 0, 0.95);
 }
 
-.login-bg-shapes .shape {
+.login-bg-anim {
     position: absolute;
-    filter: blur(80px);
+    inset: 0;
     z-index: 0;
-    opacity: 0.4;
+    pointer-events: none;
 }
 
-.shape-1 {
-    width: 400px;
-    height: 400px;
-    background: var(--brand);
-    top: -100px;
-    left: -100px;
-    border-radius: 50%;
+/* Animated, brand-colored background (no logo as a wallpaper). */
+.login-anim-layer {
+    position: absolute;
+    inset: -40%;
+    opacity: 0.22;
+    filter: blur(40px);
+    transform: translate3d(0, 0, 0);
 }
 
-.shape-2 {
-    width: 300px;
-    height: 300px;
-    background: var(--brand-light);
-    bottom: -50px;
-    right: -50px;
-    border-radius: 50%;
+.login-anim-layer.layer-a {
+    background:
+        radial-gradient(900px 480px at 15% 25%, rgba(37, 99, 235, 0.55) 0%, transparent 58%),
+        radial-gradient(800px 520px at 85% 80%, rgba(96, 165, 250, 0.35) 0%, transparent 60%),
+        radial-gradient(900px 700px at 50% 50%, rgba(2, 6, 23, 0.85) 0%, rgba(2, 6, 23, 0.85) 38%, transparent 70%);
+    animation: loginDriftA 16s ease-in-out infinite;
+}
+
+/* Soft moving line-field on top of the gradient layer (logo colors only). */
+.login-line-field {
+    position: absolute;
+    inset: 0;
+    opacity: 0.6;
+}
+
+.login-line {
+    position: absolute;
+    left: -20%;
+    width: 140%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, rgba(96, 165, 250, 0.30) 30%, rgba(37, 99, 235, 0.18) 70%, transparent 100%);
+    filter: blur(0.2px);
+    transform: rotate(-12deg);
+}
+
+.login-line.l1 { top: 18%; animation: loginLineA 9s linear infinite; opacity: 0.55; }
+.login-line.l2 { top: 34%; animation: loginLineB 12s linear infinite; opacity: 0.35; }
+.login-line.l3 { top: 52%; animation: loginLineA 15s linear infinite; opacity: 0.40; height: 3px; }
+.login-line.l4 { top: 68%; animation: loginLineC 11s linear infinite; opacity: 0.30; }
+.login-line.l5 { top: 82%; animation: loginLineB 18s linear infinite; opacity: 0.25; }
+
+@keyframes loginLineA {
+    0% { transform: translate3d(-6%, 0, 0) rotate(-12deg); }
+    100% { transform: translate3d(6%, 0, 0) rotate(-12deg); }
+}
+
+@keyframes loginLineB {
+    0% { transform: translate3d(8%, 0, 0) rotate(-12deg); }
+    100% { transform: translate3d(-8%, 0, 0) rotate(-12deg); }
+}
+
+@keyframes loginLineC {
+    0% { transform: translate3d(-10%, 0, 0) rotate(-12deg); }
+    100% { transform: translate3d(10%, 0, 0) rotate(-12deg); }
+}
+
+@keyframes loginDriftA {
+    0% { transform: translate3d(-2%, -2%, 0) scale(1); }
+    50% { transform: translate3d(2%, 3%, 0) scale(1.04); }
+    100% { transform: translate3d(-2%, -2%, 0) scale(1); }
+}
+
+@keyframes loginSweep {
+    0% { transform: translate3d(-6%, -4%, 0) rotate(0.001deg); }
+    100% { transform: translate3d(6%, 4%, 0) rotate(0.001deg); }
+}
+
+.brand-logo-top {
+    width: 86px;
+    height: 86px;
+    margin: 0 auto 1.25rem;
+    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.40);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    box-shadow: 0 24px 60px -46px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+    transform: translate3d(0, 0, 0);
+    animation: loginLogoPulse 5.5s ease-in-out infinite;
+}
+
+.brand-logo-top img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+@keyframes loginLogoPulse {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(0, -2px, 0) scale(1.02); }
 }
 
 .login-content {
@@ -51,13 +143,23 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: rgba(37, 99, 235, 0.1);
-    color: var(--brand);
+    background: rgba(37, 99, 235, 0.18);
+    color: #bfdbfe;
     border-radius: 999px;
     font-size: 0.825rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    border: 1px solid rgba(37, 99, 235, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.28);
+}
+
+/* Make the login card feel premium on dark */
+.login-form-card.card-custom.card-glass {
+    box-shadow: 0 30px 80px -60px rgba(0, 0, 0, 0.98);
+    border-color: rgba(148, 163, 184, 0.18);
+}
+
+.login-form-card .card-content {
+    padding: 0;
 }
 
 .brand-section h1 {
@@ -69,12 +171,6 @@
 
 .brand-section h1 span {
     color: var(--brand);
-}
-
-.brand-section p {
-    color: var(--text-muted);
-    margin-top: 0.5rem;
-    font-size: 1rem;
 }
 
 .form-inner {
@@ -133,7 +229,7 @@
 
 .form-footer {
     padding: 1.25rem;
-    background: var(--bg-0);
+    background: rgba(2, 6, 23, 0.35);
     border-top: 1px solid var(--border);
     text-align: center;
 }
@@ -152,8 +248,18 @@
     left: var(--mx, 50%);
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.12) 0%, transparent 70%);
     transform: translate(-50%, -50%);
     z-index: 1;
     pointer-events: none;
+}
+
+/* Dark-surface inputs: avoid turning white on focus */
+.login-container-new .input-wrapper:focus-within {
+    background: rgba(15, 23, 42, 0.78);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.login-container-new .input-field::placeholder {
+    color: rgba(148, 163, 184, 0.75);
 }

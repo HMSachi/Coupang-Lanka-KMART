@@ -189,6 +189,43 @@ export default function CashierDashboard() {
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const total = subtotal;
   const tax = 0;
+  const drawerStatCardStyle = {
+    background: 'linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)',
+    padding: '16px',
+    borderRadius: '8px',
+    border: '1px solid #d8e1ec',
+    boxShadow: '0 2px 7px rgba(15, 23, 42, 0.04)',
+    minHeight: '96px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  };
+  const drawerLabelStyle = {
+    fontSize: '11px',
+    fontWeight: '700',
+    color: '#64748b',
+    marginBottom: '8px',
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase'
+  };
+  const drawerValueStyle = {
+    fontSize: '17px',
+    fontWeight: '650',
+    color: '#1f2937',
+    lineHeight: 1.35
+  };
+  const drawerChipStyle = {
+    alignSelf: 'flex-start',
+    background: '#fff1f2',
+    border: '1px solid #fecdd3',
+    borderRadius: '999px',
+    color: '#991b1b',
+    fontSize: '10px',
+    fontWeight: '700',
+    letterSpacing: '0.04em',
+    padding: '3px 8px',
+    textTransform: 'uppercase'
+  };
 
   return (
     <POSLayout>
@@ -198,154 +235,77 @@ export default function CashierDashboard() {
         <div style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
             <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', margin: 0 }}>Dashboard Overview</h1>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#dcfce7', color: '#166534', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
               <span style={{ width: '6px', height: '6px', background: '#16a34a', borderRadius: '50%', display: 'inline-block' }}></span>
               SYSTEM ONLINE
             </span>
           </div>
 
-          <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '16px', padding: '32px', color: 'white', marginBottom: '24px', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2)' }}>
-            <div style={{ position: 'absolute', top: 0, right: 0, padding: '20px', opacity: 0.1 }}>
-              <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z" /></svg>
-            </div>
+          <div style={{ background: '#ffffff', borderRadius: '10px', padding: '28px', color: '#111827', marginBottom: '24px', border: '1px solid #dbe3ee', boxShadow: '0 8px 20px rgba(15, 23, 42, 0.07)' }}>
             <div style={{ position: 'relative', zIndex: 1 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '24px', paddingBottom: '22px', borderBottom: '1px solid #e5eaf1' }}>
                 <div>
-                  <h2 style={{ fontSize: '24px', fontWeight: '800', margin: '0 0 4px 0' }}>Live Cash Drawer Tracker</h2>
-                  <p style={{ fontSize: '14px', color: '#94a3b8', margin: '0 0 24px 0' }}>Real-time monitoring of all financial movements in this session</p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '4px' }}>Expected Cash</div>
-                  <div style={{ fontSize: '32px', fontWeight: '900', color: '#10b981' }}>Rs. {drawerMetrics.expectedCash.toLocaleString()}</div>
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px', marginTop: '12px' }}>
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', marginBottom: '8px' }}>OPENING</div>
-                  <div style={{ fontSize: '16px', fontWeight: '700' }}>Rs. {drawerMetrics.openingBalance.toLocaleString()}</div>
-                </div>
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', marginBottom: '8px' }}>CASH SALES</div>
-                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#10b981' }}>+Rs. {drawerMetrics.cashSales.toLocaleString()}</div>
-                </div>
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', marginBottom: '8px' }}>CARD SALES</div>
-                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#3b82f6' }}>Rs. {drawerMetrics.cardSales.toLocaleString()}</div>
-                </div>
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', marginBottom: '8px' }}>CASH IN / OUT</div>
-                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#f59e0b' }}>
-                    {drawerMetrics.cashIn > 0 ? `+${drawerMetrics.cashIn}` : ''}
-                    {drawerMetrics.cashOut > 0 ? ` -${drawerMetrics.cashOut}` : ''}
-                    {drawerMetrics.cashIn === 0 && drawerMetrics.cashOut === 0 ? 'Rs. 0' : ''}
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '999px', color: '#1d4ed8', fontSize: '11px', fontWeight: '700', letterSpacing: '0.04em', padding: '5px 10px', textTransform: 'uppercase', marginBottom: '10px' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2563eb', display: 'inline-block' }}></span>
+                    Current Shift
                   </div>
+                  <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 6px 0', color: '#111827' }}>Live Cash Drawer Tracker</h2>
+                  <p style={{ fontSize: '14px', color: '#64748b', margin: 0 }}>Real-time financial summary for the current cashier session</p>
                 </div>
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', marginBottom: '8px' }}>REFUNDS</div>
-                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#ef4444' }}>-Rs. {drawerMetrics.refunds.toLocaleString()}</div>
+                <div style={{ textAlign: 'right', background: '#fffafa', border: '1px solid #fecdd3', borderRadius: '8px', padding: '14px 18px', minWidth: '220px', boxShadow: 'inset 3px 0 0 #e51f2a' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>Expected Cash</div>
+                  <div style={{ fontSize: '27px', fontWeight: '650', color: '#1f2937', lineHeight: 1.15 }}>Rs. {drawerMetrics.expectedCash.toLocaleString()}</div>
                 </div>
               </div>
 
-              <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ fontSize: '12px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ background: '#334155', padding: '2px 8px', borderRadius: '4px', color: '#e2e8f0' }}>Formula</span>
-                  <span>Expected = Opening + Cash Sales + Cash In - Refunds - Cash Out</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '16px', marginTop: '22px' }}>
+                <div style={drawerStatCardStyle}>
+                  <div>
+                    <div style={drawerLabelStyle}>Opening</div>
+                    <div style={drawerValueStyle}>Rs. {drawerMetrics.openingBalance.toLocaleString()}</div>
+                  </div>
+                  <span style={drawerChipStyle}>Session Start</span>
                 </div>
-
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button
-                    onClick={() => {
-                      const amount = prompt('Enter Cash IN amount:');
-                      if (amount && !isNaN(amount)) {
-                        const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
-                        logs.push({ type: 'CASH_IN', amount: parseFloat(amount), timestamp: new Date().toISOString(), desc: 'Manual Cash In' });
-                        localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
-                        window.location.reload();
-                      }
-                    }}
-                    style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', color: '#10b981', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
-                  >
-                    + Cash In
-                  </button>
-                  <button
-                    onClick={() => {
-                      const amount = prompt('Enter Cash OUT amount:');
-                      if (amount && !isNaN(amount)) {
-                        const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
-                        logs.push({ type: 'CASH_OUT', amount: parseFloat(amount), timestamp: new Date().toISOString(), desc: 'Manual Cash Out' });
-                        localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
-                        window.location.reload();
-                      }
-                    }}
-                    style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#ef4444', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
-                  >
-                    - Cash Out
-                  </button>
+                <div style={drawerStatCardStyle}>
+                  <div>
+                    <div style={drawerLabelStyle}>Cash Sales</div>
+                    <div style={drawerValueStyle}>Rs. {drawerMetrics.cashSales.toLocaleString()}</div>
+                  </div>
+                  <span style={drawerChipStyle}>Order Payments</span>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
-            {/* Stat Card 1 */}
-            <div style={{ background: 'white', borderRadius: '16px', padding: '20px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                <span style={{ fontSize: '12px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>TODAY'S SALES</span>
-                <div style={{ background: '#ecfdf5', color: '#10b981', padding: '8px', borderRadius: '10px' }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <div style={drawerStatCardStyle}>
+                  <div>
+                    <div style={drawerLabelStyle}>Card Sales</div>
+                    <div style={drawerValueStyle}>Rs. {drawerMetrics.cardSales.toLocaleString()}</div>
+                  </div>
+                  <span style={drawerChipStyle}>Non-Cash</span>
+                </div>
+                <div style={drawerStatCardStyle}>
+                  <div>
+                    <div style={drawerLabelStyle}>Cash In / Out</div>
+                    <div style={drawerValueStyle}>
+                      {drawerMetrics.cashIn > 0 ? `In Rs. ${drawerMetrics.cashIn.toLocaleString()}` : ''}
+                      {drawerMetrics.cashIn > 0 && drawerMetrics.cashOut > 0 ? ' / ' : ''}
+                      {drawerMetrics.cashOut > 0 ? `Out Rs. ${drawerMetrics.cashOut.toLocaleString()}` : ''}
+                      {drawerMetrics.cashIn === 0 && drawerMetrics.cashOut === 0 ? 'Rs. 0' : ''}
+                    </div>
+                  </div>
+                  <span style={drawerChipStyle}>Adjustments</span>
+                </div>
+                <div style={drawerStatCardStyle}>
+                  <div>
+                    <div style={drawerLabelStyle}>Refunds</div>
+                    <div style={drawerValueStyle}>Rs. {drawerMetrics.refunds.toLocaleString()}</div>
+                  </div>
+                  <span style={drawerChipStyle}>Returns</span>
                 </div>
               </div>
-              <h3 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: '0 0 8px 0' }}>Rs. 125,450</h3>
-              <p style={{ fontSize: '13px', color: '#16a34a', margin: 0, fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                +12.5% from yesterday
-              </p>
-            </div>
-
-            {/* Stat Card 2 */}
-            <div style={{ background: 'white', borderRadius: '16px', padding: '20px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                <span style={{ fontSize: '12px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>TRANSACTIONS</span>
-                <div style={{ background: '#eff6ff', color: '#3b82f6', padding: '8px', borderRadius: '10px' }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                </div>
-              </div>
-              <h3 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: '0 0 8px 0' }}>84</h3>
-              <p style={{ fontSize: '13px', color: '#64748b', margin: 0, fontWeight: '500' }}>Completed today</p>
-            </div>
-
-            {/* Stat Card 3 */}
-            <div style={{ background: 'white', borderRadius: '16px', padding: '20px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                <span style={{ fontSize: '12px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>CUSTOMERS SERVED</span>
-                <div style={{ background: '#faf5ff', color: '#a855f7', padding: '8px', borderRadius: '10px' }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                </div>
-              </div>
-              <h3 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: '0 0 8px 0' }}>112</h3>
-              <p style={{ fontSize: '13px', color: '#16a34a', margin: 0, fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                +14 this shift
-              </p>
-            </div>
-
-            {/* Stat Card 4 */}
-            <div style={{ background: 'white', borderRadius: '16px', padding: '20px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                <span style={{ fontSize: '12px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>POS STATUS</span>
-                <div style={{ background: '#f8fafc', color: '#64748b', padding: '8px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                </div>
-              </div>
-              <h3 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: '0 0 8px 0' }}>Healthy</h3>
-              <p style={{ fontSize: '13px', color: '#64748b', margin: 0, fontWeight: '500' }}>Hardware connected</p>
             </div>
           </div>
         </div>
 
         {/* Search Box */}
-        <div className="pos-search-wrapper" style={{ marginTop: '32px' }}>
+        <div className="pos-search-wrapper" style={{ marginTop: '24px' }}>
           <div className="pos-search-glow"></div>
           <div className="pos-search-inner">
             <input

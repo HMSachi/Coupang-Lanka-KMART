@@ -23,6 +23,7 @@ import {
     X,
     FileSpreadsheet
 } from 'lucide-react';
+import logo from '../../../assets/logo.jpeg';
 import './EodPage.css';
 
 export default function EodPage() {
@@ -432,7 +433,7 @@ export default function EodPage() {
 
                         {step === 1 && (
                             <div className="summary-cards-grid animate-slide-up">
-                                <Card white title="Financial Summary" subtitle="System calculated snapshot">
+                                <Card white title="Financial Summary">
                                     <div className="calculation-stack">
                                         <div className="calc-row">
                                             <span>Opening Balance</span>
@@ -448,7 +449,7 @@ export default function EodPage() {
                                         </div>
                                          <div className="calc-row clickable" onClick={() => handleDrillDown('CASH_OUT')}>
                                             <span>Cash Out (-)</span>
-                                            <span style={{ color: '#ef4444' }}>-LKR {drawerMetrics.cashOut.toLocaleString()}</span>
+                                            <span className="eod-amount-negative">-LKR {drawerMetrics.cashOut.toLocaleString()}</span>
                                         </div>
                                         <div className="calc-divider"></div>
                                         <div className="calc-row result">
@@ -483,7 +484,7 @@ export default function EodPage() {
                                     <div className="reconcile-card">
                                         <div className="reconcile-item">
                                             <label>Session ID</label>
-                                            <span>{session.id}</span>
+                                            <span className="eod-session-id">{session.id}</span>
                                         </div>
                                         <div className="reconcile-item">
                                             <label>Cashier</label>
@@ -501,7 +502,7 @@ export default function EodPage() {
                         {step === 2 && (
                             <div className="denoms-wrapper-grid animate-slide-up">
                                 <div className="denoms-list-col">
-                                    <Card white title="Denomination Verification" subtitle="Count all physical cash in your drawer">
+                                    <Card white title="Denomination Verification">
                                         <DenominationCounter
                                             onTotalChange={setPhysicalCount}
                                             onDenominationsChange={setDenominations}
@@ -699,15 +700,17 @@ export default function EodPage() {
                                 </div>
                             </div>
 
-                            <div className="report-print-paper" id="eod-printable-report">
-                                <div className="p-report-header">
-                                    <div className="p-brand">
-                                        <div className="p-logo">CK</div>
-                                        <div>
-                                            <h2>Coupang Kmart</h2>
-                                            <p>Terminal POS - Shift Report</p>
+                                <div className="report-print-paper" id="eod-printable-report">
+                                    <div className="p-report-header">
+                                        <div className="p-brand">
+                                            <div className="p-logo">
+                                                <img src={logo} alt="Coupang Kmart" />
+                                            </div>
+                                            <div>
+                                                <h2>Coupang Kmart</h2>
+                                                <p>Terminal POS - Shift Report</p>
+                                            </div>
                                         </div>
-                                    </div>
                                     <div className="p-meta">
                                         <div><strong>ID:</strong> {selectedReport.id}</div>
                                         <div><strong>Date:</strong> {new Date(selectedReport.endTime).toLocaleDateString()}</div>

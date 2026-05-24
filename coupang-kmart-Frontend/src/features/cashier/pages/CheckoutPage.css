@@ -1,8 +1,9 @@
 .checkout-container {
-    padding: 12px;
+    padding: 16px;
     max-width: 1300px;
     margin: 0 auto;
     animation: fadeIn 0.4s ease-out;
+    color: #1f2937;
 }
 
 @keyframes fadeIn {
@@ -25,9 +26,9 @@
 }
 
 .checkout-header h1 {
-    font-size: 20px;
-    font-weight: 800;
-    color: #475569;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #1f2937;
     margin: 0;
 }
 
@@ -40,7 +41,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     font-weight: 600;
-    color: #475569;
+    color: #1f2937;
     cursor: pointer;
     transition: all 0.2s;
     font-size: 14px;
@@ -48,9 +49,9 @@
 
 .back-btn:hover {
     background: #f8fafc;
-    border-color: #3b82f6;
-    color: #3b82f6;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+    box-shadow: 0 8px 18px -16px rgba(37, 99, 235, 0.45);
 }
 
 .checkout-grid {
@@ -61,10 +62,10 @@
 
 .checkout-card {
     background: white;
-    border: 1px solid #f1f5f9;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
-    padding: 0.65rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    padding: 0.9rem;
+    box-shadow: 0 10px 22px -18px rgba(15, 23, 42, 0.32);
     margin-bottom: 0.75rem;
 }
 
@@ -76,10 +77,16 @@
 }
 
 .card-header h2 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1f2937;
     margin: 0;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.card-header svg {
+    color: #2563eb;
 }
 
 /* Order Item List Styling */
@@ -109,23 +116,23 @@
 }
 
 .item-qty {
-    font-weight: 800;
-    color: #3b82f6;
+    font-weight: 600;
+    color: #1d4ed8;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-size: 12px;
     min-width: 24px;
 }
 
 .item-name {
     font-weight: 600;
-    color: #64748b;
-    font-size: 14px;
+    color: #1f2937;
+    font-size: 13px;
 }
 
 .item-total {
-    font-weight: 700;
-    color: #475569;
-    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 13px;
 }
 
 /* Calculation Table */
@@ -133,42 +140,44 @@
     background: #f8fafc;
     border-radius: 8px;
     padding: 0.75rem;
-    border: 1px solid #f1f5f9;
+    border: 1px solid #e2e8f0;
 }
 
 .calc-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
-    font-size: 14px;
+    font-size: 13px;
     color: #64748b;
     font-weight: 500;
 }
 
 .calc-row.discount {
-    color: #10b981;
+    color: #1d4ed8;
+    font-weight: 600;
 }
 
 .calc-total {
     display: flex;
     justify-content: space-between;
-    padding-top: 16px;
-    border-top: 2px solid #e2e8f0;
+    padding-top: 14px;
+    border-top: 1px solid #dbe3ee;
     margin-top: 8px;
-    color: #1e293b;
+    color: #1f2937;
 }
 
 .calc-total span:first-child {
-    font-weight: 800;
-    font-size: 16px;
-    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: none;
+    color: #1f2937;
 }
 
 .calc-total span:last-child {
-    font-weight: 900;
-    font-size: 22px;
-    color: #3b82f6;
-    letter-spacing: -0.5px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #1f2937;
+    letter-spacing: 0;
 }
 
 /* Form Styling */
@@ -185,8 +194,8 @@
 }
 
 .pos-field label {
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 600;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -208,10 +217,10 @@
 .modern-input {
     width: 100%;
     padding: 10px 10px 10px 36px;
-    border: 1.5px solid #f1f5f9;
+    border: 1px solid #dbe3ee;
     border-radius: 8px;
     font-size: 0.85rem;
-    color: #475569;
+    color: #1f2937;
     outline: none;
     transition: all 0.2s;
     background: #fcfdfe;
@@ -224,7 +233,7 @@
 .input-wrapper input:focus,
 .modern-input:focus {
     border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
     background: white;
 }
 
@@ -245,10 +254,10 @@
     justify-content: center;
     gap: 6px;
     padding: 8px;
-    border: 1.5px solid #e2e8f0;
+    border: 1px solid #dbe3ee;
     background: white;
     border-radius: 8px;
-    font-weight: 700;
+    font-weight: 600;
     color: #64748b;
     cursor: pointer;
     transition: all 0.2s;
@@ -274,22 +283,22 @@
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 800;
+    font-size: 0.88rem;
+    font-weight: 650;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
-    transition: all 0.3s;
+    box-shadow: 0 12px 24px -16px rgba(37, 99, 235, 0.55);
+    transition: all 0.2s ease;
     margin-top: 0.5rem;
 }
 
 .finalize-btn:hover {
     background: #2563eb;
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px -5px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 16px 30px -18px rgba(37, 99, 235, 0.65);
 }
 
 .finalize-btn:active {

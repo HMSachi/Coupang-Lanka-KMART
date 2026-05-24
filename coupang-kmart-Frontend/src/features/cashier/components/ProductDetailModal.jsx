@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShoppingCart, Tag, Package, CreditCard, Info, Calendar, Box, Percent, Hash, ShieldCheck } from 'lucide-react';
+import { X, ShoppingCart, Tag, Package, CreditCard, Info, Calendar, Hash } from 'lucide-react';
 import Button from '../../../components/shared/Button';
 
 export default function ProductDetailModal({ product, onClose, onAddToCart }) {
@@ -74,15 +74,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                             <div className="product-identifier-grid">
                                 <div className="id-chip">
                                     <Hash size={12} />
-                                    <span>#{product.id}</span>
-                                </div>
-                                <div className="unit-chip">
-                                    <Box size={12} />
-                                    <span>{product.unit_type || 'Piece'}</span>
-                                </div>
-                                <div className="status-chip success">
-                                    <ShieldCheck size={12} />
-                                    <span>Verified Quality</span>
+                                    <span>Item ID: {product.id}</span>
                                 </div>
                             </div>
                         </div>
@@ -114,15 +106,6 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
 
                         {/* Secondary Metadata Grid */}
                         <div className="metadata-grid">
-                            <div className="meta-card">
-                                <div className="meta-icon-box purple">
-                                    <Percent size={14} />
-                                </div>
-                                <div className="meta-content">
-                                    <span className="meta-label">Tax / VAT</span>
-                                    <span className="meta-value">{product.tax_percentage || 0}% Included</span>
-                                </div>
-                            </div>
                             <div className="meta-card">
                                 <div className="meta-icon-box orange">
                                     <Calendar size={14} />

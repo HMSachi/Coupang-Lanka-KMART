@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LogOut, User, Clock, RotateCcw, BarChart2, MonitorIcon, ChevronRight, Store, ShoppingCart, ShoppingBag } from 'lucide-react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import logo from '../assets/logo.jpeg';
 import './POSLayout.css';
 
 const POSLayout = ({ children }) => {
@@ -36,6 +37,10 @@ const POSLayout = ({ children }) => {
     }, []);
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const pageTitle =
+        location.pathname === '/pos/online-orders' ? 'Online Orders' :
+            location.pathname === '/pos/refund' ? 'Returns & Refunds' :
+                location.pathname === '/pos/eod' ? 'My Session' : '';
 
     const handleLogout = () => {
         const shiftStatus = localStorage.getItem('shift_status');
@@ -63,7 +68,9 @@ const POSLayout = ({ children }) => {
             {/* Sidebar */}
             <aside className="pos-sidebar-new">
                 <div className="pos-sidebar-header">
-                    <div className="pos-sidebar-logo">CK</div>
+                    <div className="pos-sidebar-logo">
+                        <img src={logo} alt="Coupang Kmart" />
+                    </div>
                     <div className="pos-sidebar-title">
                         <span>Coupang <strong>Kmart</strong></span>
                         <small>Terminal POS</small>
@@ -113,12 +120,7 @@ const POSLayout = ({ children }) => {
             <div className="pos-main-wrapper">
                 <header className="pos-top-header">
                     <div className="pos-header-left">
-                        <h1>
-                            {location.pathname === '/pos' && 'Create Order'}
-                            {location.pathname === '/pos/online-orders' && 'Online Orders'}
-                            {location.pathname === '/pos/refund' && 'Returns & Refunds'}
-                            {location.pathname === '/pos/eod' && 'My Session'}
-                        </h1>
+                        {pageTitle && <h1>{pageTitle}</h1>}
                         <span className="pos-branch-badge">
                             <Store size={12} />
                             {user.branch_name || 'Main Branch'}

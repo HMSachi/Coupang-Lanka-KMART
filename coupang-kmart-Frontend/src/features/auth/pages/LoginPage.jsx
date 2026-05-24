@@ -87,19 +87,28 @@ export default function LoginPage() {
 
   return (
     <div className={`login-container-new ${theme}`} ref={pageRef}>
-      <div className="login-bg-shapes">
-        <div className="shape shape-1"></div>
-        <div className="shape shape-2"></div>
+      <div className="login-bg-anim" aria-hidden="true">
+        <div className="login-anim-layer layer-a"></div>
+        <div className="login-anim-layer layer-b"></div>
+        <div className="login-line-field">
+          <span className="login-line l1"></span>
+          <span className="login-line l2"></span>
+          <span className="login-line l3"></span>
+          <span className="login-line l4"></span>
+          <span className="login-line l5"></span>
+        </div>
       </div>
 
       <div className="login-content">
         <div className="brand-section">
+          <div className="brand-logo-top" aria-hidden="true">
+            <img src={logo} alt="" />
+          </div>
           <div className="brand-badge">
             <ShieldCheck size={20} />
             <span>Secure POS Entry</span>
           </div>
           <h1>Coupang <span>Kmart</span></h1>
-          <p>Streamlined Retail Management & High-Speed POS Solutions</p>
         </div>
 
         <Card glass className="login-form-card" padding="none">
@@ -156,7 +165,7 @@ export default function LoginPage() {
             </form>
           </div>
           <div className="form-footer">
-            <p>Protected by Coupang Enterprise Security</p>
+            <p>Developed by Messiora Pvt(Ltd)</p>
           </div>
         </Card>
       </div>

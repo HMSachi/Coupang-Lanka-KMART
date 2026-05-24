@@ -86,10 +86,15 @@ export default function SessionStartPage() {
 
                     {/* Unified Header */}
                     <div className="session-header animate-fade-in">
-                        <div className="session-logo">CK</div>
+                        <div className="session-logo"><ShieldCheck size={24} /></div>
                         <div className="session-title">
+                            <span className="session-eyebrow">Cashier EOD Control</span>
                             <h1>Initialize Cashier Session</h1>
-                            <p>Configure register and verify opening cash balance for terminal #{shiftData.register.split('_')[1]}</p>
+                            <p>Verify terminal details and opening cash before register operations begin.</p>
+                        </div>
+                        <div className="session-header-meta">
+                            <span>Terminal #{shiftData.register.split('_')[1]}</span>
+                            <strong>LKR {openingBalance.toLocaleString()}</strong>
                         </div>
                     </div>
 
@@ -110,7 +115,7 @@ export default function SessionStartPage() {
                         <div className="session-grid animate-slide-up">
                             {/* Left: Configuration */}
                             <div className="config-column">
-                                <Card white title="Shift Configuration">
+                                <Card white title="Shift Configuration" className="session-panel-card">
                                     <div className="profile-mini-card">
                                         <div className="avatar"><User size={24} /></div>
                                         <div className="info">
@@ -161,7 +166,7 @@ export default function SessionStartPage() {
 
                             {/* Right: Denominations */}
                             <div className="denoms-column">
-                                <Card white title="Opening Balance Denominations">
+                                <Card white title="Opening Balance Denominations" className="session-panel-card">
                                     <DenominationCounter
                                         onTotalChange={setOpeningBalance}
                                         onDenominationsChange={setDenominations}

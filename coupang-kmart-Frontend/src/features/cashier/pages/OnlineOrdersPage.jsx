@@ -5,6 +5,7 @@ import {
     XCircle, Truck, Package, CreditCard, FileText, Printer, ChevronRight,
     MapPin, Phone, Mail, User as UserIcon
 } from 'lucide-react';
+import logo from '../../../assets/logo.jpeg';
 import '../styles/online-orders.css';
 
 const OnlineOrdersPage = () => {
@@ -165,7 +166,7 @@ const OnlineOrdersPage = () => {
                                     <tr>
                                         <th>Order Information</th>
                                         <th>Customer Detail</th>
-                                        <th>Logistics</th>
+                                        <th>Address</th>
                                         <th>Total Value</th>
                                         <th>Status</th>
                                         <th className="text-center">Action</th>
@@ -223,9 +224,9 @@ const OnlineOrdersPage = () => {
                                 <div className="modal-header-main">
                                     <div className="header-title-box">
                                         <FileText className="header-icon" />
-                                        <h3>Official Web Order Report</h3>
+                                        <h3>Web Order Details</h3>
                                     </div>
-                                    <p className="transaction-id">Transaction Ref: #{selectedOrder.order_id}</p>
+                                    <p className="transaction-id">Order Reference: #{selectedOrder.order_id}</p>
                                 </div>
                                 <div className="modal-header-actions">
                                     <button
@@ -244,19 +245,19 @@ const OnlineOrdersPage = () => {
                                 <div className="info-cards-grid">
                                     <div className="info-card">
                                         <div className="card-header">
-                                            <UserIcon size={14} /> <span>Client Profile</span>
+                                            <UserIcon size={14} /> <span>Customer Information</span>
                                         </div>
                                         <div className="card-content">
                                             <div className="info-row">
-                                                <label>Legal Name</label>
+                                                <label>Customer Name</label>
                                                 <span>{selectedOrder.customer_name}</span>
                                             </div>
                                             <div className="info-row">
-                                                <label>Registered Email</label>
+                                                <label>Email Address</label>
                                                 <span>{selectedOrder.customer_email}</span>
                                             </div>
                                             <div className="info-row">
-                                                <label>Cellular</label>
+                                                <label>Phone Number</label>
                                                 <span>{selectedOrder.customer_phone}</span>
                                             </div>
                                         </div>
@@ -264,15 +265,15 @@ const OnlineOrdersPage = () => {
 
                                     <div className="info-card">
                                         <div className="card-header">
-                                            <Truck size={14} /> <span>Delivery Details</span>
+                                            <Truck size={14} /> <span>Address Details</span>
                                         </div>
                                         <div className="card-content">
                                             <div className="info-row">
-                                                <label>Destination</label>
+                                                <label>Delivery Address</label>
                                                 <span className="address-text">{selectedOrder.address}, {selectedOrder.city}, {selectedOrder.postal_code}</span>
                                             </div>
                                             <div className="info-row">
-                                                <label>Scheduled Date</label>
+                                                <label>Delivery Date</label>
                                                 <span>{selectedOrder.delivery_date ? new Date(selectedOrder.delivery_date).toLocaleDateString() : 'N/A'} (DELIVERY)</span>
                                             </div>
                                         </div>
@@ -330,15 +331,15 @@ const OnlineOrdersPage = () => {
                                     </div>
                                 </div>
 
-                                {/* Bill of Lading Section */}
+                                {/* Order Items Section */}
                                 <div className="bill-lading-section">
                                     <div className="section-header">
-                                        <Package size={16} /> <span>Bill of Lading</span>
+                                        <Package size={16} /> <span>Order Items</span>
                                     </div>
                                     <table className="lading-table">
                                         <thead>
                                             <tr>
-                                                <th>Catalog Item</th>
+                                                <th>Item</th>
                                                 <th className="text-center">Qty</th>
                                                 <th className="text-right">Rate</th>
                                                 <th className="text-right">Amount</th>
@@ -376,15 +377,15 @@ const OnlineOrdersPage = () => {
                                         </tbody>
                                         <tfoot>
                                             <tr className="subtotal-row">
-                                                <td colSpan="3">Sub-Total</td>
+                                                <td colSpan="3">Subtotal</td>
                                                 <td>LKR {parseFloat(selectedOrder.subtotal).toLocaleString()}</td>
                                             </tr>
                                             <tr className="shipping-row">
-                                                <td colSpan="3">Freight / Logistics</td>
+                                                <td colSpan="3">Delivery Charge</td>
                                                 <td>LKR {parseFloat(selectedOrder.shipping_cost).toLocaleString()}</td>
                                             </tr>
                                             <tr className="grand-total-row">
-                                                <td colSpan="3">Certification Total</td>
+                                                <td colSpan="3">Order Total</td>
                                                 <td className="total-amount-large">LKR {parseFloat(selectedOrder.total_amount).toLocaleString()}</td>
                                             </tr>
                                         </tfoot>
@@ -500,7 +501,9 @@ const OnlineOrdersPage = () => {
                                 <div className="official-invoice-paper" id="printable-invoice">
                                     {/* Header */}
                                     <div className="inv-header">
-                                        <div className="inv-logo">CK</div>
+                                        <div className="inv-logo">
+                                            <img src={logo} alt="Coupang Kmart" />
+                                        </div>
                                         <h1>COUPANG KMART</h1>
                                         <p className="inv-branch">Main Showroom & Fulfillment Center</p>
                                         <p>No 125, Galle Road, Colombo 03</p>
@@ -558,7 +561,7 @@ const OnlineOrdersPage = () => {
                                             <span>LKR {parseFloat(selectedOrder.subtotal).toLocaleString()}</span>
                                         </div>
                                         <div className="sum-row">
-                                            <span>Delivery / Logistics</span>
+                                            <span>Delivery / Address</span>
                                             <span>LKR {parseFloat(selectedOrder.shipping_cost).toLocaleString()}</span>
                                         </div>
                                         <div className="sum-row total-row">
