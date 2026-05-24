@@ -31,8 +31,12 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         return <Navigate to="/login" replace />;
     }
 
-    if (allowedRoles && !allowedRoles.includes(user.role)) {
-        return <Navigate to="/" replace />;
+    if (allowedRoles) {
+        const userRole = user.role ? user.role.toLowerCase() : '';
+        const lowerAllowedRoles = allowedRoles.map(r => r.toLowerCase());
+        if (!lowerAllowedRoles.includes(userRole)) {
+            return <Navigate to="/" replace />;
+        }
     }
 
     return children;
@@ -131,7 +135,7 @@ const AppRoutes = () => {
                 <Route
                     path="/pos"
                     element={
-                        <ProtectedRoute allowedRoles={['cashier']}>
+                        <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
                             <CashierDashboard />
                         </ProtectedRoute>
                     }
@@ -139,7 +143,7 @@ const AppRoutes = () => {
                 <Route
                     path="/pos/online-orders"
                     element={
-                        <ProtectedRoute allowedRoles={['cashier']}>
+                        <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
                             <OnlineOrdersPage />
                         </ProtectedRoute>
                     }
@@ -147,7 +151,7 @@ const AppRoutes = () => {
                 <Route
                     path="/pos/refund"
                     element={
-                        <ProtectedRoute allowedRoles={['cashier']}>
+                        <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
                             <RefundPage />
                         </ProtectedRoute>
                     }
@@ -155,7 +159,7 @@ const AppRoutes = () => {
                 <Route
                     path="/pos/cart"
                     element={
-                        <ProtectedRoute allowedRoles={['cashier']}>
+                        <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
                             <PosCartPage />
                         </ProtectedRoute>
                     }
@@ -163,7 +167,7 @@ const AppRoutes = () => {
                 <Route
                     path="/pos/checkout"
                     element={
-                        <ProtectedRoute allowedRoles={['cashier']}>
+                        <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
                             <CheckoutPage />
                         </ProtectedRoute>
                     }
@@ -171,7 +175,7 @@ const AppRoutes = () => {
                 <Route
                     path="/pos/payment"
                     element={
-                        <ProtectedRoute allowedRoles={['cashier']}>
+                        <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
                             <PaymentPage />
                         </ProtectedRoute>
                     }
@@ -179,7 +183,7 @@ const AppRoutes = () => {
                 <Route
                     path="/pos/session-start"
                     element={
-                        <ProtectedRoute allowedRoles={['cashier']}>
+                        <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
                             <SessionStartPage />
                         </ProtectedRoute>
                     }
@@ -187,7 +191,7 @@ const AppRoutes = () => {
                 <Route
                     path="/pos/eod"
                     element={
-                        <ProtectedRoute allowedRoles={['cashier']}>
+                        <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
                             <EodPage />
                         </ProtectedRoute>
                     }

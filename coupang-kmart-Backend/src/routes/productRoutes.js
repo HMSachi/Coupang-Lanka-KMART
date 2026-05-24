@@ -29,6 +29,9 @@ router.post('/upload-images', authenticateToken, isAdmin, upload.array('images',
     res.json({ urls: filePaths });
 });
 
+// Public routes for website
+router.get('/public/branch-inventory/:branch_id', productController.getBranchInventory);
+
 // Staff branch control
 router.get('/branch-inventory/:branch_id', authenticateToken, isStaff, productController.getBranchInventory);
 router.post('/branch-inventory', authenticateToken, isStaff, productController.addBranchInventory);
