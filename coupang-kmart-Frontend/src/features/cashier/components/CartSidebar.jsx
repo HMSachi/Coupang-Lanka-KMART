@@ -18,6 +18,8 @@ export default function CartSidebar({
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [searchQuery, setSearchQuery] = useState('');
+  const [discountType, setDiscountType] = useState('percentage'); // 'percentage' or 'fixed'
+  const [discountValue, setDiscountValue] = useState(0);
 
   const discountAmount = (subtotal * discountPercent) / 100;
   const finalTotal = total; // Already calculated in parent
@@ -41,7 +43,7 @@ export default function CartSidebar({
         {/* Items Header */}
         {cart.length > 0 && (
           <>
-            <div style={{ padding: '16px 16px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0' }}>
+            <div style={{ padding: '12px 16px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0' }}>
               <span style={{ fontSize: '0.85rem', fontWeight: '700', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 Total Items ({totalItemCount.toString().padStart(2, '0')})
               </span>
@@ -49,7 +51,7 @@ export default function CartSidebar({
             </div>
 
             {/* Search Bar */}
-            <div style={{ padding: '12px 16px', borderBottom: '1px solid #e2e8f0' }}>
+            <div style={{ padding: '8px 16px', borderBottom: '1px solid #e2e8f0' }}>
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <Search size={16} style={{ position: 'absolute', left: '10px', color: '#94a3b8', pointerEvents: 'none' }} />
                 <input
@@ -157,26 +159,119 @@ export default function CartSidebar({
                   </div>
 
                   {/* Discount Section in Summary */}
-                  <div style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid #e2e8f0' }}>
-                    <p className="qb-discount-label">Apply Promo / Discount (%)</p>
-                    <div className="qb-discount-input-box">
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={discountPercent}
-                        onChange={(e) => setDiscountPercent(Number(e.target.value))}
-                        placeholder="0"
-                      />
-                      <div className="qb-discount-steppers">
-                        <button type="button" onClick={() => setDiscountPercent(prev => Math.min(100, prev + 1))}>
-                          <ChevronUp size={14} />
-                        </button>
-                        <button type="button" onClick={() => setDiscountPercent(prev => Math.max(0, prev - 1))}>
-                          <ChevronDown size={14} />
-                        </button>
-                      </div>
+                  <div style={{ marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid #e2e8f0' }}>
+                    <p className="qb-discount-label">Apply Discount</p>
+                    
+                    {/* Discount Type Tabs */}
+                    <div style={{ display: 'flex', gap: '4px', marginBottom: '8px', borderBottom: '2px solid #e2e8f0' }}>
+                      <button
+                        type="button"
+                        onClick={() => setDiscountType('percentage')}
+                        style={{
+                          flex: 1,
+                          padding: '8px',
+                          border: 'none',
+                          borderBottom: discountType === 'percentage' ? '3px solid #3b82f6' : 'none',
+                          backgroundColor: 'transparent',
+                          fontSize: '0.8rem',
+                          fontWeight: '600',
+                          color: discountType === 'percentage' ? '#3b82f6' : '#94a3b8',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        % Percentage
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDiscountType('fixed')}
+                        style={{
+                          flex: 1,
+                          padding: '8px',
+                          border: 'none',
+                          borderBottom: discountType === 'fixed' ? '3px solid #3b82f6' : 'none',
+                          backgroundColor: 'transparent',
+                          fontSize: '0.8rem',
+                          fontWeight: '600',
+                          color: discountType === 'fixed' ? '#3b82f6' : '#94a3b8',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        LKR Fixed Amount
+                      </button>
                     </div>
+
+                    {/* Percentage Discount Input */}
+                    {discountType === 'percentage' && (
+                      <div className="qb-discount-input-box" style={{ marginTop: '8px' }}>
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={discountValue}
+                          onChange={(e) => {
+                            const val = Number(e.target.value);
+                            setDiscountValue(val);
+                            setDiscountPercent(val);
+                          }}
+                          placeholder="0"
+                        />
+                        <div className="qb-discount-steppers">
+                          <button type="button" onClick={() => {
+                            const newVal = Math.min(100, discountValue + 1);
+                            setDiscountValue(newVal);
+                            setDiscountPercent(newVal);
+                          }}>
+                            <ChevronUp size={14} />
+                          </button>
+                          <button type="button" onClick={() => {
+                            const newVal = Math.max(0, discountValue - 1);
+                            setDiscountValue(newVal);
+                            setDiscountPercent(newVal);
+                          }}>
+                            <ChevronDown size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Fixed Amount Discount Input */}
+                    {discountType === 'fixed' && (
+                      <div className="qb-discount-input-box" style={{ marginTop: '8px' }}>
+                        <input
+                          type="number"
+                          min="0"
+                          value={discountValue}
+                          onChange={(e) => {
+                            const val = Number(e.target.value);
+                            setDiscountValue(val);
+                            // Calculate percentage based on fixed amount
+                            const percentageVal = Math.round((val / subtotal) * 100);
+                            setDiscountPercent(Math.min(100, percentageVal));
+                          }}
+                          placeholder="0"
+                        />
+                        <div className="qb-discount-steppers">
+                          <button type="button" onClick={() => {
+                            const newVal = discountValue + 100;
+                            setDiscountValue(newVal);
+                            const percentageVal = Math.round((newVal / subtotal) * 100);
+                            setDiscountPercent(Math.min(100, percentageVal));
+                          }}>
+                            <ChevronUp size={14} />
+                          </button>
+                          <button type="button" onClick={() => {
+                            const newVal = Math.max(0, discountValue - 100);
+                            setDiscountValue(newVal);
+                            const percentageVal = newVal > 0 ? Math.round((newVal / subtotal) * 100) : 0;
+                            setDiscountPercent(percentageVal);
+                          }}>
+                            <ChevronDown size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="qb-summary-row">
@@ -185,7 +280,11 @@ export default function CartSidebar({
                   </div>
                   <div className="qb-summary-row">
                     <span>Discount</span>
-                    <span className="qb-highlight-text">{discountPercent}%</span>
+                    <span className="qb-highlight-text">{discountPercent > 0 ? `${discountPercent}%` : '0%'}</span>
+                  </div>
+                  <div className="qb-summary-row">
+                    <span>Discount Amount</span>
+                    <span className="qb-highlight-text">{discountPercent > 0 ? `LKR ${Math.round((subtotal * discountPercent) / 100).toLocaleString()}` : 'LKR 0'}</span>
                   </div>
                   <div className="qb-summary-divider"></div>
                   <div className="qb-summary-row qb-total-row">
