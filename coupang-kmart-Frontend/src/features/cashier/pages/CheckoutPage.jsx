@@ -15,6 +15,11 @@ export default function CheckoutPage() {
     const [cart, setCart] = useState([]);
     const [customer, setCustomer] = useState({ name: '', phone: '' });
     const [discountType, setDiscountType] = useState('percentage'); // percentage, fixed, coupon
+    const [customer, setCustomer] = useState(() => {
+        const savedCustomer = localStorage.getItem('pos_customer');
+        return savedCustomer ? JSON.parse(savedCustomer) : { name: '', phone: '' };
+    });
+    const [discountType, setDiscountType] = useState('none'); // percentage, fixed, coupon
     const [discountVal, setDiscountVal] = useState(0);
     const [couponCode, setCouponCode] = useState('');
 
@@ -64,9 +69,11 @@ export default function CheckoutPage() {
             discountAmount,
             vatAmount,
             serviceCharge: Number(serviceCharge),
-            total
+            total,
+            customer // Include customer details in summary
         };
         localStorage.setItem('pending_order_summary', JSON.stringify(orderSummary));
+        localStorage.setItem('pos_customer', JSON.stringify(customer));
         navigate('/pos/payment');
     };
 

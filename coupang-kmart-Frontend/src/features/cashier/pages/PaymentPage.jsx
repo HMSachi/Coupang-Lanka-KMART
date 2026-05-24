@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import POSLayout from '../../../layouts/POSLayout';
-import { Banknote, CreditCard, QrCode, Building2, Wallet, ArrowLeft, Receipt, CheckCircle, Trash2, Info, Calculator } from 'lucide-react';
+import { Banknote, CreditCard, QrCode, Building2, Wallet, ArrowLeft, Receipt, CheckCircle, Trash2, Info, Calculator, Clock } from 'lucide-react';
 import './PaymentPage.css';
 
 export default function PaymentPage() {
@@ -81,13 +81,33 @@ export default function PaymentPage() {
         setRemainingBalance(prev => prev + amount);
     };
 
-    const handleFinalizeOrder = () => {
+    const handleFinalizeOrder = async () => {
         setIsProcessing(true);
-        setTimeout(() => {
-            // Log payments to session
+        try {
+            const editingOrderId = localStorage.getItem('editing_order_id');
+            const token = localStorage.getItem('token');
+
+            if (editingOrderId) {
+                const response = await fetch(`http://localhost:5000/api/orders/${editingOrderId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ status: 'completed' })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update order status');
+                }
+            }
+
+            localStorage.removeItem('editing_order_id');
+
             const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
             appliedPayments.forEach(p => {
                 logs.push({
+                    id: `TRANS_${Date.now()}_${Math.random()}`,
                     type: p.method === 'cash' ? 'CASH_SALE' : (p.method === 'card' ? 'CARD_SALE' : 'BANK_TRANSFER'),
                     amount: p.amount,
                     timestamp: new Date().toISOString(),
@@ -96,12 +116,75 @@ export default function PaymentPage() {
             });
             localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
 
+            setTimeout(() => {
+                setIsProcessing(false);
+                setIsSuccess(true);
+                localStorage.removeItem('pos_cart');
+                localStorage.removeItem('pending_order_summary');
+                window.dispatchEvent(new Event('cartUpdated'));
+                window.dispatchEvent(new Event('refreshHeldOrders'));
+                window.dispatchEvent(new Event('refreshCashMetrics'));
+            }, 500);
+        } catch (err) {
+            console.error('Error finalizing order:', err);
+            alert('Failed to finalize order. Please try again.');
             setIsProcessing(false);
-            setIsSuccess(true);
+        }
+    };
+
+    const handleHoldBill = async () => {
+        setIsProcessing(true);
+        try {
+            const editingOrderId = localStorage.getItem('editing_order_id');
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const savedCustomer = JSON.parse(localStorage.getItem('pos_customer') || '{"name": "POS Customer", "phone": ""}');
+
+            const orderData = {
+                order_id: `HOLD-${Date.now()}`,
+                customer_name: savedCustomer.name,
+                customer_phone: savedCustomer.phone,
+                subtotal: orderSummary?.subtotal || orderTotal,
+                total_amount: orderTotal,
+                items: cart,
+                status: 'hold',
+                branch_id: user.branch_id
+            };
+
+            let response;
+            if (editingOrderId) {
+                response = await fetch(`http://localhost:5000/api/orders/${editingOrderId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(orderData)
+                });
+            } else {
+                response = await fetch('http://localhost:5000/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(orderData)
+                });
+            }
+
+            if (!response.ok) throw new Error('Failed to save held order');
+
             localStorage.removeItem('pos_cart');
             localStorage.removeItem('pending_order_summary');
+            localStorage.removeItem('editing_order_id');
             window.dispatchEvent(new Event('cartUpdated'));
-        }, 1500);
+            navigate('/pos');
+        } catch (err) {
+            console.error('Error holding bill:', err);
+            alert('Failed to hold bill. Please try again.');
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     const cashTendered = Number(cashReceived) || 0;
@@ -385,9 +468,36 @@ export default function PaymentPage() {
                         >
                             {isProcessing ? 'Processing...' : 'Complete Order & Print Receipt'}
                         </button>
+
+                        <button
+                            className="hold-bill-btn"
+                            onClick={handleHoldBill}
+                            disabled={isProcessing}
+                            style={{
+                                marginTop: '12px',
+                                width: '100%',
+                                padding: '14px',
+                                background: '#f8fafc',
+                                border: '2px dashed #cbd5e1',
+                                borderRadius: '12px',
+                                color: '#64748b',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '8px',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            <Clock size={18} /> {isProcessing ? 'Handling...' : 'Hold Bill / Move to Next'}
+                        </button>
                     </div>
                 </div>
             </div>
         </POSLayout>
     );
 }
+
+// Add CSS to handle hover effect for hold button if needed, but style is inline for now
+

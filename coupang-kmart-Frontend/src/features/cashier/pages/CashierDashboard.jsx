@@ -74,11 +74,17 @@ export default function CashierDashboard() {
   useEffect(() => {
     const fetchLiveInventory = async () => {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      const branchId = user.branch_id;
+      let branchId = user.branch_id;
+      const role = user.role ? user.role.toLowerCase() : '';
 
       if (!branchId) {
-        console.warn('No branch_id found in session.');
-        return;
+        if (role === 'admin' || role === 'superadmin') {
+          console.warn('No branch_id found for admin, defaulting to Branch 1 for POS visualization.');
+          branchId = 1;
+        } else {
+          console.warn('No branch_id found in session.');
+          return;
+        }
       }
 
       try {
@@ -92,6 +98,13 @@ export default function CashierDashboard() {
 
         const catData = await catRes.json();
         const prodData = await prodRes.json();
+
+        if (!Array.isArray(catData) || !Array.isArray(prodData)) {
+          console.error('Invalid response format from inventory API:', { catData, prodData });
+          setCategories(['All']);
+          setProducts([]);
+          return;
+        }
 
         const liveCategories = ['All', ...catData.map(c => c.name)];
         const liveProducts = prodData.map(p => ({
@@ -116,6 +129,7 @@ export default function CashierDashboard() {
 
       } catch (err) {
         console.error('Error fetching live inventory:', err);
+        setProducts([]);
       }
     };
     fetchLiveInventory();

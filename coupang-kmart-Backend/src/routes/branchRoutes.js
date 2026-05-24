@@ -4,7 +4,9 @@ const branchController = require('../controllers/branchController');
 const { authenticateToken, isAdmin, isStaff } = require('../middlewares/authMiddleware');
 
 // Branch and Subadmin Creation
-// Protect with Master Admin token logic
+// Public route for customer website to see active branches
+router.get('/public', branchController.getBranches);
+
 router.get('/', authenticateToken, isAdmin, branchController.getBranches);
 router.post('/', authenticateToken, isAdmin, branchController.createBranch);
 router.post('/subadmin', authenticateToken, isAdmin, branchController.createSubAdmin);
