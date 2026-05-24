@@ -85,7 +85,7 @@ export default function CheckoutPage() {
                     <button className="back-btn" onClick={() => navigate('/pos/cart')}>
                         <ArrowLeft size={18} /> Back to Cart
                     </button>
-                    <h1>Finalize Order</h1>
+                    <h1>Checkout Review</h1>
                 </div>
 
                 <div className="checkout-grid">

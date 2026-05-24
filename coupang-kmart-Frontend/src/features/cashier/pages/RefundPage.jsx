@@ -42,7 +42,7 @@ export default function RefundPage() {
                                                 <td><span className="trx-id-badge">{item.id}</span></td>
                                                 <td>{item.item}</td>
                                                 <td>{item.date}</td>
-                                                <td className="font-bold">LKR {item.amount.toLocaleString()}</td>
+                                                <td className="rfnd-amount">LKR {item.amount.toLocaleString()}</td>
                                                 <td>
                                                     <span className={`status-badge ${item.status.toLowerCase()}`}>
                                                         {item.status}

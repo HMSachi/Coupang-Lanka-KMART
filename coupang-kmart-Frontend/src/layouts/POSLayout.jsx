@@ -57,6 +57,10 @@ const POSLayout = ({ children }) => {
     }, []);
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const pageTitle =
+        location.pathname === '/pos/online-orders' ? 'Online Orders' :
+            location.pathname === '/pos/refund' ? 'Returns & Refunds' :
+                location.pathname === '/pos/eod' ? 'My Session' : '';
 
     const handleLogout = () => {
         const shiftStatus = localStorage.getItem('shift_status');
@@ -90,8 +94,7 @@ const POSLayout = ({ children }) => {
             <aside className="pos-sidebar-new">
                 <div className="pos-sidebar-header">
                     <div className="pos-sidebar-logo">
-                        <div className="logo-glow" aria-hidden="true" />
-                        <img src={logo} alt="Coupang Lanka Kmart" className="pos-logo-img" />
+                        <img src={logo} alt="Coupang Kmart" />
                     </div>
                     <div className="pos-sidebar-title">
                         <div className="pos-brand-wrapper">
@@ -144,11 +147,8 @@ const POSLayout = ({ children }) => {
             {/* Main Wrapper */}
             <div className="pos-main-wrapper">
                 <header className="pos-top-header">
-                    <div className="pos-title-section">
-                        <div className="pos-title-wrapper">
-                            <h1>{title}</h1>
-                            <p className="pos-page-subtitle">{subtitle}</p>
-                        </div>
+                    <div className="pos-header-left">
+                        {pageTitle && <h1>{pageTitle}</h1>}
                         <span className="pos-branch-badge">
                             <Store size={12} />
                             {user.branch_name || 'Main Branch'}

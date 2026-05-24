@@ -190,161 +190,124 @@ export default function CashierDashboard() {
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const total = subtotal;
   const tax = 0;
+  const drawerStatCardStyle = {
+    background: 'linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)',
+    padding: '16px',
+    borderRadius: '8px',
+    border: '1px solid #d8e1ec',
+    boxShadow: '0 2px 7px rgba(15, 23, 42, 0.04)',
+    minHeight: '96px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  };
+  const drawerLabelStyle = {
+    fontSize: '11px',
+    fontWeight: '700',
+    color: '#64748b',
+    marginBottom: '8px',
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase'
+  };
+  const drawerValueStyle = {
+    fontSize: '17px',
+    fontWeight: '650',
+    color: '#1f2937',
+    lineHeight: 1.35
+  };
+  const drawerChipStyle = {
+    alignSelf: 'flex-start',
+    background: '#fff1f2',
+    border: '1px solid #fecdd3',
+    borderRadius: '999px',
+    color: '#991b1b',
+    fontSize: '10px',
+    fontWeight: '700',
+    letterSpacing: '0.04em',
+    padding: '3px 8px',
+    textTransform: 'uppercase'
+  };
 
   return (
     <POSLayout>
       <div className="pos-dashboard-full">
 
         {/* Dashboard Overview Section */}
-        <div className="dash-overview">
-          <div className="dash-overview-top">
-            <h1>Dashboard Overview</h1>
-            <span className="dash-status-badge">
-              <span className="dash-status-dot" />
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', margin: 0 }}>Dashboard Overview</h1>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              <span style={{ width: '6px', height: '6px', background: '#16a34a', borderRadius: '50%', display: 'inline-block' }}></span>
               SYSTEM ONLINE
             </span>
           </div>
 
-          <div className="dash-drawer-hero">
-            <div className="dash-drawer-decor">
-              <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z" /></svg>
-            </div>
-            <div className="dash-drawer-inner">
-              <div className="dash-drawer-top">
+          <div style={{ background: '#ffffff', borderRadius: '10px', padding: '28px', color: '#111827', marginBottom: '24px', border: '1px solid #dbe3ee', boxShadow: '0 8px 20px rgba(15, 23, 42, 0.07)' }}>
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '24px', paddingBottom: '22px', borderBottom: '1px solid #e5eaf1' }}>
                 <div>
-                  <h2>Live Cash Drawer Tracker</h2>
-                  <p>Real-time monitoring of all financial movements in this session</p>
-                </div>
-                <div className="dash-expected-block">
-                  <div className="dash-expected-label">Expected Cash</div>
-                  <div className="dash-expected-value">Rs. {drawerMetrics.expectedCash.toLocaleString()}</div>
-                </div>
-              </div>
-
-              <div className="dash-metrics-grid">
-                <div className="dash-metric-cell">
-                  <div className="dash-metric-label">OPENING</div>
-                  <div className="dash-metric-value">Rs. {drawerMetrics.openingBalance.toLocaleString()}</div>
-                </div>
-                <div className="dash-metric-cell">
-                  <div className="dash-metric-label">CASH SALES</div>
-                  <div className="dash-metric-value dash-metric-value--positive">+Rs. {drawerMetrics.cashSales.toLocaleString()}</div>
-                </div>
-                <div className="dash-metric-cell">
-                  <div className="dash-metric-label">CARD SALES</div>
-                  <div className="dash-metric-value dash-metric-value--card">Rs. {drawerMetrics.cardSales.toLocaleString()}</div>
-                </div>
-                <div className="dash-metric-cell">
-                  <div className="dash-metric-label">CASH IN / OUT</div>
-                  <div className="dash-metric-value dash-metric-value--warning">
-                    {drawerMetrics.cashIn > 0 ? `+${drawerMetrics.cashIn}` : ''}
-                    {drawerMetrics.cashOut > 0 ? ` -${drawerMetrics.cashOut}` : ''}
-                    {drawerMetrics.cashIn === 0 && drawerMetrics.cashOut === 0 ? 'Rs. 0' : ''}
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '999px', color: '#1d4ed8', fontSize: '11px', fontWeight: '700', letterSpacing: '0.04em', padding: '5px 10px', textTransform: 'uppercase', marginBottom: '10px' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2563eb', display: 'inline-block' }}></span>
+                    Current Shift
                   </div>
+                  <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 6px 0', color: '#111827' }}>Live Cash Drawer Tracker</h2>
+                  <p style={{ fontSize: '14px', color: '#64748b', margin: 0 }}>Real-time financial summary for the current cashier session</p>
                 </div>
-                <div className="dash-metric-cell">
-                  <div className="dash-metric-label">REFUNDS</div>
-                  <div className="dash-metric-value dash-metric-value--danger">-Rs. {drawerMetrics.refunds.toLocaleString()}</div>
+                <div style={{ textAlign: 'right', background: '#fffafa', border: '1px solid #fecdd3', borderRadius: '8px', padding: '14px 18px', minWidth: '220px', boxShadow: 'inset 3px 0 0 #e51f2a' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>Expected Cash</div>
+                  <div style={{ fontSize: '27px', fontWeight: '650', color: '#1f2937', lineHeight: 1.15 }}>Rs. {drawerMetrics.expectedCash.toLocaleString()}</div>
                 </div>
               </div>
 
-              <div className="dash-formula-row">
-                <div className="dash-formula-text">
-                  <span className="dash-formula-chip">Formula</span>
-                  <span>Expected = Opening + Cash Sales + Cash In - Refunds - Cash Out</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '16px', marginTop: '22px' }}>
+                <div style={drawerStatCardStyle}>
+                  <div>
+                    <div style={drawerLabelStyle}>Opening</div>
+                    <div style={drawerValueStyle}>Rs. {drawerMetrics.openingBalance.toLocaleString()}</div>
+                  </div>
+                  <span style={drawerChipStyle}>Session Start</span>
                 </div>
-
-                <div className="dash-actions">
-                  <button
-                    type="button"
-                    className="dash-btn-cash-in"
-                    onClick={() => {
-                      const amount = prompt('Enter Cash IN amount:');
-                      if (amount && !isNaN(amount)) {
-                        const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
-                        logs.push({ type: 'CASH_IN', amount: parseFloat(amount), timestamp: new Date().toISOString(), desc: 'Manual Cash In' });
-                        localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
-                        window.location.reload();
-                      }
-                    }}
-                  >
-                    + Cash In
-                  </button>
-                  <button
-                    type="button"
-                    className="dash-btn-cash-out"
-                    onClick={() => {
-                      const amount = prompt('Enter Cash OUT amount:');
-                      if (amount && !isNaN(amount)) {
-                        const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
-                        logs.push({ type: 'CASH_OUT', amount: parseFloat(amount), timestamp: new Date().toISOString(), desc: 'Manual Cash Out' });
-                        localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
-                        window.location.reload();
-                      }
-                    }}
-                  >
-                    - Cash Out
-                  </button>
+                <div style={drawerStatCardStyle}>
+                  <div>
+                    <div style={drawerLabelStyle}>Cash Sales</div>
+                    <div style={drawerValueStyle}>Rs. {drawerMetrics.cashSales.toLocaleString()}</div>
+                  </div>
+                  <span style={drawerChipStyle}>Order Payments</span>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="dash-stats-grid">
-            <div className="dash-stat-card">
-              <div className="dash-stat-header">
-                <span className="dash-stat-label">TODAY&apos;S SALES</span>
-                <div className="dash-stat-icon dash-stat-icon--green">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+                <div style={drawerStatCardStyle}>
+                  <div>
+                    <div style={drawerLabelStyle}>Card Sales</div>
+                    <div style={drawerValueStyle}>Rs. {drawerMetrics.cardSales.toLocaleString()}</div>
+                  </div>
+                  <span style={drawerChipStyle}>Non-Cash</span>
+                </div>
+                <div style={drawerStatCardStyle}>
+                  <div>
+                    <div style={drawerLabelStyle}>Cash In / Out</div>
+                    <div style={drawerValueStyle}>
+                      {drawerMetrics.cashIn > 0 ? `In Rs. ${drawerMetrics.cashIn.toLocaleString()}` : ''}
+                      {drawerMetrics.cashIn > 0 && drawerMetrics.cashOut > 0 ? ' / ' : ''}
+                      {drawerMetrics.cashOut > 0 ? `Out Rs. ${drawerMetrics.cashOut.toLocaleString()}` : ''}
+                      {drawerMetrics.cashIn === 0 && drawerMetrics.cashOut === 0 ? 'Rs. 0' : ''}
+                    </div>
+                  </div>
+                  <span style={drawerChipStyle}>Adjustments</span>
+                </div>
+                <div style={drawerStatCardStyle}>
+                  <div>
+                    <div style={drawerLabelStyle}>Refunds</div>
+                    <div style={drawerValueStyle}>Rs. {drawerMetrics.refunds.toLocaleString()}</div>
+                  </div>
+                  <span style={drawerChipStyle}>Returns</span>
                 </div>
               </div>
-              <h3 className="dash-stat-value">Rs. 125,450</h3>
-              <p className="dash-stat-sub dash-stat-sub--green">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
-                +12.5%
-              </p>
-            </div>
-
-            <div className="dash-stat-card">
-              <div className="dash-stat-header">
-                <span className="dash-stat-label">TRANSACTIONS</span>
-                <div className="dash-stat-icon dash-stat-icon--brand">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" /></svg>
-                </div>
-              </div>
-              <h3 className="dash-stat-value">84</h3>
-              <p className="dash-stat-sub dash-stat-sub--muted">Completed today</p>
-            </div>
-
-            <div className="dash-stat-card">
-              <div className="dash-stat-header">
-                <span className="dash-stat-label">CUSTOMERS</span>
-                <div className="dash-stat-icon dash-stat-icon--purple">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
-                </div>
-              </div>
-              <h3 className="dash-stat-value">112</h3>
-              <p className="dash-stat-sub dash-stat-sub--green">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
-                +14 shift
-              </p>
-            </div>
-
-            <div className="dash-stat-card">
-              <div className="dash-stat-header">
-                <span className="dash-stat-label">POS STATUS</span>
-                <div className="dash-stat-icon dash-stat-icon--neutral">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
-                </div>
-              </div>
-              <h3 className="dash-stat-value">Healthy</h3>
-              <p className="dash-stat-sub dash-stat-sub--muted">Active</p>
             </div>
           </div>
         </div>
 
         {/* Search Box */}
-        <div className="pos-search-wrapper">
+        <div className="pos-search-wrapper" style={{ marginTop: '24px' }}>
+          <div className="pos-search-glow"></div>
           <div className="pos-search-inner">
             <Search className="pos-search-icon" size={20} strokeWidth={2.25} aria-hidden="true" />
             <input

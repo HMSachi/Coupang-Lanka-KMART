@@ -31,6 +31,7 @@ import {
     Target,
     Lock
 } from 'lucide-react';
+import logo from '../../../assets/logo.jpeg';
 import './EodPage.css';
 
 export default function EodPage() {
@@ -406,7 +407,7 @@ export default function EodPage() {
 
                         {step === 1 && (
                             <div className="summary-cards-grid animate-slide-up">
-                                <Card white title="Financial Audit" subtitle="System accuracy check">
+                                <Card white title="Financial Summary">
                                     <div className="calculation-stack">
                                         <div className="calc-row">
                                             <span>Opening Balance</span>
@@ -422,7 +423,7 @@ export default function EodPage() {
                                         </div>
                                          <div className="calc-row clickable" onClick={() => handleDrillDown('CASH_OUT')}>
                                             <span>Cash Out (-)</span>
-                                            <span style={{ color: '#ef4444' }}>-LKR {drawerMetrics.cashOut.toLocaleString()}</span>
+                                            <span className="eod-amount-negative">-LKR {drawerMetrics.cashOut.toLocaleString()}</span>
                                         </div>
                                         <div className="calc-divider"></div>
                                         <div className="calc-row result"><span><Target size={14} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Expected Total</span><span>LKR {expectedCash.toLocaleString()}</span></div>
@@ -451,19 +452,17 @@ export default function EodPage() {
                                 </Card>
                                 <Card white title="Session Identity" subtitle="Operator credentials">
                                     <div className="reconcile-card">
-                                        <div className="reconcile-item"><label>Register Terminal</label><span>{session.registerId || 'POS-01'}</span></div>
-                                        <div className="reconcile-item"><label>Active Cashier</label><span>{session.cashier}</span></div>
-                                        <div style={{ gridColumn: 'span 2', height: '1px', background: 'rgba(0,0,0,0.03)', margin: '4px 0' }}></div>
-                                        <div className="reconcile-item" style={{ gridColumn: 'span 2' }}><label>Session Timestamp</label><span>{new Date(session.startTime).toLocaleString()}</span></div>
-                                        <div className="reconcile-item" style={{ gridColumn: 'span 2' }}><label>Unique Trace ID</label><span style={{ fontSize: '11px', color: '#94a3b8', fontFamily: 'monospace' }}>{session.id}</span></div>
-                                    </div>
-                                    <div style={{ marginTop: '32px', padding: '20px', background: 'rgba(99, 102, 241, 0.03)', borderRadius: '16px', border: '1px solid rgba(99, 102, 241, 0.05)' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <div style={{ width: '32px', height: '32px', background: 'white', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}><Lock size={16} color="#6366f1" /></div>
-                                            <div>
-                                                <h4 style={{ fontSize: '12px', fontWeight: '800', margin: 0 }}>Audit Protocol</h4>
-                                                <p style={{ fontSize: '11px', color: '#64748b', margin: 0 }}>Closure will finalize all ledgers</p>
-                                            </div>
+                                        <div className="reconcile-item">
+                                            <label>Session ID</label>
+                                            <span className="eod-session-id">{session.id}</span>
+                                        </div>
+                                        <div className="reconcile-item">
+                                            <label>Cashier</label>
+                                            <span>{session.cashier}</span>
+                                        </div>
+                                        <div className="reconcile-item">
+                                            <label>Start Time</label>
+                                            <span>{new Date(session.startTime).toLocaleString()}</span>
                                         </div>
                                     </div>
                                 </Card>
@@ -473,8 +472,11 @@ export default function EodPage() {
                         {step === 2 && (
                             <div className="denoms-wrapper-grid animate-slide-up">
                                 <div className="denoms-list-col">
-                                    <Card white title="Physical Inventory" subtitle="Categorized audit">
-                                        <DenominationCounter onTotalChange={setPhysicalCount} onDenominationsChange={setDenominations} />
+                                    <Card white title="Denomination Verification">
+                                        <DenominationCounter
+                                            onTotalChange={setPhysicalCount}
+                                            onDenominationsChange={setDenominations}
+                                        />
                                     </Card>
                                 </div>
                                 <div className="reconcile-status-side animate-scale">
@@ -561,18 +563,22 @@ export default function EodPage() {
                                 <h3 style={{ fontSize: '18px', fontWeight: '900', color: '#0f172a' }}>Audit Reconciliation</h3>
                                 <p style={{ fontSize: '12px', color: '#64748b', fontWeight: '500' }}>Terminal Session Report</p>
                             </div>
-                            <div className="modal-actions">
-                                <button className="print-trigger-btn" onClick={() => window.print()}><Printer size={16} /> Print Audit</button>
-                                <button onClick={() => setSelectedReport(null)} className="close-modal-btn"><X size={20} /></button>
-                            </div>
-                        </div>
-                        <div className="report-print-paper" id="eod-printable-report">
-                            <div className="p-report-header">
-                                <div className="p-brand">
-                                    <div className="p-logo">K</div>
-                                    <div>
-                                        <h2>Kmart Terminal POS</h2>
-                                        <p style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Session Audit Report</p>
+
+                                <div className="report-print-paper" id="eod-printable-report">
+                                    <div className="p-report-header">
+                                        <div className="p-brand">
+                                            <div className="p-logo">
+                                                <img src={logo} alt="Coupang Kmart" />
+                                            </div>
+                                            <div>
+                                                <h2>Coupang Kmart</h2>
+                                                <p>Terminal POS - Shift Report</p>
+                                            </div>
+                                        </div>
+                                    <div className="p-meta">
+                                        <div><strong>ID:</strong> {selectedReport.id}</div>
+                                        <div><strong>Date:</strong> {new Date(selectedReport.endTime).toLocaleDateString()}</div>
+                                        <div><strong>Status:</strong> {selectedReport.status}</div>
                                     </div>
                                 </div>
                                 <div className="p-meta">

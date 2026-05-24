@@ -3,17 +3,15 @@
 
 :root {
     --bg-app: #f8fafc;
-    --sidebar-bg: rgba(255, 255, 255, 0.8);
-    --sidebar-border: rgba(226, 232, 240, 0.6);
-    /* Kmart logo palette */
-    --brand: #e21e26;
-    --brand-dark: #b91c1c;
-    --brand-glow: rgba(226, 30, 38, 0.18);
-    --kmart-blue: #1d6fd4;
-    --kmart-green: #16a34a;
-    --kmart-gold: #d4a017;
-    --kmart-yellow: #eab308;
-    --text-primary: #0f172a;
+    --sidebar-bg: #ffffff;
+    --sidebar-border: #e2e8f0;
+    --brand: #e51f2a;
+    --brand-dark: #c81723;
+    --brand-blue: #2563eb;
+    --brand-green: #16a34a;
+    --brand-soft: #fff1f2;
+    --brand-border: #fecdd3;
+    --text-primary: #1e293b;
     --text-muted: #64748b;
     --danger: #ef4444;
     --danger-bg: rgba(239, 68, 68, 0.08);
@@ -87,59 +85,23 @@ body {
 }
 
 .pos-sidebar-logo {
-    width: 72px;
-    /* Increased size */
-    height: 72px;
-    background: #000000;
-    border-radius: 24px;
+    width: 52px;
+    height: 42px;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    box-shadow:
-        0 15px 35px -10px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.15);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 5;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
     overflow: hidden;
-    /* Crop any excess logo padding */
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
-.logo-glow {
-    position: absolute;
-    inset: -10px;
-    background: radial-gradient(circle, rgba(226, 30, 38, 0.35) 0%, transparent 70%);
-    z-index: -1;
-    opacity: 0.6;
-    animation: pulse-glow 4s infinite ease-in-out;
-}
-
-@keyframes pulse-glow {
-
-    0%,
-    100% {
-        opacity: 0.4;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.8;
-        transform: scale(1.15);
-    }
-}
-
-.pos-logo-img {
-    width: 110%;
-    /* Zoom in slightly to fill the space */
-    height: 110%;
+.pos-sidebar-logo img {
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
-    z-index: 2;
-    transition: all 0.5s ease;
-}
-
-.pos-sidebar-new:hover .pos-logo-img {
-    transform: scale(1.1);
+    padding: 4px;
 }
 
 .pos-sidebar-title {
@@ -233,120 +195,22 @@ body {
     /* Reduced margin */
     border-radius: 14px;
     text-decoration: none;
-    color: #64748b;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
 }
 
-/* Nav icons — logo emblem colours */
-.pos-nav-item[href="/pos"] .pos-nav-icon,
-.pos-nav-item[href="/pos/"] .pos-nav-icon {
-    color: var(--brand);
-    background: rgba(226, 30, 38, 0.1);
-}
-
-.pos-nav-item[href*="online-orders"] .pos-nav-icon {
-    color: var(--kmart-blue);
-    background: rgba(29, 111, 212, 0.1);
-}
-
-.pos-nav-item[href*="cart"] .pos-nav-icon {
-    color: var(--kmart-green);
-    background: rgba(22, 163, 74, 0.1);
-}
-
-.pos-nav-item[href*="refund"] .pos-nav-icon {
-    color: var(--kmart-gold);
-    background: rgba(212, 160, 23, 0.12);
-}
-
-.pos-nav-item[href*="eod"] .pos-nav-icon {
-    color: #7c3aed;
-    background: rgba(124, 58, 237, 0.1);
-}
-
-.icon-container {
-    width: 36px;
-    /* Compact icon size */
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-}
-
-.pos-nav-item:hover .icon-container {
-    transform: scale(1.1);
-    background: white;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+.pos-nav-item:hover {
+    background: var(--brand-soft);
+    border-color: var(--brand-border);
+    color: var(--brand-dark);
 }
 
 .pos-nav-item.active {
-    background: white;
-    color: var(--text-dark);
-    font-weight: 700;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-}
-
-/* Active Glowing Indicator */
-.pos-nav-item.active::before {
-    content: '';
-    position: absolute;
-    left: -1rem;
-    top: 20%;
-    height: 60%;
-    width: 4px;
     background: var(--brand);
-    border-radius: 0 4px 4px 0;
-    box-shadow: 0 0 15px var(--brand-glow);
-}
-
-.pos-nav-item:hover::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(226, 30, 38, 0.06), transparent);
-    animation: sweep 1.5s infinite;
-}
-
-@keyframes sweep {
-    0% {
-        left: -100%;
-    }
-
-    100% {
-        left: 100%;
-    }
-}
-
-.pos-nav-item.active {
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--brand);
-    font-weight: 700;
-    box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.08),
-        0 4px 6px -2px rgba(0, 0, 0, 0.03);
-    border-color: rgba(255, 255, 255, 0.8);
-    transform: scale(1.02);
-}
-
-.pos-nav-item.active::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 6px;
-    height: 100%;
-    background: var(--brand);
-    box-shadow: 4px 0 15px var(--brand-glow);
+    color: #ffffff;
+    font-weight: 600;
+    border-color: var(--brand-dark);
+    box-shadow: 0 8px 18px rgba(229, 31, 42, 0.18);
 }
 
 .pos-nav-icon {
@@ -545,11 +409,13 @@ body {
 }
 
 .pos-branch-badge {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    padding: 0.5rem 1rem;
-    border-radius: 14px;
+    padding: 0.25rem 0.65rem;
+    background: #ffffff;
+    color: var(--text-muted);
+    border: 1px solid var(--sidebar-border);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
     display: flex;
     align-items: center;
     gap: 0.65rem;
@@ -574,6 +440,10 @@ body {
     font-size: 1.1rem;
 }
 
+.pos-branch-badge svg {
+    color: var(--brand-blue);
+}
+
 .pos-header-right {
     display: flex;
     align-items: center;
@@ -590,13 +460,15 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1rem;
+    background: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--sidebar-border);
+    gap: 0.75rem;
 }
 
-.time-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+.time-icon {
+    color: var(--brand-blue);
 }
 
 .time-text {
@@ -658,6 +530,64 @@ body {
     overflow: hidden;
 }
 
+.pos-search-wrapper {
+    margin-bottom: 1.25rem;
+    position: relative;
+}
+
+.pos-search-inner {
+    position: relative;
+}
+
+.pos-search-input {
+    width: 100%;
+    background: white;
+    border: 1px solid var(--sidebar-border);
+    border-radius: 5px;
+    padding: 0.85rem 1rem 0.85rem 2.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.pos-search-input:focus {
+    outline: none;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(229, 31, 42, 0.1);
+}
+
+.pos-search-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--text-muted);
+}
+
+.pos-product-scroller {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding-bottom: 1.5rem;
+}
+
+.pos-dashboard-cart {
+    width: 380px;
+    flex-shrink: 0;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid var(--sidebar-border);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+/* EOD & Refund Pages Support Layouts */
 .eod-container,
 .refund-container {
     max-width: 1200px;
@@ -701,26 +631,37 @@ body {
     width: 100%;
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.85) 100%);
-    /* Subtle gradient background */
-    border: 1.5px solid rgba(29, 111, 212, 0.25);
-    border-radius: 28px;
-    padding: 8px 12px;
-    box-shadow:
-        0 25px 50px -15px rgba(0, 0, 0, 0.08),
-        0 12px 24px -10px rgba(29, 111, 212, 0.08),
-        inset 0 1px 2px rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(12px);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    justify-content: center;
 }
 
-.pos-search-wrapper:hover .pos-search-inner {
-    transform: translateY(-5px);
-    border-color: rgba(29, 111, 212, 0.4);
-    box-shadow:
-        0 35px 70px -15px rgba(29, 111, 212, 0.12),
-        0 15px 35px -10px rgba(0, 0, 0, 0.1),
-        inset 0 1px 3px rgba(255, 255, 255, 0.9);
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--brand-blue);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 5px;
+    border-radius: 10px;
+    border: 2px solid var(--brand);
+    line-height: 1;
+    min-width: 16px;
+    text-align: center;
+}
+
+.pos-header-cart-btn-mini {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 8px 18px rgba(229, 31, 42, 0.22);
 }
 
 .pos-search-input {
@@ -792,7 +733,6 @@ body {
     z-index: -1;
 }
 
-.pos-search-wrapper:hover .pos-search-glow,
-.pos-search-inner:focus-within .pos-search-glow {
-    opacity: 0.7;
+.time-text {
+    font-size: 11px !important;
 }

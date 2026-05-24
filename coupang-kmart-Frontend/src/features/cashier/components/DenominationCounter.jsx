@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './DenominationCounter.css';
-import { DollarSign, Hash } from 'lucide-react';
 
 const DENOMINATIONS = [5000, 1000, 500, 100, 50, 20, 10, 5, 2, 1];
 
@@ -51,7 +50,7 @@ const DenominationCounter = ({ onTotalChange, onDenominationsChange }) => {
                             <span className="denom-prefix">LKR</span>
                             <span className="denom-value">{denom.toLocaleString()}</span>
                         </div>
-                        <div className="denom-x">×</div>
+                        <div className="denom-x">x</div>
                         <div className="denom-input-wrapper">
                             <input
                                 type="text"
@@ -69,7 +68,7 @@ const DenominationCounter = ({ onTotalChange, onDenominationsChange }) => {
             </div>
 
             <div className="denom-total-summary">
-                <div className="total-label">Subtotal Breakdown</div>
+                <div className="total-label">Total Counted</div>
                 <div className="total-value">
                     <small>LKR</small>
                     <span>{calculateTotal(counts).toLocaleString()}</span>
