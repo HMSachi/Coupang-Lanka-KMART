@@ -13,6 +13,7 @@ const OnlineOrdersPage = () => {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [filterStatus, setFilterStatus] = useState('ALL');
     const [searchQuery, setSearchQuery] = useState('');
+    const [showPrintPreview, setShowPrintPreview] = useState(false);
 
     useEffect(() => {
         fetchOrders();
@@ -50,19 +51,28 @@ const OnlineOrdersPage = () => {
     const handleStatusUpdate = async (orderId, newStatus) => {
         try {
             const token = localStorage.getItem('token');
-            await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const cashierName = user.name || 'Unknown Cashier';
+
+            const response = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ status: newStatus })
+                body: JSON.stringify({
+                    status: newStatus,
+                    cashier_name: cashierName
+                })
             });
 
+            if (!response.ok) throw new Error('Failed to update status');
+            const updatedOrder = await response.json();
+
             // Update local state
-            setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+            setOrders(prev => prev.map(o => o.id === orderId ? { ...o, ...updatedOrder } : o));
             if (selectedOrder && selectedOrder.id === orderId) {
-                setSelectedOrder(prev => ({ ...prev, status: newStatus }));
+                setSelectedOrder(prev => ({ ...prev, ...updatedOrder }));
             }
         } catch (error) {
             console.error('Error updating status:', error);
@@ -70,20 +80,27 @@ const OnlineOrdersPage = () => {
     };
 
     const getStatusStyle = (status) => {
-        switch (status) {
+        const s = status ? status.toUpperCase() : '';
+        switch (s) {
             case 'PENDING': return 'status-pending';
             case 'PROCESSING': return 'status-processing';
-            case 'SHIPPED': return 'status-shipped';
+            case 'READY TO DELIVERY': return 'status-ready';
+            case 'ON DELIVERY': return 'status-shipped';
             case 'DELIVERED': return 'status-delivered';
+            case 'CASH RECEIVED': return 'status-cash';
             case 'CANCELLED': return 'status-cancelled';
             default: return 'status-default';
         }
     };
 
     const filteredOrders = orders.filter(order => {
+        // Filter out physical/POS orders (which typically start with HOLD-)
+        const isPhysical = (order.order_id || '').startsWith('HOLD-');
+        if (isPhysical) return false;
+
         const matchesStatus = filterStatus === 'ALL' || order.status === filterStatus;
-        const matchesSearch = order.order_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            order.customer_name.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesSearch = (order.order_id || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (order.customer_name || '').toLowerCase().includes(searchQuery.toLowerCase());
         return matchesStatus && matchesSearch;
     });
 
@@ -112,8 +129,10 @@ const OnlineOrdersPage = () => {
                                 <option value="ALL">All Orders</option>
                                 <option value="PENDING">Pending</option>
                                 <option value="PROCESSING">Processing</option>
-                                <option value="SHIPPED">Shipped</option>
+                                <option value="READY TO DELIVERY">Ready to Delivery</option>
+                                <option value="ON DELIVERY">On Delivery</option>
                                 <option value="DELIVERED">Delivered</option>
+                                <option value="CANCELLED">Cancelled</option>
                             </select>
                         </div>
                         <button className="refresh-btn" onClick={fetchOrders}>
@@ -205,7 +224,10 @@ const OnlineOrdersPage = () => {
                                     <p className="transaction-id">Transaction Ref: #{selectedOrder.order_id}</p>
                                 </div>
                                 <div className="modal-header-actions">
-                                    <button className="print-btn">
+                                    <button
+                                        className="print-btn"
+                                        onClick={() => setShowPrintPreview(true)}
+                                    >
                                         <Printer size={16} /> Print Invoice
                                     </button>
                                     <button className="close-modal" onClick={() => setSelectedOrder(null)}>×</button>
@@ -275,7 +297,36 @@ const OnlineOrdersPage = () => {
                                     </div>
                                 </div>
 
-                                {/* Bill of Lading Section - Enhanced */}
+                                {/* Fulfullment Audit Trail */}
+                                <div className="audit-trail-section">
+                                    <div className="section-header">
+                                        <UserIcon size={14} /> <span>Fulfillment Team</span>
+                                    </div>
+                                    <div className="audit-grid">
+                                        <div className="audit-node">
+                                            <label>Approved By</label>
+                                            <span>{selectedOrder.approved_by || 'Waiting...'}</span>
+                                        </div>
+                                        <div className="audit-node">
+                                            <label>Processed By</label>
+                                            <span>{selectedOrder.processed_by || 'Waiting...'}</span>
+                                        </div>
+                                        <div className="audit-node">
+                                            <label>Handed Over By</label>
+                                            <span>{selectedOrder.shipped_by || 'Waiting...'}</span>
+                                        </div>
+                                        <div className="audit-node">
+                                            <label>Delivered By</label>
+                                            <span>{selectedOrder.delivered_by || 'Waiting...'}</span>
+                                        </div>
+                                        <div className="audit-node">
+                                            <label>Cash Collected By</label>
+                                            <span>{selectedOrder.cash_received_by || 'Waiting...'}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Bill of Lading Section */}
                                 <div className="bill-lading-section">
                                     <div className="section-header-enhanced">
                                         <div className="section-header-badge">
@@ -345,46 +396,207 @@ const OnlineOrdersPage = () => {
 
                             {/* Modal Footer (Workflow Actions) */}
                             <div className="modal-footer">
-                                {selectedOrder.status !== 'CANCELLED' && selectedOrder.status !== 'DELIVERED' && (
-                                    <button
-                                        className="btn-reject"
-                                        onClick={() => {
-                                            handleStatusUpdate(selectedOrder.id, 'CANCELLED');
-                                            setSelectedOrder(null);
-                                        }}
-                                    >
-                                        Reject Order
-                                    </button>
-                                )}
+                                {(() => {
+                                    const currentStatus = (selectedOrder.status || '').toUpperCase();
+                                    return (
+                                        <>
+                                            {currentStatus === 'PENDING' && (
+                                                <button
+                                                    className="btn-reject"
+                                                    onClick={() => {
+                                                        handleStatusUpdate(selectedOrder.id, 'CANCELLED');
+                                                        setSelectedOrder(null);
+                                                    }}
+                                                >
+                                                    Reject Order
+                                                </button>
+                                            )}
 
-                                {selectedOrder.status === 'PENDING' && (
-                                    <button
-                                        className="btn-primary btn-approve"
-                                        onClick={() => handleStatusUpdate(selectedOrder.id, 'PROCESSING')}
-                                    >
-                                        Approve Order
-                                    </button>
-                                )}
+                                            {currentStatus === 'PENDING' && (
+                                                <button
+                                                    className="btn-primary btn-approve"
+                                                    onClick={() => handleStatusUpdate(selectedOrder.id, 'PROCESSING')}
+                                                >
+                                                    Approve Order
+                                                </button>
+                                            )}
 
-                                {selectedOrder.status === 'PROCESSING' && (
-                                    <button
-                                        className="btn-primary btn-processing"
-                                        onClick={() => handleStatusUpdate(selectedOrder.id, 'SHIPPED')}
-                                    >
-                                        Complete Processing
-                                    </button>
-                                )}
+                                            {currentStatus === 'PROCESSING' && (
+                                                <button
+                                                    className="btn-primary btn-processing"
+                                                    onClick={() => handleStatusUpdate(selectedOrder.id, 'READY TO DELIVERY')}
+                                                >
+                                                    Complete Processing
+                                                </button>
+                                            )}
 
-                                {selectedOrder.status === 'SHIPPED' && (
-                                    <button
-                                        className="btn-primary btn-deliver"
-                                        onClick={() => handleStatusUpdate(selectedOrder.id, 'DELIVERED')}
-                                    >
-                                        Mark as Delivered
-                                    </button>
-                                )}
+                                            {currentStatus === 'READY TO DELIVERY' && (
+                                                <button
+                                                    className="btn-primary btn-deliver"
+                                                    onClick={() => handleStatusUpdate(selectedOrder.id, 'ON DELIVERY')}
+                                                >
+                                                    Handover to Delivery
+                                                </button>
+                                            )}
+
+                                            {currentStatus === 'ON DELIVERY' && (
+                                                <button
+                                                    className="btn-primary btn-delivered"
+                                                    onClick={() => handleStatusUpdate(selectedOrder.id, 'DELIVERED')}
+                                                >
+                                                    Confirm Delivered
+                                                </button>
+                                            )}
+                                            {currentStatus === 'DELIVERED' && (
+                                                <button
+                                                    className="btn-primary btn-cash-received"
+                                                    onClick={async () => {
+                                                        const token = localStorage.getItem('token');
+                                                        const user = JSON.parse(localStorage.getItem('user') || '{}');
+                                                        const response = await fetch(`http://localhost:5000/api/orders/${selectedOrder.id}/status`, {
+                                                            method: 'PUT',
+                                                            headers: {
+                                                                'Content-Type': 'application/json',
+                                                                'Authorization': `Bearer ${token}`
+                                                            },
+                                                            body: JSON.stringify({
+                                                                status: 'CASH RECEIVED',
+                                                                cashier_name: user.name || 'Unknown Cashier'
+                                                            })
+                                                        });
+                                                        if (response.ok) {
+                                                            const data = await response.json();
+                                                            alert(`✅ CASH RECEIVED CONFIRMED!\n\nOrder #${selectedOrder.order_id} cash is received.\nBatch Number: ${data.batch_number}\n\nPlease add this batch in the "Cash In" section of your EOD session to update the system balance.`);
+                                                            handleStatusUpdate(selectedOrder.id, 'CASH RECEIVED');
+                                                        }
+                                                    }}
+                                                >
+                                                    <CreditCard size={16} /> Confirm Cash Received
+                                                </button>
+                                            )}
+                                        </>
+                                    );
+                                })()}
 
                                 <button className="btn-close" onClick={() => setSelectedOrder(null)}>Close</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Print Preview Modal */}
+                {showPrintPreview && selectedOrder && (
+                    <div className="print-preview-overlay">
+                        <div className="print-preview-card">
+                            <div className="preview-header">
+                                <h3>Invoice Preview</h3>
+                                <div className="preview-actions">
+                                    <button className="btn-print-now" onClick={() => window.print()}>
+                                        <Printer size={16} /> Print Now
+                                    </button>
+                                    <button className="btn-close-preview" onClick={() => setShowPrintPreview(false)}>×</button>
+                                </div>
+                            </div>
+
+                            <div className="print-paper-container">
+                                <div className="official-invoice-paper" id="printable-invoice">
+                                    {/* Header */}
+                                    <div className="inv-header">
+                                        <div className="inv-logo">CK</div>
+                                        <h1>COUPANG KMART</h1>
+                                        <p className="inv-branch">Main Showroom & Fulfillment Center</p>
+                                        <p>No 125, Galle Road, Colombo 03</p>
+                                        <p>Hotline: +94 11 234 5678 | +94 77 123 4567</p>
+                                        <div className="inv-type-badge">CASH ON DELIVERY INVOICE</div>
+                                    </div>
+
+                                    <div className="inv-meta-grid-print">
+                                        <div className="meta-col">
+                                            <div className="meta-item">
+                                                <label>Invoice No:</label>
+                                                <span>#{selectedOrder.order_id}</span>
+                                            </div>
+                                            <div className="meta-item">
+                                                <label>Date:</label>
+                                                <span>{new Date(selectedOrder.created_at).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+                                        <div className="meta-col">
+                                            <div className="meta-item">
+                                                <label>Customer:</label>
+                                                <span>{selectedOrder.customer_name}</span>
+                                            </div>
+                                            <div className="meta-item">
+                                                <label>Method:</label>
+                                                <span className="uppercase">{selectedOrder.payment_method}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="inv-separator"></div>
+
+                                    <div className="inv-items-table-print">
+                                        <div className="inv-table-head">
+                                            <span className="col-desc">Description</span>
+                                            <span className="col-qty">Qty</span>
+                                            <span className="col-price">Rate</span>
+                                            <span className="col-total">Amount</span>
+                                        </div>
+                                        {selectedOrder.items && selectedOrder.items.map((item, idx) => (
+                                            <div key={idx} className="inv-table-row">
+                                                <span className="col-desc">{item.product_name}</span>
+                                                <span className="col-qty">{item.quantity}</span>
+                                                <span className="col-price">{parseFloat(item.price).toLocaleString()}</span>
+                                                <span className="col-total">{(item.price * item.quantity).toLocaleString()}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="inv-separator"></div>
+
+                                    <div className="inv-summary-print">
+                                        <div className="sum-row">
+                                            <span>Order Subtotal</span>
+                                            <span>LKR {parseFloat(selectedOrder.subtotal).toLocaleString()}</span>
+                                        </div>
+                                        <div className="sum-row">
+                                            <span>Delivery / Logistics</span>
+                                            <span>LKR {parseFloat(selectedOrder.shipping_cost).toLocaleString()}</span>
+                                        </div>
+                                        <div className="sum-row total-row">
+                                            <span>NET PAYABLE (COD)</span>
+                                            <span>LKR {parseFloat(selectedOrder.total_amount).toLocaleString()}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Print Audit */}
+                                    <div className="inv-audit-print">
+                                        <div className="audit-row">
+                                            <span>Approved: {selectedOrder.approved_by || '-'}</span>
+                                            <span>Processed: {selectedOrder.processed_by || '-'}</span>
+                                        </div>
+                                        <div className="audit-row">
+                                            <span>Shipped: {selectedOrder.shipped_by || '-'}</span>
+                                            <span>Delivered: {selectedOrder.delivered_by || '-'}</span>
+                                        </div>
+                                        <div className="audit-row">
+                                            <span>Cash Settled: {selectedOrder.cash_received_by || '-'}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="inv-cod-notice">
+                                        <p><strong>COD ALERT:</strong> Please collect the total amount of <strong>LKR {parseFloat(selectedOrder.total_amount).toLocaleString()}</strong> upon delivery.</p>
+                                    </div>
+
+                                    <div className="inv-footer-print">
+                                        <div className="barcode-box">
+                                            <div className="barcode-line"></div>
+                                            <p>#{selectedOrder.order_id}</p>
+                                        </div>
+                                        <p className="thank-you">Thank you for shopping with Coupang Kmart!</p>
+                                        <p className="website">www.coupangkmart.lk</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

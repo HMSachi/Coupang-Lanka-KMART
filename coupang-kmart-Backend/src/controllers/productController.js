@@ -157,11 +157,15 @@ exports.deleteProduct = async (req, res) => {
 exports.getBranchInventory = async (req, res) => {
     const { branch_id } = req.params;
 
-    // Security check: Restricted roles can only see THEIR branch
-    if (req.user.role !== 'admin') {
-        const userBranchId = req.user.branch_id;
-        if (!userBranchId || parseInt(branch_id) !== parseInt(userBranchId)) {
-            return res.status(403).json({ error: 'Unauthorized access to other branch inventory.' });
+    // Security check: Restricted roles can only see THEIR branch (skip for public access)
+    if (req.user) {
+        const role = req.user.role ? req.user.role.toLowerCase() : '';
+        if (role !== 'admin' && role !== 'superadmin' && role !== 'subadmin') {
+            const userBranchId = req.user.branch_id;
+            if (!userBranchId || parseInt(branch_id) !== parseInt(userBranchId)) {
+                console.error(`Branch access mismatch: User ${req.user.id} has role ${req.user.role} and branch ID ${userBranchId}, but requested branch ID ${branch_id}`);
+                return res.status(403).json({ error: 'Unauthorized access to other branch inventory.' });
+            }
         }
     }
 
