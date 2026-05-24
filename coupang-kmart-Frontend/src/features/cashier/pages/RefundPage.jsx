@@ -11,10 +11,6 @@ export default function RefundPage() {
     return (
         <POSLayout>
             <div className="refund-container">
-                <div className="content-header">
-                    <h1>Returns & Refunds</h1>
-                    <p>Process customer returns and issue refunds safely.</p>
-                </div>
 
                 <div className="refund-search-section">
                     <div className="search-row">
