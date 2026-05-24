@@ -28,10 +28,10 @@
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, var(--brand, #e21e26) 0%, var(--brand-dark, #b91c1c) 100%);
     padding: 2.25rem;
     border-radius: 20px;
-    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 10px 25px -5px rgba(226, 30, 38, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -39,7 +39,7 @@
     width: 60px;
     height: 60px;
     background: white;
-    color: #4f46e5;
+    color: var(--brand, #e21e26);
     border-radius: 16px;
     display: flex;
     align-items: center;
@@ -85,7 +85,7 @@
 
 .workflow-step.active {
     background: #eef2ff;
-    color: #4f46e5;
+    color: var(--brand, #e21e26);
     box-shadow: 0 4px 10px rgba(79, 70, 229, 0.1);
 }
 
@@ -102,7 +102,7 @@
 }
 
 .workflow-step.active .step-num {
-    background: #6366f1;
+    background: var(--brand, #e21e26);
 }
 
 .step-line {
@@ -211,9 +211,9 @@
 }
 
 .notes-section textarea:focus {
-    border-color: #6366f1;
+    border-color: var(--brand, #e21e26);
     background: white;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.05);
+    box-shadow: 0 0 0 4px rgba(226, 30, 38, 0.05);
 }
 
 .security-notice {
@@ -295,7 +295,7 @@
     width: 64px;
     height: 64px;
     background: #eef2ff;
-    color: #4f46e5;
+    color: var(--brand, #e21e26);
     border-radius: 50%;
     display: flex;
     align-items: center;

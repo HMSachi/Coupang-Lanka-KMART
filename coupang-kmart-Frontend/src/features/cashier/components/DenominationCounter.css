@@ -1,12 +1,10 @@
 .denomination-counter-premium {
-    background: #f8fafc;
-    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    border-radius: 18px;
     padding: 1.5rem;
-    border: 1.5px solid #e2e8f0;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 16px;
-    padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    box-shadow: 0 12px 32px -14px rgba(15, 23, 42, 0.1);
 }
 
 .denom-grid {
@@ -73,8 +71,8 @@
 
 .denom-input:focus {
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    border-color: var(--brand, #e21e26);
+    box-shadow: 0 0 0 4px rgba(226, 30, 38, 0.1);
     background: white;
 }
 
@@ -85,14 +83,14 @@
 .denom-result {
     text-align: right;
     font-weight: 800;
-    color: #6366f1;
+    color: var(--brand, #e21e26);
     font-size: 1rem;
 }
 
 .denom-total-summary {
     margin-top: 1.5rem;
     padding: 1.25rem;
-    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    background: linear-gradient(135deg, var(--brand, #e21e26) 0%, #3730a3 100%);
     border-radius: 12px;
     display: flex;
     justify-content: space-between;

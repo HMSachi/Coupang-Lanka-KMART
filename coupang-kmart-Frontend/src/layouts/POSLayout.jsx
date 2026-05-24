@@ -3,6 +3,7 @@ import { LogOut, User, Clock, RotateCcw, BarChart2, MonitorIcon, ChevronRight, S
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.jpeg';
 import './POSLayout.css';
+import '../features/cashier/styles/pos-premium-theme.css';
 
 const POSLayout = ({ children }) => {
     const navigate = useNavigate();
@@ -89,7 +90,8 @@ const POSLayout = ({ children }) => {
             <aside className="pos-sidebar-new">
                 <div className="pos-sidebar-header">
                     <div className="pos-sidebar-logo">
-                        <img src={logo} alt="Coupang Lanka" className="pos-logo-img" />
+                        <div className="logo-glow" aria-hidden="true" />
+                        <img src={logo} alt="Coupang Lanka Kmart" className="pos-logo-img" />
                     </div>
                     <div className="pos-sidebar-title">
                         <div className="pos-brand-wrapper">
