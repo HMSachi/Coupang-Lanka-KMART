@@ -107,13 +107,9 @@ const OnlineOrdersPage = () => {
     return (
         <POSLayout>
             <div className="online-orders-container">
-                {/* Header Section */}
-                <div className="orders-header">
-                    <div className="header-info">
-                        <h2 className="header-title">Incoming Web Orders</h2>
-                        <p className="header-subtitle">Manage and fulfill orders from Coupang Lanka website</p>
-                    </div>
+                {/* Header Section Removed - Handled by POSLayout */}
 
+                <div className="orders-header-actions-bar">
                     <div className="header-actions">
                         <div className="search-box">
                             <Search className="search-icon" size={18} />
@@ -140,7 +136,7 @@ const OnlineOrdersPage = () => {
                             </select>
                         </div>
                         <button className="refresh-btn" onClick={fetchOrders}>
-                            Refresh List
+                            🔄 Refresh List
                         </button>
                     </div>
                 </div>
@@ -332,63 +328,69 @@ const OnlineOrdersPage = () => {
 
                                 {/* Bill of Lading Section */}
                                 <div className="bill-lading-section">
-                                    <div className="section-header">
-                                        <Package size={16} /> <span>Bill of Lading</span>
+                                    <div className="section-header-enhanced">
+                                        <div className="section-header-badge">
+                                            <Package size={18} />
+                                        </div>
+                                        <div>
+                                            <h4>Order Summary</h4>
+                                            <p className="section-subtitle">Review all items in this order</p>
+                                        </div>
                                     </div>
-                                    <table className="lading-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Catalog Item</th>
-                                                <th className="text-center">Qty</th>
-                                                <th className="text-right">Rate</th>
-                                                <th className="text-right">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {selectedOrder.items && selectedOrder.items.map((item, idx) => {
-                                                const getImageUrl = (url) => {
-                                                    if (!url) return '';
-                                                    if (url.startsWith('http')) return url;
-                                                    const cleanPath = url.startsWith('/') ? url : `/${url}`;
-                                                    if (cleanPath.startsWith('/uploads')) {
-                                                        return `http://localhost:5000${cleanPath}`;
-                                                    }
-                                                    return `http://localhost:5000/uploads${cleanPath}`;
-                                                };
 
-                                                return (
-                                                    <tr key={idx}>
-                                                        <td>
-                                                            <div className="lading-item-box">
-                                                                <span className="item-sku">#{item.product_id || 'WEB'}</span>
-                                                                <div className="item-img-box">
-                                                                    <img src={getImageUrl(item.image_url)} alt="" />
-                                                                </div>
-                                                                <span className="item-name">{item.product_name}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td className="text-center font-medium">{item.quantity}</td>
-                                                        <td className="text-right rate-text">LKR {parseFloat(item.price).toLocaleString()}</td>
-                                                        <td className="text-right font-bold">LKR {(item.price * item.quantity).toLocaleString()}</td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                        <tfoot>
-                                            <tr className="subtotal-row">
-                                                <td colSpan="3">Sub-Total</td>
-                                                <td>LKR {parseFloat(selectedOrder.subtotal).toLocaleString()}</td>
-                                            </tr>
-                                            <tr className="shipping-row">
-                                                <td colSpan="3">Freight / Logistics</td>
-                                                <td>LKR {parseFloat(selectedOrder.shipping_cost).toLocaleString()}</td>
-                                            </tr>
-                                            <tr className="grand-total-row">
-                                                <td colSpan="3">Certification Total</td>
-                                                <td className="total-amount-large">LKR {parseFloat(selectedOrder.total_amount).toLocaleString()}</td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                    <div className="items-container">
+                                        {selectedOrder.items && selectedOrder.items.map((item, idx) => {
+                                            const getImageUrl = (url) => {
+                                                if (!url) return '';
+                                                if (url.startsWith('http')) return url;
+                                                const cleanPath = url.startsWith('/') ? url : `/${url}`;
+                                                if (cleanPath.startsWith('/uploads')) {
+                                                    return `http://localhost:5000${cleanPath}`;
+                                                }
+                                                return `http://localhost:5000/uploads${cleanPath}`;
+                                            };
+
+                                            return (
+                                                <div key={idx} className="item-card-enhanced">
+                                                    <div className="item-card-left">
+                                                        <div className="item-img-box-enhanced">
+                                                            <img src={getImageUrl(item.image_url)} alt={item.product_name} />
+                                                        </div>
+                                                        <div className="item-details">
+                                                            <span className="item-sku-enhanced">#{item.product_id || 'WEB'}</span>
+                                                            <h5 className="item-name-enhanced">{item.product_name}</h5>
+                                                            <span className="item-unit-price">LKR {parseFloat(item.price).toLocaleString()} per unit</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item-card-right">
+                                                        <div className="quantity-box">
+                                                            <span className="qty-label">Qty</span>
+                                                            <span className="qty-value">{item.quantity}</span>
+                                                        </div>
+                                                        <div className="amount-box">
+                                                            <span className="amount-label">Amount</span>
+                                                            <span className="amount-value">LKR {(item.price * item.quantity).toLocaleString()}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+
+                                    <div className="summary-cards-grid">
+                                        <div className="summary-card subtotal-card">
+                                            <span className="summary-label">Sub-Total</span>
+                                            <span className="summary-value">LKR {parseFloat(selectedOrder.subtotal).toLocaleString()}</span>
+                                        </div>
+                                        <div className="summary-card shipping-card">
+                                            <span className="summary-label">Shipping & Handling</span>
+                                            <span className="summary-value">LKR {parseFloat(selectedOrder.shipping_cost).toLocaleString()}</span>
+                                        </div>
+                                        <div className="summary-card total-card">
+                                            <span className="summary-label">Order Total</span>
+                                            <span className="summary-value-large">LKR {parseFloat(selectedOrder.total_amount).toLocaleString()}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

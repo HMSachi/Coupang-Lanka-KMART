@@ -289,7 +289,15 @@ export default function PosCartPage() {
         .pos-cart-page-container {
           padding: 1.5rem;
           max-width: 1600px;
+          padding: 24px;
+          max-width: 1400px;
           margin: 0 auto;
+          animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         .cart-page-header {
@@ -297,6 +305,10 @@ export default function PosCartPage() {
           justify-content: space-between;
           align-items: center;
           margin-bottom: 1.5rem;
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+          padding-bottom: 1.5rem;
+          border-bottom: 1px solid #f1f5f9;
         }
 
         .header-btn {
@@ -511,6 +523,49 @@ export default function PosCartPage() {
         :global(.cart-items-container) {
           max-height: 400px !important;
         }
+          gap: 0.6rem;
+          padding: 10px 20px;
+          background: white;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          color: #475569;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          font-size: 0.9rem;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .back-to-products:hover {
+          border-color: #3b82f6;
+          color: #3b82f6;
+          transform: translateX(-4px);
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+
+        .cart-page-header h1 {
+          font-size: 2rem;
+          font-weight: 950;
+          background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          margin: 0;
+          letter-spacing: -0.04em;
+        }
+
+        .cart-page-content {
+          background: transparent;
+          border-radius: 0;
+          box-shadow: none;
+          border: none;
+          overflow: visible;
+          margin-top: 1.5rem;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+
+        /* All cart styles are now professionally managed in CartSidebar.css to match the QuickBill design */
       `}</style>
     </POSLayout>
   );
