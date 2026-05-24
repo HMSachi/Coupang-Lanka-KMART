@@ -9,6 +9,7 @@ const POSLayout = ({ children }) => {
     const location = useLocation();
     const [time, setTime] = useState(new Date());
     const [cartCount, setCartCount] = useState(0);
+    const [rotatingIcon, setRotatingIcon] = useState(null);
 
     const getPageContext = () => {
         switch (location.pathname) {
@@ -67,6 +68,11 @@ const POSLayout = ({ children }) => {
         localStorage.removeItem('user');
         localStorage.removeItem('shift_status');
         navigate('/login');
+    };
+
+    const handleNavItemClick = (path) => {
+        setRotatingIcon(path);
+        setTimeout(() => setRotatingIcon(null), 600);
     };
 
     const navItems = [
