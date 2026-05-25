@@ -20,50 +20,7 @@ export default function CashierDashboard() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const [session, setSession] = useState(null);
-  const [drawerMetrics, setDrawerMetrics] = useState({
-    openingBalance: 0,
-    cashSales: 0,
-    cardSales: 0,
-    bankTransfers: 0,
-    refunds: 0,
-    cashIn: 0,
-    cashOut: 0,
-    expectedCash: 0,
-    drawerBalance: 0
-  });
 
-  // Session Check
-  useEffect(() => {
-    const activeSession = localStorage.getItem('active_session');
-    if (activeSession) {
-      const sess = JSON.parse(activeSession);
-      setSession(sess);
-
-      // Calculate metrics from logs
-      const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
-      const cashSales = logs.filter(l => l.type === 'CASH_SALE').reduce((sum, l) => sum + l.amount, 0);
-      const cardSales = logs.filter(l => l.type === 'CARD_SALE').reduce((sum, l) => sum + l.amount, 0);
-      const refunds = logs.filter(l => l.type === 'REFUND').reduce((sum, l) => sum + l.amount, 0);
-      const cashIn = logs.filter(l => l.type === 'CASH_IN').reduce((sum, l) => sum + l.amount, 0);
-      const cashOut = logs.filter(l => l.type === 'CASH_OUT').reduce((sum, l) => sum + l.amount, 0);
-      const opening = sess.openingBalance || 0;
-
-      const expectedCash = opening + cashSales + cashIn - refunds - cashOut;
-
-      setDrawerMetrics({
-        openingBalance: opening,
-        cashSales,
-        cardSales,
-        bankTransfers: 0,
-        refunds,
-        cashIn,
-        cashOut,
-        expectedCash,
-        drawerBalance: expectedCash
-      });
-    }
-  }, [navigate]);
 
   // Empty inventory states, ready for backend integration later
   const [products, setProducts] = useState([]);
@@ -189,120 +146,13 @@ export default function CashierDashboard() {
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const total = subtotal;
   const tax = 0;
-  const drawerStatCardStyle = {
-    background: 'linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)',
-    padding: '16px',
-    borderRadius: '8px',
-    border: '1px solid #d8e1ec',
-    boxShadow: '0 2px 7px rgba(15, 23, 42, 0.04)',
-    minHeight: '96px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-  };
-  const drawerLabelStyle = {
-    fontSize: '11px',
-    fontWeight: '700',
-    color: '#64748b',
-    marginBottom: '8px',
-    letterSpacing: '0.05em',
-    textTransform: 'uppercase'
-  };
-  const drawerValueStyle = {
-    fontSize: '17px',
-    fontWeight: '650',
-    color: '#1f2937',
-    lineHeight: 1.35
-  };
-  const drawerChipStyle = {
-    alignSelf: 'flex-start',
-    background: '#fff1f2',
-    border: '1px solid #fecdd3',
-    borderRadius: '999px',
-    color: '#991b1b',
-    fontSize: '10px',
-    fontWeight: '700',
-    letterSpacing: '0.04em',
-    padding: '3px 8px',
-    textTransform: 'uppercase'
-  };
+
 
   return (
     <POSLayout>
       <div className="pos-dashboard-full" style={{ padding: '24px', backgroundColor: '#f8fafc', height: '100%', overflowY: 'auto' }}>
 
-        {/* Dashboard Overview Section */}
-        <div style={{ marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-            <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', margin: 0 }}>Dashboard Overview</h1>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-              <span style={{ width: '6px', height: '6px', background: '#16a34a', borderRadius: '50%', display: 'inline-block' }}></span>
-              SYSTEM ONLINE
-            </span>
-          </div>
 
-          <div style={{ background: '#ffffff', borderRadius: '10px', padding: '28px', color: '#111827', marginBottom: '24px', border: '1px solid #dbe3ee', boxShadow: '0 8px 20px rgba(15, 23, 42, 0.07)' }}>
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '24px', paddingBottom: '22px', borderBottom: '1px solid #e5eaf1' }}>
-                <div>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '999px', color: '#1d4ed8', fontSize: '11px', fontWeight: '700', letterSpacing: '0.04em', padding: '5px 10px', textTransform: 'uppercase', marginBottom: '10px' }}>
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2563eb', display: 'inline-block' }}></span>
-                    Current Shift
-                  </div>
-                  <h2 style={{ fontSize: '22px', fontWeight: '700', margin: '0 0 6px 0', color: '#111827' }}>Live Cash Drawer Tracker</h2>
-                  <p style={{ fontSize: '14px', color: '#64748b', margin: 0 }}>Real-time financial summary for the current cashier session</p>
-                </div>
-                <div style={{ textAlign: 'right', background: '#fffafa', border: '1px solid #fecdd3', borderRadius: '8px', padding: '14px 18px', minWidth: '220px', boxShadow: 'inset 3px 0 0 #e51f2a' }}>
-                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>Expected Cash</div>
-                  <div style={{ fontSize: '27px', fontWeight: '650', color: '#1f2937', lineHeight: 1.15 }}>Rs. {drawerMetrics.expectedCash.toLocaleString()}</div>
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '16px', marginTop: '22px' }}>
-                <div style={drawerStatCardStyle}>
-                  <div>
-                    <div style={drawerLabelStyle}>Opening</div>
-                    <div style={drawerValueStyle}>Rs. {drawerMetrics.openingBalance.toLocaleString()}</div>
-                  </div>
-                  <span style={drawerChipStyle}>Session Start</span>
-                </div>
-                <div style={drawerStatCardStyle}>
-                  <div>
-                    <div style={drawerLabelStyle}>Cash Sales</div>
-                    <div style={drawerValueStyle}>Rs. {drawerMetrics.cashSales.toLocaleString()}</div>
-                  </div>
-                  <span style={drawerChipStyle}>Order Payments</span>
-                </div>
-                <div style={drawerStatCardStyle}>
-                  <div>
-                    <div style={drawerLabelStyle}>Card Sales</div>
-                    <div style={drawerValueStyle}>Rs. {drawerMetrics.cardSales.toLocaleString()}</div>
-                  </div>
-                  <span style={drawerChipStyle}>Non-Cash</span>
-                </div>
-                <div style={drawerStatCardStyle}>
-                  <div>
-                    <div style={drawerLabelStyle}>Cash In / Out</div>
-                    <div style={drawerValueStyle}>
-                      {drawerMetrics.cashIn > 0 ? `In Rs. ${drawerMetrics.cashIn.toLocaleString()}` : ''}
-                      {drawerMetrics.cashIn > 0 && drawerMetrics.cashOut > 0 ? ' / ' : ''}
-                      {drawerMetrics.cashOut > 0 ? `Out Rs. ${drawerMetrics.cashOut.toLocaleString()}` : ''}
-                      {drawerMetrics.cashIn === 0 && drawerMetrics.cashOut === 0 ? 'Rs. 0' : ''}
-                    </div>
-                  </div>
-                  <span style={drawerChipStyle}>Adjustments</span>
-                </div>
-                <div style={drawerStatCardStyle}>
-                  <div>
-                    <div style={drawerLabelStyle}>Refunds</div>
-                    <div style={drawerValueStyle}>Rs. {drawerMetrics.refunds.toLocaleString()}</div>
-                  </div>
-                  <span style={drawerChipStyle}>Returns</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Search Box */}
         <div className="pos-search-wrapper" style={{ marginTop: '24px' }}>
