@@ -1,8 +1,8 @@
 .denomination-counter-premium {
     background: #f8fafc;
     border-radius: 5px;
-    padding: 0.5rem;
-    border: 1px solid #dbe3ef;
+    padding: 1rem;
+    border: none;
 }
 
 .denom-grid {
@@ -18,7 +18,7 @@
     gap: 0.9rem;
     min-height: 64px;
     padding: 0.5rem 0;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: none;
 }
 
 .denom-row:last-child {
@@ -28,7 +28,7 @@
 .denom-label {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .denom-prefix {
@@ -57,7 +57,7 @@
 .denom-input {
     width: 100%;
     background: white;
-    border: 1px solid #cbd5e1;
+    border: none;
     border-radius: 5px;
     padding: 0.7rem 0.6rem;
     color: #0f172a;
@@ -88,9 +88,9 @@
 
 .denom-total-summary {
     margin-top: 1rem;
-    padding: 0.5rem;
+    padding: 1rem;
     background: #ffffff;
-    border: 1px solid #bfdbfe;
+    border: none;
     border-radius: 5px;
     display: flex;
     justify-content: space-between;

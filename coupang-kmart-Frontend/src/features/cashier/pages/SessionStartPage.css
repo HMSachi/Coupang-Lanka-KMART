@@ -1,5 +1,5 @@
 .session-start-container {
-    padding: 0.5rem 1rem 1rem;
+    padding: 1.25rem 1.5rem 1.5rem;
     position: relative;
     max-width: 1360px;
     margin: 0 auto;
@@ -21,17 +21,17 @@
 .session-start-content {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .session-header {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
     background: #ffffff;
-    padding: 0.5rem 0.75rem;
+    padding: 1rem 1.25rem;
     border-radius: 5px;
-    border: 1px solid #dbe3ef;
+    border: none;
     box-shadow: 0 10px 28px -24px rgba(15, 23, 42, 0.45);
 }
 
@@ -44,7 +44,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #bfdbfe;
+    border: none;
     flex-shrink: 0;
 }
 
@@ -105,7 +105,7 @@
 .session-workflow-steps {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
     justify-content: center;
     margin: 0.25rem 0 0.75rem;
 }
@@ -114,11 +114,9 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem 0.75rem;
     border-radius: 5px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    color: #64748b;
+    background: transparent; border: none; color: #64748b;
     font-size: 12px;
     font-weight: 400;
     transition: all 0.3s;
@@ -126,7 +124,7 @@
 
 .workflow-step.active {
     background: #eff6ff;
-    border-color: #bfdbfe;
+    border-color: transparent;
     color: #1d4ed8;
     box-shadow: 0 8px 18px -16px rgba(29, 78, 216, 0.55);
 }
@@ -156,18 +154,19 @@
 .session-grid {
     display: grid;
     grid-template-columns: minmax(420px, 0.95fr) minmax(520px, 1.05fr);
-    gap: 0.5rem;
+    gap: 1rem;
     align-items: start;
 }
 
 .session-panel-card.card-white {
-    border-color: #dbe3ef;
+    box-shadow: 0 8px 24px -12px rgba(15,23,42,0.15);
+    border-color: transparent;
     border-radius: 5px;
     box-shadow: 0 16px 34px -28px rgba(15, 23, 42, 0.48);
 }
 
 .session-panel-card .card-header {
-    padding: 0.5rem 0.75rem 0.25rem;
+    padding: 1rem 1.25rem 0.5rem;
 }
 
 .session-panel-card .card-title {
@@ -180,14 +179,15 @@
 
 /* Profiles & Details */
 .profile-mini-card {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
     padding: 0.5rem;
     background: #f8fafc;
     border-radius: 5px;
-    border: 1px solid #e2e8f0;
-    margin-bottom: 0.5rem;
+    border: none;
+    margin-bottom: 1rem;
 }
 
 .profile-mini-card .avatar {
@@ -199,7 +199,7 @@
     align-items: center;
     justify-content: center;
     color: #1d4ed8;
-    border: 1px solid #bfdbfe;
+    border: none;
 }
 
 .profile-mini-card .info label {
@@ -220,15 +220,15 @@
 .shift-info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.4rem;
-    margin-bottom: 0.5rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .info-item {
-    background: white;
-    padding: 0.5rem;
+    background: #f8fafc;
+    padding: 0.75rem;
     border-radius: 5px;
-    border: 1px solid #e2e8f0;
+    border: none;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -243,7 +243,7 @@
     border-radius: 5px;
     background: #f8fafc;
     color: #475569;
-    border: 1px solid #e2e8f0;
+    border: none;
     flex-shrink: 0;
 }
 
@@ -279,7 +279,7 @@
     min-height: 110px;
     padding: 0.5rem;
     border-radius: 5px;
-    border: 1px solid #dbe3ef;
+    border: none;
     background: #f8fafc;
     resize: none;
     font-size: 12px;
@@ -287,7 +287,7 @@
 }
 
 .notes-section textarea:focus {
-    border-color: #2563eb;
+    border-color: transparent;
     background: white;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
     outline: none;
@@ -297,7 +297,7 @@
     margin-top: 1.25rem;
     padding: 0.9rem 1rem;
     background: #eff6ff;
-    border: 1px solid #bfdbfe;
+    border: none;
     border-radius: 5px;
     display: flex;
     gap: 0.75rem;
@@ -320,7 +320,7 @@
 .session-footer-actions {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 1rem;
     margin-top: 0.9rem;
 }
 
@@ -356,7 +356,7 @@
 .conf-summary-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    gap: 1rem;
     background: #f8fafc;
     padding: 1.25rem;
     border-radius: 5px;
@@ -381,7 +381,7 @@
 
 .conf-actions {
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .session-error-msg {
