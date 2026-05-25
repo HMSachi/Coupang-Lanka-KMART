@@ -1,14 +1,19 @@
 import React from 'react';
-import { LayoutGrid, Sparkles, Eye, Smile, Leaf, Wind } from 'lucide-react';
+import { LayoutGrid, UtensilsCrossed, Smile, Package, Coffee, Droplets, ShoppingBag, Layers } from 'lucide-react';
 
 const CATEGORY_ICONS = {
-  'All': <LayoutGrid size={16} />,
-  'Face': <Sparkles size={16} />,
-  'Eyes': <Eye size={16} />,
-  'Lips': <Smile size={16} />,
-  'Skincare': <Leaf size={16} />,
-  'Fragrances': <Wind size={16} />
+  'All': <LayoutGrid size={15} />,
+  'Noodles': <UtensilsCrossed size={15} />,
+  'Soft Toys': <Smile size={15} />,
+  'Korean Rice Dishes': <UtensilsCrossed size={15} />,
+  'Ramen': <Coffee size={15} />,
+  'Drinks': <Droplets size={15} />,
+  'Shampoo': <ShoppingBag size={15} />,
+  'Snacks': <Package size={15} />,
+  'Beauty': <Layers size={15} />,
 };
+
+const DEFAULT_ICON = <Package size={15} />;
 
 export default function CategoryTabs({ categories, activeCategory, setActiveCategory }) {
   return (
@@ -21,7 +26,7 @@ export default function CategoryTabs({ categories, activeCategory, setActiveCate
             onClick={() => setActiveCategory(cat)}
             type="button"
           >
-            {CATEGORY_ICONS[cat]}
+            {CATEGORY_ICONS[cat] ?? DEFAULT_ICON}
             <span>{cat}</span>
           </button>
         ))}
