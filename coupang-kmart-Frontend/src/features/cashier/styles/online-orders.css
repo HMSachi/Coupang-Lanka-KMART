@@ -1,7 +1,18 @@
+
+/* ENFORCE GLOBAL FONT STYLE */
+* {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+input, textarea, select, button {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
 .online-orders-container {
     padding: 24px;
-    background-color: #f8fafc;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
     min-height: 100%;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 11px;
 }
 
 .orders-header {
@@ -9,22 +20,23 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
-    background: white;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 10px 22px -18px rgba(15, 23, 42, 0.32);
-    border: 1px solid #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .header-title {
-    font-size: 0.98rem;
+    font-size: 13px;
     font-weight: 600;
-    color: #1f2937;
+    color: #1e3a8a;
     margin: 0;
 }
 
 .header-subtitle {
-    font-size: 12px;
+    font-size: 13px;
     color: #64748b;
     margin: 4px 0 0 0;
 }
@@ -99,9 +111,10 @@
 
 /* Table Styles */
 .orders-content {
-    background: white;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
     border-radius: 10px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.4);
     overflow: hidden;
     box-shadow: 0 10px 22px -18px rgba(15, 23, 42, 0.32);
 }
@@ -113,14 +126,14 @@
 }
 
 .orders-table th {
-    background: #f8fafc;
+    background: rgba(248, 250, 252, 0.5);
     padding: 16px 20px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #64748b;
-    border-bottom: 1px solid #e2e8f0;
+    color: #1e40af;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
 }
 
 .order-row {
@@ -143,7 +156,7 @@
 }
 
 .order-ref {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     color: #1f2937;
 }
@@ -163,7 +176,7 @@
 }
 
 .customer-name {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     color: #1f2937;
 }
@@ -191,7 +204,7 @@
 }
 
 .order-total {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: #1f2937;
 }
@@ -201,13 +214,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 112px;
-    padding: 5px 12px;
-    border-radius: 999px;
+    min-width: 90px;
+    padding: 2px 10px 4px; /* Reduced padding, text pushed slightly up */
+    border-radius: 5px !important;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 500;
+    line-height: 1.2;
     letter-spacing: 0.02em;
-    text-transform: uppercase;
+    text-transform: capitalize;
 }
 
 .status-pending {
@@ -249,17 +263,17 @@
 .status-badge.status-cash,
 .status-badge.status-delivered,
 .status-badge.status-ready {
-    background: #eff6ff !important;
-    color: #1d4ed8 !important;
-    border: 1px solid #bfdbfe !important;
-    box-shadow: inset 3px 0 0 #2563eb;
+    background: #e0f2fe !important;
+    color: #0284c7 !important;
+    border: 1px solid #bae6fd !important;
+    box-shadow: none !important;
 }
 
 .status-cancelled {
     background: #f8fafc;
     color: #475569;
     border: 1px solid #e2e8f0;
-    box-shadow: inset 3px 0 0 #94a3b8;
+    box-shadow: none;
 }
 
 .btn-cash-received {
@@ -342,7 +356,7 @@
 }
 
 .header-title-box h3 {
-    font-size: 0.98rem;
+    font-size: 13px;
     font-weight: 600;
     color: #1f2937;
     margin: 0;
@@ -383,7 +397,7 @@
     border-radius: 8px;
     border: 1px solid #e2e8f0;
     background: #f1f5f9;
-    font-size: 18px;
+    font-size: 13px;
     color: #64748b;
     cursor: pointer;
     display: flex;
@@ -416,7 +430,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 650;
     color: #64748b;
     text-transform: uppercase;
@@ -467,7 +481,7 @@
 }
 
 .flow-item label {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     color: #64748b;
     text-transform: uppercase;
@@ -482,11 +496,12 @@
 }
 
 .status-pill {
-    padding: 4px 12px;
-    border-radius: 6px;
+    padding: 2px 10px 4px;
+    border-radius: 5px !important;
     font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
+    font-weight: 500;
+    line-height: 1.2;
+    text-transform: capitalize;
     display: inline-block;
     border: 1px solid transparent;
 }
@@ -561,7 +576,7 @@
 .lading-table th {
     text-align: left;
     padding: 14px 16px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     color: #64748b;
     text-transform: uppercase;
@@ -637,7 +652,7 @@
 }
 
 .total-amount-large {
-    font-size: 17px !important;
+    font-size: 13px !important;
     font-weight: 650 !important;
     color: #1f2937 !important;
 }
@@ -795,7 +810,7 @@
 
 .preview-header h3 {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 13px;
     font-weight: 600;
     color: #1f2937;
 }
@@ -825,7 +840,7 @@
     width: 32px;
     height: 32px;
     border-radius: 6px;
-    font-size: 20px;
+    font-size: 13px;
     cursor: pointer;
 }
 
@@ -873,7 +888,7 @@
 }
 
 .inv-header h1 {
-    font-size: 20px;
+    font-size: 13px;
     margin: 0;
     letter-spacing: 0.08em;
     color: #1f2937;
@@ -972,7 +987,7 @@
     border-top: 1px solid #1f2937;
     border-bottom: 1px solid #1f2937;
     font-weight: 650;
-    font-size: 15px;
+    font-size: 13px;
     color: #1f2937;
 }
 
@@ -988,7 +1003,7 @@
 
 .inv-cod-notice p {
     margin: 0;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .inv-footer-print {
@@ -1017,7 +1032,7 @@
 }
 
 .audit-node label {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     color: #64748b;
     text-transform: uppercase;
@@ -1041,7 +1056,7 @@
 .inv-audit-print .audit-row {
     display: flex;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: 11px;
     color: #64748b;
     margin-bottom: 4px;
 }

@@ -1,3 +1,17 @@
+
+/* ENFORCE GLOBAL FONT STYLE */
+* {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+input, textarea, select, button {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+
+input, textarea, select, button {
+    font-family: 'Inter', system-ui, sans-serif !important;
+}
+
 .eod-premium-container {
     padding: 2rem;
     max-width: 1200px;
@@ -24,7 +38,7 @@
 }
 
 .title-area h1 {
-    font-size: 1.3rem;
+    font-size: 12px;
     font-weight: 650;
     margin: 0;
     letter-spacing: 0;
@@ -34,23 +48,23 @@
 .title-area p {
     color: #64748b;
     margin-top: 0.5rem;
-    font-size: 0.92rem;
+    font-size: 12px;
 }
 
 .eod-workflow-nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1rem;
     margin-bottom: 3rem;
 }
 
 .workflow-item {
-    font-size: 0.92rem;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 400;
     color: #94a3b8;
     padding: 0.6rem 1.25rem;
-    border-radius: 12px;
+    border-radius: 5px;
     background: #f1f5f9;
     transition: all 0.3s;
 }
@@ -83,17 +97,17 @@
 
 .metric label {
     display: block;
-    font-size: 0.75rem;
+    font-size: 11px;
     color: #64748b;
-    font-weight: 800;
+    font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 0.5rem;
 }
 
 .metric .val {
-    font-size: 1.75rem;
-    font-weight: 900;
+    font-size: 12px;
+    font-weight: 400;
     color: #1e293b;
 }
 
@@ -108,20 +122,20 @@
 .metric-total-box {
     padding: 1.5rem;
     background: #f8fafc;
-    border-radius: 14px;
+    border-radius: 5px;
     text-align: center;
     border: 1.5px solid #e2e8f0;
 }
 
 .metric-total-box label {
     display: block;
-    font-size: 0.85rem;
+    font-size: 12px;
     color: #64748b;
     margin-bottom: 0.5rem;
 }
 
 .metric-total-box .total-val {
-    font-size: 2.25rem;
+    font-size: 13px;
     font-weight: 950;
     color: #1e293b;
 }
@@ -135,7 +149,7 @@
 .calc-row {
     display: flex;
     justify-content: space-between;
-    font-size: 1rem;
+    font-size: 12px;
     font-weight: 500;
     color: #334155;
 }
@@ -152,7 +166,7 @@
 
 .calc-row.result {
     font-weight: 650;
-    font-size: 1.02rem;
+    font-size: 12px;
     color: #1d4ed8;
 }
 
@@ -166,24 +180,24 @@
 .reconcile-card {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .reconcile-item label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 12px;
     color: #64748b;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .reconcile-item span {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 400;
     color: #0f172a;
 }
 
 .reconcile-item.highlight span {
-    font-size: 1.3rem;
+    font-size: 12px;
     color: #1d4ed8;
 }
 
@@ -194,37 +208,37 @@
 
 .reconcile-diff {
     padding: 1.75rem;
-    border-radius: 16px;
+    border-radius: 5px;
     text-align: center;
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    border: none;
     color: #0f172a;
     box-shadow: inset 3px 0 0 #2563eb;
 }
 
 .reconcile-diff.mismatch {
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    border: none;
     color: #0f172a;
     box-shadow: inset 3px 0 0 #94a3b8;
 }
 
 .reconcile-diff.perfect {
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    border: none;
     color: #0f172a;
     box-shadow: inset 3px 0 0 #2563eb;
 }
 
 .reconcile-diff.surplus {
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    border: none;
     color: #0f172a;
     box-shadow: inset 3px 0 0 #2563eb;
 }
 
 .diff-val {
-    font-size: 2.1rem;
+    font-size: 13px;
     font-weight: 650;
     margin: 0.5rem 0;
 }
@@ -256,7 +270,7 @@
 }
 
 .final-header h2 {
-    font-size: 1.35rem;
+    font-size: 12px;
     font-weight: 650;
     margin-bottom: 0.5rem;
     color: #0f172a;
@@ -278,8 +292,8 @@
     align-items: center;
     gap: 0.6rem;
     color: #475569;
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 400;
 }
 
 .final-confirmation-list {
@@ -290,15 +304,15 @@
     text-align: left;
     background: #f8fafc;
     padding: 2rem;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    border: none;
 }
 
 .conf-check {
     display: flex;
     align-items: center;
     gap: 1rem;
-    font-size: 0.95rem;
+    font-size: 12px;
     color: #334155;
     font-weight: 500;
 }
@@ -320,9 +334,9 @@
     gap: 8px;
     padding: 12px;
     border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 14px;
+    border-radius: 5px;
+    font-weight: 400;
+    font-size: 13px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -330,7 +344,7 @@
 .q-action-in {
     background: #eff6ff;
     color: #1d4ed8;
-    border: 1px solid #bfdbfe;
+    border: none;
 }
 
 .q-action-in:hover {
@@ -340,7 +354,7 @@
 .q-action-out {
     background: #ffffff;
     color: #1d4ed8;
-    border: 1px solid #bfdbfe;
+    border: none;
 }
 
 .q-action-out:hover {
@@ -372,7 +386,7 @@
 
 .sidebar-header h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 13px;
     font-weight: 650;
 }
 
@@ -398,7 +412,7 @@
 
 .form-group label {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 400;
     color: #64748b;
 }
 
@@ -406,8 +420,8 @@
 .form-group textarea {
     padding: 12px;
     border: 2px solid #f1f5f9;
-    border-radius: 10px;
-    font-size: 14px;
+    border-radius: 5px;
+    font-size: 13px;
     font-family: inherit;
 }
 
@@ -419,8 +433,8 @@
 .pending-settlements-box {
     background: #f8fafc;
     padding: 16px;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    border: none;
 }
 
 .settlement-list {
@@ -435,8 +449,8 @@
 .settlement-item {
     background: white;
     padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    border: none;
     cursor: pointer;
     transition: transform 0.1s;
 }
@@ -467,9 +481,9 @@
     width: 100%;
     padding: 16px;
     border: none;
-    border-radius: 12px;
+    border-radius: 5px;
     font-weight: 650;
-    font-size: 16px;
+    font-size: 13px;
     cursor: pointer;
     color: white;
 }
@@ -496,7 +510,7 @@
     cursor: pointer;
     padding: 8px 12px;
     margin: 0 -12px;
-    border-radius: 8px;
+    border-radius: 5px;
     transition: background 0.2s;
 }
 
@@ -528,23 +542,23 @@
 
 .drilldown-table td {
     padding: 12px 10px;
-    font-size: 14px;
+    font-size: 13px;
     border-bottom: 1px solid #f1f5f9;
 }
 
 .batch-tag {
     display: inline-block;
-    font-size: 10px;
+    font-size: 11px;
     background: #eff6ff;
     color: #1d4ed8;
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: 5px;
     margin-top: 4px;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .amount-highlight {
-    font-size: 18px;
+    font-size: 13px;
     font-weight: 650;
     color: #0f172a;
 }
@@ -553,7 +567,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .conf-check svg {
@@ -567,13 +581,13 @@
 .final-actions {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
 }
 
 .step-actions {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .step-actions-vertical {
@@ -591,8 +605,8 @@
     display: flex;
     background: #f1f5f9;
     padding: 0.4rem;
-    border-radius: 12px;
-    gap: 0.5rem;
+    border-radius: 5px;
+    gap: 1rem;
     width: fit-content;
     margin: 0 auto 2rem;
 }
@@ -601,9 +615,9 @@
     border: none;
     background: none;
     padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 0.92rem;
-    font-weight: 600;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 400;
     color: #64748b;
     cursor: pointer;
     display: flex;
@@ -626,13 +640,13 @@
 .empty-history h3 {
     margin: 1.5rem 0 0.75rem;
     color: #0f172a;
-    font-size: 1.5rem;
+    font-size: 12px;
 }
 
 .history-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.25rem;
+    gap: 1rem;
 }
 
 .history-report-card {
@@ -651,23 +665,23 @@
 }
 
 .status-tag {
-    font-size: 0.75rem;
+    font-size: 11px;
     font-weight: 650;
     padding: 0.4rem 0.8rem;
-    border-radius: 30px;
+    border-radius: 5px;
     text-transform: uppercase;
 }
 
 .status-tag.balanced {
     background: #eff6ff;
     color: #1d4ed8;
-    border: 1px solid #bfdbfe;
+    border: none;
 }
 
 .status-tag.discrepancy {
     background: #f8fafc;
     color: #475569;
-    border: 1px solid #e2e8f0;
+    border: none;
 }
 
 .status-tag.draft {
@@ -676,9 +690,9 @@
 }
 
 .h-date {
-    font-size: 0.9rem;
+    font-size: 12px;
     color: #64748b;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .report-h-main {
@@ -687,26 +701,26 @@
 
 .h-metric label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 12px;
     color: #94a3b8;
-    font-weight: 600;
+    font-weight: 400;
     text-transform: uppercase;
     margin-bottom: 0.25rem;
 }
 
 .h-metric span {
-    font-size: 1.25rem;
+    font-size: 12px;
     font-weight: 650;
     color: #0f172a;
 }
 
 .h-sub-info {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     margin-top: 0.75rem;
     color: #64748b;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 400;
 }
 
 .report-h-actions {
@@ -720,12 +734,12 @@
     background: none;
     border: none;
     color: #64748b;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 400;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .h-action-btn.view-btn {
@@ -734,13 +748,13 @@
 
 .eod-amount-negative {
     color: #475569;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .eod-session-id {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 400;
     letter-spacing: 0;
     color: #0f172a;
 }
@@ -766,7 +780,7 @@
     width: 100%;
     max-width: 900px;
     max-height: 90vh;
-    border-radius: 24px;
+    border-radius: 5px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     display: flex;
@@ -784,7 +798,7 @@
 
 .report-modal-header h3 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 12px;
     font-weight: 650;
     color: #1e293b;
 }
@@ -803,13 +817,13 @@
     color: white;
     border: none;
     padding: 0.6rem 1.2rem;
-    border-radius: 10px;
+    border-radius: 5px;
     font-weight: 650;
-    font-size: 0.9rem;
+    font-size: 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .print-trigger-btn:hover {
@@ -821,7 +835,7 @@
     border: none;
     width: 40px;
     height: 40px;
-    border-radius: 10px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -852,7 +866,7 @@
 
 .p-brand {
     display: flex;
-    gap: 1.25rem;
+    gap: 1rem;
     align-items: center;
 }
 
@@ -860,11 +874,11 @@
     background: #ffffff;
     width: 54px;
     height: 54px;
-    border-radius: 12px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #e2e8f0;
+    border: none;
     overflow: hidden;
 }
 
@@ -877,13 +891,13 @@
 
 .p-brand h2 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 12px;
     font-weight: 650;
 }
 
 .p-meta {
     text-align: right;
-    font-size: 0.9rem;
+    font-size: 12px;
     color: #475569;
 }
 
@@ -902,7 +916,7 @@
 
 .p-info-box label {
     display: block;
-    font-size: 0.75rem;
+    font-size: 11px;
     text-transform: uppercase;
     font-weight: 650;
     color: #94a3b8;
@@ -910,7 +924,7 @@
 }
 
 .p-section h4 {
-    font-size: 1rem;
+    font-size: 12px;
     font-weight: 650;
     color: #1e293b;
     margin-bottom: 1.25rem;
@@ -925,7 +939,7 @@
 
 .p-table td {
     padding: 0.85rem 0;
-    font-size: 0.95rem;
+    font-size: 12px;
     color: #475569;
     border-bottom: 1px solid #f8fafc;
 }
@@ -934,7 +948,7 @@
     background: #f8fafc;
     padding: 1.25rem 1rem;
     color: #1e293b;
-    font-size: 1.02rem;
+    font-size: 12px;
     font-weight: 650;
 }
 
@@ -948,7 +962,7 @@
 .p-denom-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.95rem;
+    font-size: 12px;
     padding: 0.5rem 0;
     border-bottom: 1px dashed #e2e8f0;
 }
@@ -958,37 +972,37 @@
     justify-content: space-between;
     background: #f8fafc;
     padding: 1.25rem 1rem;
-    font-size: 1.02rem;
+    font-size: 12px;
     font-weight: 650;
     color: #1e293b;
 }
 
 .p-diff-box {
     padding: 2.5rem;
-    border-radius: 20px;
+    border-radius: 5px;
     text-align: center;
     margin-bottom: 4rem;
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    border: none;
     box-shadow: inset 3px 0 0 #2563eb;
     color: #0f172a;
 }
 
 .p-balanced {
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    border: none;
     color: #0f172a;
 }
 
 .p-mismatch {
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    border: none;
     color: #0f172a;
     box-shadow: inset 3px 0 0 #94a3b8;
 }
 
 .p-diff-val {
-    font-size: 2.25rem;
+    font-size: 13px;
     font-weight: 650;
     margin-bottom: 0.5rem;
 }
@@ -1040,7 +1054,7 @@
 .report-select-card {
     background: white;
     border: 2px solid #e2e8f0;
-    border-radius: 16px;
+    border-radius: 5px;
     padding: 1.25rem;
     cursor: pointer;
     display: flex;
@@ -1062,26 +1076,26 @@
 
 .report-select-info h4 {
     margin: 0 0 0.25rem;
-    font-size: 1.05rem;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 400;
     color: #1e293b;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .report-select-info p {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 12px;
     color: #64748b;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .report-select-status {
     padding: 0.5rem 1rem;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 800;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 400;
     text-transform: uppercase;
 }
 
@@ -1089,6 +1103,6 @@
     padding: 1.5rem 1.5rem 0;
     margin: 0;
     color: #64748b;
-    font-size: 0.95rem;
+    font-size: 12px;
     font-weight: 500;
 }

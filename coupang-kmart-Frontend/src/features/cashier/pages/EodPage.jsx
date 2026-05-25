@@ -399,7 +399,7 @@ export default function EodPage() {
                 {/* Header with Navigation */}
                 <div className="eod-header-section animate-fade-in">
                     <div className="title-area">
-                        <h1 style={{ fontFamily: '"Inter", system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.03em', color: '#0f172a' }}>Shift Closing & EOD Reports</h1>
+                        <h1 style={{ fontFamily: '"Inter", system-ui, sans-serif', fontWeight: 400, letterSpacing: '-0.03em', color: '#0f172a' }}>Shift Closing & EOD Reports</h1>
                         <p style={{ fontFamily: '"Inter", system-ui, sans-serif', fontSize: '1.1rem', color: '#64748b' }}>Prepare end-of-day (EOD) reports for management</p>
                     </div>
 
@@ -575,7 +575,7 @@ export default function EodPage() {
                                     <div className="final-report-card">
                                         <div className="final-header">
                                             <div className="shield-icon"><ShieldCheck size={40} /></div>
-                                            <h2 style={{ fontFamily: '"Inter", system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.02em', color: '#0f172a' }}>Final Report</h2>
+                                            <h2 style={{ fontFamily: '"Inter", system-ui, sans-serif', fontWeight: 400, letterSpacing: '-0.02em', color: '#0f172a' }}>Final Report</h2>
                                             <p style={{ fontFamily: '"Inter", system-ui, sans-serif', color: '#64748b' }}>All financial logs have been verified.</p>
                                         </div>
 

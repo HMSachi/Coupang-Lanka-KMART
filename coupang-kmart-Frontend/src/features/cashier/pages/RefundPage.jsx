@@ -12,17 +12,18 @@ export default function RefundPage() {
         <POSLayout>
             <div className="refund-container">
                 <div className="content-header">
-                    <h1>Returns & Refunds</h1>
-                    <p>Process customer returns and issue refunds safely.</p>
-                </div>
-
-                <div className="refund-search-section">
-                    <div className="search-row">
-                        <div className="rfnd-input-group">
-                            <Search size={16} className="text-slate-400" />
-                            <input type="text" placeholder="Enter Transaction ID or Receipt Number..." />
+                    <div className="header-text">
+                        <h1>Returns & Refunds</h1>
+                        <p>Process customer returns and issue refunds safely.</p>
+                    </div>
+                    <div className="refund-search-section">
+                        <div className="search-row">
+                            <div className="rfnd-input-group">
+                                <Search size={16} className="text-slate-400" />
+                                <input type="text" placeholder="Enter Transaction ID or Receipt Number..." />
+                            </div>
+                            <button className="search-btn-modern">Search Transaction</button>
                         </div>
-                        <button className="search-btn-modern">Search Transaction</button>
                     </div>
                 </div>
 
@@ -37,7 +38,7 @@ export default function RefundPage() {
                                             <th>Item Name</th>
                                             <th>Date</th>
                                             <th>Amount</th>
-                                            <th>Status</th>
+                                            <th className="text-center">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -47,9 +48,9 @@ export default function RefundPage() {
                                                 <td>{item.item}</td>
                                                 <td>{item.date}</td>
                                                 <td className="rfnd-amount">LKR {item.amount.toLocaleString()}</td>
-                                                <td>
+                                                <td className="text-center">
                                                     <span className={`status-badge ${item.status.toLowerCase()}`}>
-                                                        {item.status}
+                                                        {item.status?.toLowerCase()}
                                                     </span>
                                                 </td>
                                             </tr>
