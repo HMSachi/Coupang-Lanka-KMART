@@ -30,6 +30,20 @@ export default function CheckoutPage() {
             setCart(JSON.parse(savedCart));
         } else {
             navigate('/pos');
+            return;
+        }
+
+        const savedDiscount = localStorage.getItem('pos_checkout_discount');
+        if (savedDiscount) {
+            try {
+                const { type, value } = JSON.parse(savedDiscount);
+                if (type === 'fixed' || type === 'percentage' || type === 'coupon') {
+                    setDiscountType(type);
+                }
+                setDiscountVal(Number(value) || 0);
+            } catch {
+                /* ignore invalid stored discount */
+            }
         }
     }, [navigate]);
 
@@ -39,7 +53,7 @@ export default function CheckoutPage() {
     if (discountType === 'percentage') {
         discountAmount = (subtotal * discountVal) / 100;
     } else if (discountType === 'fixed') {
-        discountAmount = discountVal;
+        discountAmount = Math.min(subtotal, discountVal);
     }
 
     const taxableAmount = subtotal - discountAmount;
@@ -115,12 +129,19 @@ export default function CheckoutPage() {
                                 <span>Subtotal</span>
                                 <span>LKR {subtotal.toLocaleString()}</span>
                             </div>
-                            {discountAmount > 0 && (
-                                <div className="calc-row discount">
-                                    <span>Discount ({discountType})</span>
-                                    <span>- LKR {discountAmount.toLocaleString()}</span>
-                                </div>
-                            )}
+                            <div className={`calc-row discount ${discountAmount > 0 ? 'has-value' : ''}`}>
+                                <span>
+                                    Discount
+                                    {discountType === 'percentage' && ` (${discountVal}%)`}
+                                    {discountType === 'fixed' && discountVal > 0 && ' (Fixed)'}
+                                    {discountType === 'coupon' && couponCode.trim() && ` (${couponCode.trim()})`}
+                                </span>
+                                <span>
+                                    {discountAmount > 0
+                                        ? `- LKR ${discountAmount.toLocaleString()}`
+                                        : 'LKR 0'}
+                                </span>
+                            </div>
                             <div className="calc-row">
                                 <span>VAT ({vatPercent}%)</span>
                                 <span>LKR {vatAmount.toLocaleString()}</span>
@@ -204,8 +225,7 @@ export default function CheckoutPage() {
                                     </button>
                                 </div>
 
-                                {discountType !== 'none' && (
-                                    <div className="discount-input-area">
+                                <div className="discount-input-area">
                                         {discountType === 'coupon' ? (
                                             <div className="pos-field">
                                                 <label>Coupon Code</label>
@@ -229,7 +249,6 @@ export default function CheckoutPage() {
                                             </div>
                                         )}
                                     </div>
-                                )}
                             </div>
 
                             <div className="section-divider"></div>

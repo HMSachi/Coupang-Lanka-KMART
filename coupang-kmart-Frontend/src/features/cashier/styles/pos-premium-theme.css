@@ -1,0 +1,167 @@
+/**
+ * POS Premium Theme — visual polish only (Kmart palette).
+ * Loaded via POSLayout; does not affect data or business logic.
+ */
+
+.pos-layout-app {
+    --premium-radius: 14px;
+    --premium-radius-lg: 20px;
+    --premium-shadow: 0 12px 40px -14px rgba(15, 23, 42, 0.1);
+    --premium-shadow-lg: 0 24px 48px -16px rgba(15, 23, 42, 0.14);
+    --premium-shadow-brand: 0 12px 32px -8px rgba(226, 30, 38, 0.22);
+    --premium-border: rgba(226, 232, 240, 0.95);
+    --premium-glass: rgba(255, 255, 255, 0.78);
+    --premium-glass-strong: rgba(255, 255, 255, 0.92);
+}
+
+/* —— Scrollbars —— */
+.pos-layout-app ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.pos-layout-app ::-webkit-scrollbar-thumb {
+    background: rgba(226, 30, 38, 0.22);
+    border-radius: 99px;
+}
+
+.pos-layout-app ::-webkit-scrollbar-thumb:hover {
+    background: rgba(226, 30, 38, 0.38);
+}
+
+.pos-layout-app ::-webkit-scrollbar-track {
+    background: rgba(241, 245, 249, 0.5);
+    border-radius: 99px;
+}
+
+/* —— Form controls —— */
+.pos-layout-app input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+.pos-layout-app textarea,
+.pos-layout-app select {
+    font-family: inherit;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, transform 0.2s ease;
+}
+
+.pos-layout-app input:not([type="checkbox"]):not([type="radio"]):focus,
+.pos-layout-app textarea:focus,
+.pos-layout-app select:focus {
+    outline: none;
+    border-color: var(--brand) !important;
+    box-shadow: 0 0 0 4px rgba(226, 30, 38, 0.1) !important;
+}
+
+/* —— Shared premium surfaces —— */
+.pos-layout-app .checkout-card,
+.pos-layout-app .payment-card,
+.pos-layout-app .refund-search-section,
+.pos-layout-app .session-header,
+.pos-layout-app .eod-glass-card,
+.pos-layout-app .online-orders-header,
+.pos-layout-app .order-card-premium {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.pos-layout-app .checkout-card,
+.pos-layout-app .payment-card {
+    background: var(--premium-glass) !important;
+    border: 1px solid var(--premium-border) !important;
+    border-radius: var(--premium-radius-lg) !important;
+    box-shadow: var(--premium-shadow) !important;
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.pos-layout-app .checkout-card:hover,
+.pos-layout-app .payment-card:hover {
+    box-shadow: var(--premium-shadow-lg) !important;
+}
+
+.pos-layout-app .header-icon-badge,
+.pos-layout-app .session-logo {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%) !important;
+    box-shadow: var(--premium-shadow-brand) !important;
+}
+
+.pos-layout-app .back-btn:hover,
+.pos-layout-app .back-to-products:hover {
+    border-color: var(--brand) !important;
+    color: var(--brand) !important;
+    box-shadow: 0 6px 20px rgba(226, 30, 38, 0.12) !important;
+}
+
+/* —— Primary actions —— */
+.pos-layout-app .checkout-btn-premium,
+.pos-layout-app .modal-checkout-btn,
+.pos-layout-app .pay-confirm-btn,
+.pos-layout-app .session-start-btn,
+.pos-layout-app .eod-primary-btn {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%) !important;
+    box-shadow: var(--premium-shadow-brand) !important;
+}
+
+.pos-layout-app .checkout-btn-premium:hover,
+.pos-layout-app .modal-checkout-btn:hover,
+.pos-layout-app .pay-confirm-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 36px -10px rgba(226, 30, 38, 0.4) !important;
+}
+
+/* —— Tables —— */
+.pos-layout-app table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.pos-layout-app thead th {
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--premium-border);
+}
+
+.pos-layout-app tbody tr {
+    transition: background 0.2s ease;
+}
+
+.pos-layout-app tbody tr:hover {
+    background: rgba(226, 30, 38, 0.03);
+}
+
+/* —— Payment method tiles —— */
+.pos-layout-app .method-btn.active,
+.pos-layout-app .pay-method-card.active {
+    border-color: var(--brand) !important;
+    color: var(--brand) !important;
+    background: rgba(226, 30, 38, 0.06) !important;
+    box-shadow: 0 0 0 3px rgba(226, 30, 38, 0.1) !important;
+}
+
+/* —— EOD workflow —— */
+.pos-layout-app .eod-workflow-nav {
+    border-color: rgba(226, 30, 38, 0.15) !important;
+}
+
+.pos-layout-app .workflow-item.active {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%) !important;
+    color: white !important;
+    box-shadow: var(--premium-shadow-brand) !important;
+}
+
+/* —— Cart / discount accents —— */
+.pos-layout-app .cart-search-input:focus {
+    border-color: var(--kmart-blue, #1d6fd4) !important;
+    box-shadow: 0 0 0 3px rgba(29, 111, 212, 0.15) !important;
+}
+
+.pos-layout-app .qb-discount-input-box input:focus {
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.pos-layout-app .qb-checkout-btn,
+.pos-layout-app .quick-bill-pay-btn {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%) !important;
+}

@@ -3,13 +3,33 @@ import { LogOut, User, Clock, RotateCcw, BarChart2, MonitorIcon, ChevronRight, S
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.jpeg';
 import './POSLayout.css';
+import '../features/cashier/styles/pos-premium-theme.css';
 
 const POSLayout = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [time, setTime] = useState(new Date());
-
     const [cartCount, setCartCount] = useState(0);
+    const [rotatingIcon, setRotatingIcon] = useState(null);
+
+    const getPageContext = () => {
+        switch (location.pathname) {
+            case '/pos':
+                return { title: 'Create Order', subtitle: 'Manage terminal inventory and checkout' };
+            case '/pos/online-orders':
+                return { title: 'Online Orders', subtitle: 'Manage and fulfill web-originated orders' };
+            case '/pos/cart':
+                return { title: 'Active Cart', subtitle: 'Review items and finalize payment' };
+            case '/pos/refund':
+                return { title: 'Returns & Refunds', subtitle: 'Process customer returns and ledger credits' };
+            case '/pos/eod':
+                return { title: 'Session Control', subtitle: 'Perform terminal audit and closure' };
+            default:
+                return { title: 'POS Terminal', subtitle: 'Lanka Kmart Management System' };
+        }
+    };
+
+    const { title, subtitle } = getPageContext();
 
     useEffect(() => {
         const timer = setInterval(() => setTime(new Date()), 1000);
@@ -53,6 +73,11 @@ const POSLayout = ({ children }) => {
         localStorage.removeItem('user');
         localStorage.removeItem('shift_status');
         navigate('/login');
+    };
+
+    const handleNavItemClick = (path) => {
+        setRotatingIcon(path);
+        setTimeout(() => setRotatingIcon(null), 600);
     };
 
     const navItems = [
