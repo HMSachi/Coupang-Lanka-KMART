@@ -1,5 +1,5 @@
 .session-start-container {
-    padding: 1.5rem 2rem 2rem;
+    padding: 0.5rem 1rem 1rem;
     position: relative;
     max-width: 1360px;
     margin: 0 auto;
@@ -21,16 +21,16 @@
 .session-start-content {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 0.5rem;
 }
 
 .session-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
     background: #ffffff;
-    padding: 1.15rem 1.25rem;
-    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 5px;
     border: 1px solid #dbe3ef;
     box-shadow: 0 10px 28px -24px rgba(15, 23, 42, 0.45);
 }
@@ -40,7 +40,7 @@
     height: 44px;
     background: #eff6ff;
     color: #1d4ed8;
-    border-radius: 8px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -55,8 +55,8 @@
 .session-eyebrow {
     display: block;
     color: #1d4ed8;
-    font-size: 0.7rem;
-    font-weight: 800;
+    font-size: 11px;
+    font-weight: 400;
     letter-spacing: 0.08em;
     line-height: 1;
     margin-bottom: 0.35rem;
@@ -64,8 +64,8 @@
 }
 
 .session-title h1 {
-    font-size: 1.25rem;
-    font-weight: 750;
+    font-size: 12px;
+    font-weight: 400;
     color: #0f172a;
     margin: 0;
     letter-spacing: 0;
@@ -74,7 +74,7 @@
 .session-title p {
     color: #64748b;
     margin: 0.25rem 0 0 0;
-    font-size: 0.86rem;
+    font-size: 12px;
     font-weight: 500;
 }
 
@@ -90,22 +90,22 @@
 
 .session-header-meta span {
     color: #64748b;
-    font-size: 0.72rem;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 400;
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
 
 .session-header-meta strong {
     color: #0f172a;
-    font-size: 1.05rem;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 400;
 }
 
 .session-workflow-steps {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
     justify-content: center;
     margin: 0.25rem 0 0.75rem;
 }
@@ -114,13 +114,13 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.55rem 0.9rem;
-    border-radius: 8px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
     background: #ffffff;
     border: 1px solid #e2e8f0;
     color: #64748b;
-    font-size: 0.82rem;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 400;
     transition: all 0.3s;
 }
 
@@ -134,13 +134,13 @@
 .step-num {
     width: 22px;
     height: 22px;
-    border-radius: 6px;
+    border-radius: 5px;
     background: #cbd5e1;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 12px;
 }
 
 .workflow-step.active .step-num {
@@ -156,24 +156,24 @@
 .session-grid {
     display: grid;
     grid-template-columns: minmax(420px, 0.95fr) minmax(520px, 1.05fr);
-    gap: 1.5rem;
+    gap: 0.5rem;
     align-items: start;
 }
 
 .session-panel-card.card-white {
     border-color: #dbe3ef;
-    border-radius: 8px;
+    border-radius: 5px;
     box-shadow: 0 16px 34px -28px rgba(15, 23, 42, 0.48);
 }
 
 .session-panel-card .card-header {
-    padding: 1.35rem 1.5rem 0.25rem;
+    padding: 0.5rem 0.75rem 0.25rem;
 }
 
 .session-panel-card .card-title {
     color: #0f172a !important;
-    font-size: 0.92rem;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 400;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
@@ -182,18 +182,18 @@
 .profile-mini-card {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem;
+    gap: 0.5rem;
+    padding: 0.5rem;
     background: #f8fafc;
-    border-radius: 8px;
+    border-radius: 5px;
     border: 1px solid #e2e8f0;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .profile-mini-card .avatar {
     width: 42px;
     height: 42px;
-    border-radius: 8px;
+    border-radius: 5px;
     background: #eff6ff;
     display: flex;
     align-items: center;
@@ -204,30 +204,30 @@
 
 .profile-mini-card .info label {
     display: block;
-    font-size: 0.65rem;
+    font-size: 11px;
     text-transform: uppercase;
-    font-weight: 800;
+    font-weight: 400;
     color: #94a3b8;
     letter-spacing: 0.05em;
 }
 
 .profile-mini-card .info span {
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 400;
     color: #1e293b;
 }
 
 .shift-info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.8rem;
-    margin-bottom: 1.4rem;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
 }
 
 .info-item {
     background: white;
-    padding: 0.9rem;
-    border-radius: 8px;
+    padding: 0.5rem;
+    border-radius: 5px;
     border: 1px solid #e2e8f0;
     display: flex;
     align-items: center;
@@ -240,7 +240,7 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    border-radius: 8px;
+    border-radius: 5px;
     background: #f8fafc;
     color: #475569;
     border: 1px solid #e2e8f0;
@@ -249,16 +249,16 @@
 
 .info-item label {
     display: block;
-    font-size: 0.7rem;
+    font-size: 11px;
     color: #94a3b8;
-    font-weight: 800;
+    font-weight: 400;
     letter-spacing: 0.02em;
 }
 
 .info-item span,
 .info-item select {
-    font-size: 0.9rem;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 400;
     color: #0f172a;
     border: none;
     background: none;
@@ -268,8 +268,8 @@
 
 .notes-section label {
     display: block;
-    font-size: 0.82rem;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 400;
     color: #64748b;
     margin-bottom: 0.75rem;
 }
@@ -277,12 +277,12 @@
 .notes-section textarea {
     width: 100%;
     min-height: 110px;
-    padding: 1rem;
-    border-radius: 8px;
+    padding: 0.5rem;
+    border-radius: 5px;
     border: 1px solid #dbe3ef;
     background: #f8fafc;
     resize: none;
-    font-size: 0.9rem;
+    font-size: 12px;
     transition: all 0.2s;
 }
 
@@ -298,7 +298,7 @@
     padding: 0.9rem 1rem;
     background: #eff6ff;
     border: 1px solid #bfdbfe;
-    border-radius: 8px;
+    border-radius: 5px;
     display: flex;
     gap: 0.75rem;
     align-items: flex-start;
@@ -310,7 +310,7 @@
 }
 
 .security-notice p {
-    font-size: 0.8rem;
+    font-size: 12px;
     color: #1e3a8a;
     margin: 0;
     line-height: 1.4;
@@ -320,13 +320,13 @@
 .session-footer-actions {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 0.5rem;
     margin-top: 0.9rem;
 }
 
 .start-btn {
     min-width: 320px;
-    border-radius: 8px !important;
+    border-radius: 5px !important;
     box-shadow: 0 12px 22px -16px rgba(29, 78, 216, 0.6) !important;
 }
 
@@ -346,7 +346,7 @@
     height: 64px;
     background: #eff6ff;
     color: #1d4ed8;
-    border-radius: 12px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -356,22 +356,22 @@
 .conf-summary-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    gap: 0.5rem;
     background: #f8fafc;
     padding: 1.25rem;
-    border-radius: 8px;
+    border-radius: 5px;
     margin-bottom: 2rem;
 }
 
 .conf-item label {
     display: block;
-    font-size: 0.7rem;
+    font-size: 11px;
     color: #94a3b8;
     text-transform: uppercase;
 }
 
 .conf-item span {
-    font-weight: 700;
+    font-weight: 400;
     color: #1e293b;
 }
 
@@ -381,18 +381,18 @@
 
 .conf-actions {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
 }
 
 .session-error-msg {
     color: #ef4444;
-    font-size: 0.85rem;
+    font-size: 12px;
     background: #fef2f2;
     padding: 0.75rem;
-    border-radius: 8px;
+    border-radius: 5px;
     margin-bottom: 1.5rem;
     text-align: center;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 /* Utilities */
@@ -424,7 +424,7 @@
 
 @media (max-width: 760px) {
     .session-start-container {
-        padding: 1rem;
+        padding: 0.5rem;
     }
 
     .session-header {

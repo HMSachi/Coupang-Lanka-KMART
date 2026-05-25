@@ -168,7 +168,7 @@ const OnlineOrdersPage = () => {
                                         <th>Customer Detail</th>
                                         <th>Address</th>
                                         <th>Total Value</th>
-                                        <th>Status</th>
+                                        <th className="text-center">Status</th>
                                         <th className="text-center">Action</th>
                                     </tr>
                                 </thead>
@@ -196,8 +196,8 @@ const OnlineOrdersPage = () => {
                                             <td>
                                                 <span className="order-total">LKR {parseFloat(order.total_amount).toLocaleString()}</span>
                                             </td>
-                                            <td>
-                                                <span className={`status-badge ${getStatusStyle(order.status)}`}>{order.status}</span>
+                                            <td className="text-center">
+                                                <span className={`status-badge ${getStatusStyle(order.status)}`}>{order.status?.toLowerCase()}</span>
                                             </td>
                                             <td className="text-center">
                                                 <button
@@ -285,7 +285,7 @@ const OnlineOrdersPage = () => {
                                     <div className="flow-item">
                                         <label>Workflow State</label>
                                         <div className={`status-pill ${getStatusStyle(selectedOrder.status)}`}>
-                                            {selectedOrder.status}
+                                            {selectedOrder.status?.toLowerCase()}
                                         </div>
                                     </div>
                                     <div className="flow-divider"></div>
