@@ -58,8 +58,38 @@
 
 .card-white .card-title {
     color: #1e293b !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.4px;
 }
 
 .card-white .card-subtitle {
     color: #64748b !important;
+}
+
+/* Live Balance Card Enhancement */
+.reconcile-status-side .card-white {
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    border: 2px solid #dbeafe;
+    box-shadow: 0 12px 32px rgba(37, 99, 235, 0.12);
+    transition: all 0.3s ease;
+}
+
+.reconcile-status-side .card-title {
+    color: #1d4ed8 !important;
+    font-weight: 800 !important;
+    font-size: 1.3rem !important;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reconcile-status-side .card-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    border-radius: 2px;
 }
