@@ -1,3 +1,12 @@
+
+/* ENFORCE GLOBAL FONT STYLE */
+* {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+input, textarea, select, button {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
 .checkout-container {
     padding: 16px;
     max-width: 1300px;
@@ -26,7 +35,7 @@
 }
 
 .checkout-header h1 {
-    font-size: 0.98rem;
+    font-size: 13px;
     font-weight: 600;
     color: #1f2937;
     margin: 0;
@@ -44,7 +53,7 @@
     color: #1f2937;
     cursor: pointer;
     transition: all 0.2s;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .back-btn:hover {
@@ -77,7 +86,7 @@
 }
 
 .card-header h2 {
-    font-size: 0.9rem;
+    font-size: 13px;
     font-weight: 600;
     color: #1f2937;
     margin: 0;
@@ -175,7 +184,7 @@
 
 .calc-total span:last-child {
     font-weight: 600;
-    font-size: 16px;
+    font-size: 13px;
     color: #1f2937;
     letter-spacing: 0;
 }
@@ -219,7 +228,7 @@
     padding: 10px 10px 10px 36px;
     border: 1px solid #dbe3ee;
     border-radius: 8px;
-    font-size: 0.85rem;
+    font-size: 13px;
     color: #1f2937;
     outline: none;
     transition: all 0.2s;
@@ -283,7 +292,7 @@
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 0.88rem;
+    font-size: 13px;
     font-weight: 650;
     display: flex;
     align-items: center;

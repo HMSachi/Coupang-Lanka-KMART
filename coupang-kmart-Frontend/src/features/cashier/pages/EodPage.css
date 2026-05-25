@@ -1,3 +1,17 @@
+
+/* ENFORCE GLOBAL FONT STYLE */
+* {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+input, textarea, select, button {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+
+input, textarea, select, button {
+    font-family: 'Inter', system-ui, sans-serif !important;
+}
+
 .eod-premium-container {
     padding: 2rem;
     max-width: 1200px;
@@ -121,7 +135,7 @@
 }
 
 .metric-total-box .total-val {
-    font-size: 2.25rem;
+    font-size: 13px;
     font-weight: 950;
     color: #1e293b;
 }
@@ -224,7 +238,7 @@
 }
 
 .diff-val {
-    font-size: 2.1rem;
+    font-size: 13px;
     font-weight: 650;
     margin: 0.5rem 0;
 }
@@ -322,7 +336,7 @@
     border: none;
     border-radius: 5px;
     font-weight: 400;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -372,7 +386,7 @@
 
 .sidebar-header h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 13px;
     font-weight: 650;
 }
 
@@ -407,7 +421,7 @@
     padding: 12px;
     border: 2px solid #f1f5f9;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 13px;
     font-family: inherit;
 }
 
@@ -469,7 +483,7 @@
     border: none;
     border-radius: 5px;
     font-weight: 650;
-    font-size: 16px;
+    font-size: 13px;
     cursor: pointer;
     color: white;
 }
@@ -528,13 +542,13 @@
 
 .drilldown-table td {
     padding: 12px 10px;
-    font-size: 14px;
+    font-size: 13px;
     border-bottom: 1px solid #f1f5f9;
 }
 
 .batch-tag {
     display: inline-block;
-    font-size: 10px;
+    font-size: 11px;
     background: #eff6ff;
     color: #1d4ed8;
     padding: 2px 6px;
@@ -544,7 +558,7 @@
 }
 
 .amount-highlight {
-    font-size: 18px;
+    font-size: 13px;
     font-weight: 650;
     color: #0f172a;
 }
@@ -988,7 +1002,7 @@
 }
 
 .p-diff-val {
-    font-size: 2.25rem;
+    font-size: 13px;
     font-weight: 650;
     margin-bottom: 0.5rem;
 }

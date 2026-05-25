@@ -1,3 +1,17 @@
+
+/* ENFORCE GLOBAL FONT STYLE */
+* {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+input, textarea, select, button {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+
+input, textarea, select, button {
+    font-family: 'Inter', system-ui, sans-serif !important;
+}
+
 .denomination-counter-premium {
     background: #f8fafc;
     border-radius: 5px;

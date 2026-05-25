@@ -1,3 +1,17 @@
+
+/* ENFORCE GLOBAL FONT STYLE */
+* {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+input, textarea, select, button {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+
+input, textarea, select, button {
+    font-family: 'Inter', system-ui, sans-serif !important;
+}
+
 .session-start-container {
     padding: 1.25rem 1.5rem 1.5rem;
     position: relative;
