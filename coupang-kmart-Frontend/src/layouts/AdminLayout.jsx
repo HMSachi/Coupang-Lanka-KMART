@@ -11,7 +11,7 @@ const navItems = [
     { icon: Users, label: 'User Management', path: '/admin/users' },
     { icon: Shield, label: 'Roles & Permissions', path: '/admin/roles' },
     { icon: FileText, label: 'Cashier Reports', path: '/admin/cashier-reports' },
-    { icon: BarChart2, label: 'Reports', path: '/admin/reports' },
+    { icon: BarChart2, label: 'Sales Analytics', path: '/admin/analytics' },
     { icon: Bell, label: 'Notifications', path: '/admin/notifications' },
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
 ];

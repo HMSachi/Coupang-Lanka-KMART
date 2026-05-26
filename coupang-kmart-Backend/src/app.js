@@ -7,6 +7,7 @@ const productRoutes = require('./routes/productRoutes');
 const branchRoutes = require('./routes/branchRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const returnRoutes = require('./routes/returnRoutes');
 
 const path = require('path');
 
@@ -21,6 +22,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/returns', returnRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running');

@@ -38,15 +38,20 @@ export default function EodPage() {
     const [isCashActionModalOpen, setIsCashActionModalOpen] = useState(false);
     const [cashActionType, setCashActionType] = useState('IN'); // 'IN' or 'OUT'
     const [pendingSettlements, setPendingSettlements] = useState([]);
+    const [pendingReturnCashBatches, setPendingReturnCashBatches] = useState([]);
     const [cashActionForm, setCashActionForm] = useState({
         amount: '',
         reason: '',
         batch_number: '',
-        transaction_id: null
+        transaction_id: null,
+        return_ref: null,
+        order_id: null,
+        return_report: null
     });
 
     const [drillDownCategory, setDrillDownCategory] = useState(null); // 'SALE', 'CASH_IN', 'CASH_OUT'
     const [drillDownTransactions, setDrillDownTransactions] = useState([]);
+    const [selectedCashLog, setSelectedCashLog] = useState(null);
 
     // Financial metrics
     const [drawerMetrics, setDrawerMetrics] = useState({
@@ -68,6 +73,7 @@ export default function EodPage() {
             setSession(sessionData);
             calculateDrawerMetrics();
             fetchPendingSettlements();
+            loadPendingReturnCashBatches();
 
             // Load reports history and filter strictly for this session
             const savedHistory = localStorage.getItem('eod_reports');
@@ -82,6 +88,7 @@ export default function EodPage() {
             // Listen for cash drawer log updates from other pages
             const handleCashDrawerUpdate = () => {
                 calculateDrawerMetrics();
+                loadPendingReturnCashBatches();
             };
             window.addEventListener('refreshCashMetrics', handleCashDrawerUpdate);
 
@@ -114,6 +121,16 @@ export default function EodPage() {
         }
     };
 
+    const loadPendingReturnCashBatches = () => {
+        const pending = JSON.parse(localStorage.getItem('pending_return_cash_batches') || '[]');
+        const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
+        const unsettled = pending.filter(batch => !logs.some(log => log.return_ref === batch.return_ref && log.batch === batch.batch_number));
+        if (unsettled.length !== pending.length) {
+            localStorage.setItem('pending_return_cash_batches', JSON.stringify(unsettled));
+        }
+        setPendingReturnCashBatches(unsettled);
+    };
+
     const calculateDrawerMetrics = () => {
         const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
         const stats = logs.reduce((acc, log) => {
@@ -122,6 +139,7 @@ export default function EodPage() {
             }
             if (log.type === 'CASH_IN') acc.cashIn += log.amount;
             if (log.type === 'CASH_OUT' || log.type === 'REFUND') acc.cashOut += log.amount;
+            if (log.type === 'REFUND') acc.refunds += log.amount;
             return acc;
         }, { sales: 0, cashIn: 0, cashOut: 0, refunds: 0 });
 
@@ -163,13 +181,23 @@ export default function EodPage() {
         const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
         logs.push({
             id: `TRANS_${Date.now()}`,
-            type: cashActionType === 'IN' ? 'CASH_IN' : 'CASH_OUT',
+            type: cashActionForm.return_ref ? 'REFUND' : (cashActionType === 'IN' ? 'CASH_IN' : 'CASH_OUT'),
             amount: amount,
             reason: cashActionForm.reason,
             batch: cashActionForm.batch_number,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            return_ref: cashActionForm.return_ref || null,
+            order_id: cashActionForm.order_id || null,
+            return_report: cashActionForm.return_report || null
         });
         localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
+
+        if (cashActionForm.return_ref) {
+            const pending = JSON.parse(localStorage.getItem('pending_return_cash_batches') || '[]')
+                .filter(batch => batch.return_ref !== cashActionForm.return_ref);
+            localStorage.setItem('pending_return_cash_batches', JSON.stringify(pending));
+            setPendingReturnCashBatches(pending);
+        }
 
         // If it was a pending settlement, settle it in backend
         if (cashActionForm.transaction_id) {
@@ -187,10 +215,11 @@ export default function EodPage() {
 
         // Reset and Refresh
         setIsCashActionModalOpen(false);
-        setCashActionForm({ amount: '', reason: '', batch_number: '', transaction_id: null });
+        setCashActionForm({ amount: '', reason: '', batch_number: '', transaction_id: null, return_ref: null, order_id: null, return_report: null });
         calculateDrawerMetrics();
         window.dispatchEvent(new Event('refreshCashMetrics'));
         fetchPendingSettlements();
+        loadPendingReturnCashBatches();
         alert(`Cash ${cashActionType} recorded successfully.`);
     };
 
@@ -260,14 +289,15 @@ export default function EodPage() {
                 const draft = draftsList.find(d => d.id === id);
                 const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
                 const token = localStorage.getItem('token');
+                const reportEndTime = new Date().toISOString();
 
                 // Get cash drawer logs from localStorage
                 const cashDrawerLogs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
 
-                // Fetch all orders for this session (completed and hold orders)
+                // Fetch POS/manual orders created or completed inside this exact cashier session
                 let sessionOrders = [];
                 try {
-                    const ordersResponse = await fetch(`${apiUrl}/api/orders/reports/session-orders?cashier_name=${encodeURIComponent(session.cashier)}&start_time=${encodeURIComponent(session.startTime)}`, {
+                    const ordersResponse = await fetch(`${apiUrl}/api/orders/reports/session-orders?cashier_name=${encodeURIComponent(session.cashier)}&start_time=${encodeURIComponent(session.startTime)}&end_time=${encodeURIComponent(reportEndTime)}&session_id=${encodeURIComponent(session.id)}`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     if (ordersResponse.ok) {
@@ -280,10 +310,10 @@ export default function EodPage() {
                     console.warn('Could not fetch POS orders:', err.message);
                 }
 
-                // Fetch online orders for the same period
+                // Fetch only online orders touched by this cashier during this shift window
                 let onlineOrders = [];
                 try {
-                    const onlineOrdersResponse = await fetch(`${apiUrl}/api/orders?status=ALL&created_after=${encodeURIComponent(session.startTime)}`, {
+                    const onlineOrdersResponse = await fetch(`${apiUrl}/api/orders/reports/online-session-orders?cashier_name=${encodeURIComponent(session.cashier)}&start_time=${encodeURIComponent(session.startTime)}&end_time=${encodeURIComponent(reportEndTime)}`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     if (onlineOrdersResponse.ok) {
@@ -302,12 +332,13 @@ export default function EodPage() {
                     cashier_name: session.cashier,
                     session_id: session.id,
                     start_time: session.startTime,
-                    end_time: new Date().toISOString(),
+                    end_time: reportEndTime,
                     pos_orders: Array.isArray(sessionOrders) ? sessionOrders : [],
                     online_orders: Array.isArray(onlineOrders) ? onlineOrders : [],
                     total_pos_orders: Array.isArray(sessionOrders) ? sessionOrders.length : 0,
                     total_online_orders: Array.isArray(onlineOrders) ? onlineOrders.length : 0,
-                    report_type: 'ORDER_SUMMARY'
+                    report_type: 'ORDER_SUMMARY',
+                    scope: 'CURRENT_CASHIER_SHIFT_ONLY'
                 };
 
                 // Calculate order summary metrics - ensure arrays exist
@@ -459,17 +490,20 @@ export default function EodPage() {
                                     </div>
 
                                     <div className="eod-quick-actions">
-                                        <button className="q-action-in" onClick={() => {
-                                            setCashActionType('IN');
-                                            setIsCashActionModalOpen(true);
-                                        }}>
-                                            <TrendingUp size={16} /> Cash In
-                                        </button>
-                                        <button className="q-action-out" onClick={() => {
-                                            setCashActionType('OUT');
-                                            setIsCashActionModalOpen(true);
-                                        }}>
-                                            <TrendingDown size={16} /> Cash Out
+                                <button className="q-action-in" onClick={() => {
+                                    setCashActionType('IN');
+                                    setCashActionForm({ amount: '', reason: '', batch_number: '', transaction_id: null, return_ref: null, order_id: null, return_report: null });
+                                    setIsCashActionModalOpen(true);
+                                }}>
+                                    <TrendingUp size={16} /> Cash In
+                                </button>
+                                <button className="q-action-out" onClick={() => {
+                                    setCashActionType('OUT');
+                                    loadPendingReturnCashBatches();
+                                    setCashActionForm({ amount: '', reason: '', batch_number: '', transaction_id: null, return_ref: null, order_id: null, return_report: null });
+                                    setIsCashActionModalOpen(true);
+                                }}>
+                                    <TrendingDown size={16} /> Cash Out
                                         </button>
                                     </div>
 
@@ -873,11 +907,12 @@ export default function EodPage() {
                                     </thead>
                                     <tbody>
                                         {getFilteredLogs(drillDownCategory).map(log => (
-                                            <tr key={log.id}>
+                                            <tr key={log.id} onClick={() => setSelectedCashLog(log)} style={{ cursor: 'pointer' }}>
                                                 <td>{new Date(log.timestamp || Date.now()).toLocaleTimeString()}</td>
                                                 <td>
                                                     {log.reason || log.desc || log.id}
                                                     {log.batch && <div className="batch-tag">{log.batch}</div>}
+                                                    {log.return_ref && <div className="batch-tag">{log.return_ref}</div>}
                                                 </td>
                                                 <td className="text-right font-bold">
                                                     LKR {log.amount.toLocaleString()}
@@ -907,6 +942,64 @@ export default function EodPage() {
                     </div>
                 )}
 
+                {selectedCashLog && (
+                    <div className="report-modal-overlay">
+                        <div className="report-modal-container animate-scale" style={{ maxWidth: '760px' }}>
+                            <div className="report-modal-header">
+                                <h3>{selectedCashLog.type === 'REFUND' ? 'Refund Cash-Out Batch' : 'Cash Transaction Details'}</h3>
+                                <button onClick={() => setSelectedCashLog(null)} className="close-modal-btn">
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="drilldown-content custom-scrollbar" style={{ padding: '20px' }}>
+                                <div className="p-summary-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+                                    <div className="p-summary-card">
+                                        <label>Batch / Transaction</label>
+                                        <strong>{selectedCashLog.batch || selectedCashLog.id}</strong>
+                                    </div>
+                                    <div className="p-summary-card">
+                                        <label>Type</label>
+                                        <strong>{selectedCashLog.type}</strong>
+                                    </div>
+                                    <div className="p-summary-card">
+                                        <label>Amount</label>
+                                        <strong>LKR {Number(selectedCashLog.amount || 0).toLocaleString()}</strong>
+                                    </div>
+                                </div>
+
+                                <div className="cash-detail-block" style={{ marginTop: '18px' }}>
+                                    <p><strong>Description:</strong> {selectedCashLog.reason || selectedCashLog.desc || 'N/A'}</p>
+                                    {selectedCashLog.return_ref && <p><strong>Return ID:</strong> {selectedCashLog.return_ref}</p>}
+                                    {selectedCashLog.order_id && <p><strong>Order ID:</strong> {selectedCashLog.order_id}</p>}
+                                    <p><strong>Time:</strong> {new Date(selectedCashLog.timestamp || Date.now()).toLocaleString()}</p>
+                                </div>
+
+                                {selectedCashLog.return_report?.items?.length > 0 && (
+                                    <table className="drilldown-table" style={{ marginTop: '18px' }}>
+                                        <thead>
+                                            <tr>
+                                                <th>Returned Item</th>
+                                                <th>Reason</th>
+                                                <th className="text-right">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {selectedCashLog.return_report.items.map(item => (
+                                                <tr key={item.id}>
+                                                    <td>{item.product_name} x {item.quantity}</td>
+                                                    <td>{item.reason_text || item.custom_note || 'N/A'}</td>
+                                                    <td className="text-right font-bold">LKR {Number(item.refund_amount || 0).toLocaleString()}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* CASH IN / OUT MODAL (SIDEBAR STYLE) */}
                 {isCashActionModalOpen && (
                     <div className="report-modal-overlay">
@@ -929,7 +1022,10 @@ export default function EodPage() {
                                                         amount: item.amount,
                                                         reason: item.reason,
                                                         batch_number: item.batch_number,
-                                                        transaction_id: item.id
+                                                        transaction_id: item.id,
+                                                        return_ref: null,
+                                                        order_id: null,
+                                                        return_report: null
                                                     })}
                                                 >
                                                     <div className="s-info">
@@ -937,6 +1033,35 @@ export default function EodPage() {
                                                         <span>LKR {parseFloat(item.amount).toLocaleString()}</span>
                                                     </div>
                                                     <div className="s-reason">{item.reason}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {cashActionType === 'OUT' && pendingReturnCashBatches.length > 0 && (
+                                    <div className="pending-settlements-box">
+                                        <label>Select Pending Return Cash Batch</label>
+                                        <div className="settlement-list">
+                                            {pendingReturnCashBatches.map(item => (
+                                                <div
+                                                    key={item.return_ref}
+                                                    className="settlement-item"
+                                                    onClick={() => setCashActionForm({
+                                                        amount: item.amount,
+                                                        reason: item.reason,
+                                                        batch_number: item.batch_number,
+                                                        transaction_id: null,
+                                                        return_ref: item.return_ref,
+                                                        order_id: item.order_id,
+                                                        return_report: item.return_report
+                                                    })}
+                                                >
+                                                    <div className="s-info">
+                                                        <strong>{item.batch_number}</strong>
+                                                        <span>LKR {parseFloat(item.amount).toLocaleString()}</span>
+                                                    </div>
+                                                    <div className="s-reason">{item.return_ref} | {item.order_id}</div>
                                                 </div>
                                             ))}
                                         </div>
@@ -972,6 +1097,17 @@ export default function EodPage() {
                                             value={cashActionForm.batch_number}
                                             onChange={(e) => setCashActionForm({ ...cashActionForm, batch_number: e.target.value })}
                                             placeholder="Ex: BATCH-001"
+                                        />
+                                    </div>
+                                )}
+
+                                {cashActionType === 'OUT' && cashActionForm.return_ref && (
+                                    <div className="form-group">
+                                        <label>Selected Return Batch</label>
+                                        <input
+                                            type="text"
+                                            value={cashActionForm.batch_number}
+                                            readOnly
                                         />
                                     </div>
                                 )}
