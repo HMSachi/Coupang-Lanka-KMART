@@ -291,7 +291,7 @@ export default function PosCartPage() {
 
       <style jsx>{`
         .pos-cart-page-container {
-          padding: 1.5rem;
+          padding: 1.2rem;
           max-width: 1600px;
           margin: 0 auto;
           color: #1f2937;
@@ -301,17 +301,17 @@ export default function PosCartPage() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 1.5rem;
+          margin-bottom: 1rem;
         }
 
         .header-btn {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          padding: 0.6rem 1.2rem;
-          border-radius: 8px;
+          padding: 0.45rem 0.95rem;
+          border-radius: 5px;
           font-weight: 600;
-          font-size: 0.88rem;
+          font-size: 0.84rem;
           cursor: pointer;
           transition: all 0.2s;
           border: 1px solid transparent;
@@ -345,7 +345,7 @@ export default function PosCartPage() {
         .cart-page-grid {
           display: grid;
           grid-template-columns: 1fr 400px;
-          gap: 1.5rem;
+          gap: 1rem;
           align-items: start;
         }
 
@@ -353,7 +353,7 @@ export default function PosCartPage() {
           display: flex;
           align-items: center;
           gap: 0.75rem;
-          margin-bottom: 1rem;
+          margin-bottom: 0.75rem;
           color: #1f2937;
         }
 
@@ -362,7 +362,7 @@ export default function PosCartPage() {
         }
 
         .section-title h2 {
-          font-size: 0.96rem;
+          font-size: 0.92rem;
           font-weight: 600;
           margin: 0;
         }
@@ -372,17 +372,17 @@ export default function PosCartPage() {
           background: #fef3c7;
           color: #92400e;
           padding: 2px 8px;
-          border-radius: 10px;
+          border-radius: 5px;
           font-weight: 600;
           text-transform: uppercase;
         }
 
         .cart-page-content {
           background: white;
-          border-radius: 10px;
+          border-radius: 5px;
           box-shadow: 0 10px 22px -18px rgba(15, 23, 42, 0.32);
           border: 1px solid #e2e8f0;
-          min-height: 500px;
+          min-height: 460px;
           overflow: hidden;
         }
 
@@ -391,7 +391,7 @@ export default function PosCartPage() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 4rem 2rem;
+          padding: 3rem 1.5rem;
           text-align: center;
         }
 
@@ -409,16 +409,17 @@ export default function PosCartPage() {
 
         .empty-cart-state p {
           color: #64748b;
-          margin-bottom: 1.5rem;
+          margin-bottom: 1rem;
         }
 
         .start-order-btn {
-          padding: 0.75rem 1.5rem;
+          padding: 0.55rem 1.15rem;
           background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
           color: white;
           border: none;
-          border-radius: 8px;
+          border-radius: 5px;
           font-weight: 600;
+          font-size: 0.85rem;
           cursor: pointer;
         }
 
@@ -431,8 +432,8 @@ export default function PosCartPage() {
         .no-held-orders {
           background: #ffffff;
           border: 1px dashed #cbd5e1;
-          border-radius: 10px;
-          padding: 1.4rem;
+          border-radius: 5px;
+          padding: 1rem;
           text-align: left;
           color: #475569;
         }
@@ -459,15 +460,15 @@ export default function PosCartPage() {
 
         .no-held-orders p {
           margin: 0;
-          font-size: 0.82rem;
+          font-size: 0.8rem;
           line-height: 1.45;
           color: #64748b;
         }
 
         .held-order-card {
           background: white;
-          border-radius: 10px;
-          padding: 1rem;
+          border-radius: 5px;
+          padding: 0.85rem;
           border: 1px solid #e2e8f0;
           box-shadow: 0 8px 18px -18px rgba(15, 23, 42, 0.3);
           transition: all 0.2s;
@@ -480,7 +481,7 @@ export default function PosCartPage() {
         }
 
         .held-info {
-          margin-bottom: 1rem;
+          margin-bottom: 0.75rem;
         }
 
         .held-main {
@@ -493,18 +494,18 @@ export default function PosCartPage() {
         .held-id {
           font-weight: 600;
           color: #1f2937;
-          font-size: 13px;
+          font-size: 12px;
         }
 
         .held-time {
-          font-size: 12px;
+          font-size: 11px;
           color: #64748b;
         }
 
         .held-details {
           display: flex;
           justify-content: space-between;
-          font-size: 13px;
+          font-size: 12px;
           color: #64748b;
         }
 
@@ -516,7 +517,7 @@ export default function PosCartPage() {
         .held-actions {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 8px;
+          gap: 6px;
         }
 
         .held-btn {
@@ -524,9 +525,9 @@ export default function PosCartPage() {
           align-items: center;
           justify-content: center;
           gap: 6px;
-          padding: 8px;
-          border-radius: 8px;
-          font-size: 12px;
+          padding: 6px 8px;
+          border-radius: 5px;
+          font-size: 11px;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s;
@@ -556,6 +557,7 @@ export default function PosCartPage() {
           max-width: none !important;
           height: auto !important;
           border: none !important;
+          border-radius: 5px !important;
         }
 
         :global(.cart-items-container) {

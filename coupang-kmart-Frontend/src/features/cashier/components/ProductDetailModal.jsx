@@ -22,7 +22,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
         <div className="product-modal-overlay" onClick={onClose}>
             <div className="product-modal-container" onClick={(e) => e.stopPropagation()}>
                 <button className="product-modal-close" onClick={onClose}>
-                    <X size={20} />
+                    <X size={16} />
                 </button>
 
                 <div className="product-modal-content">
@@ -65,7 +65,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                                 <span className="product-modal-category">{product.category}</span>
                                 {product.discount_value > 0 && (
                                     <div className="discount-pill">
-                                        <Tag size={12} />
+                                        <Tag size={10} />
                                         <span>-{product.discount_value}{product.discount_type === 'percentage' ? '%' : ' LKR'} OFF</span>
                                     </div>
                                 )}
@@ -73,7 +73,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                             <h2 className="product-modal-title">{product.name}</h2>
                             <div className="product-identifier-grid">
                                 <div className="id-chip">
-                                    <Hash size={12} />
+                                    <Hash size={10} />
                                     <span>Item ID: {product.id}</span>
                                 </div>
                             </div>
@@ -83,7 +83,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                         <div className="product-modal-stats">
                             <div className="product-modal-stat-card">
                                 <div className="stat-icon-wrapper price">
-                                    <CreditCard size={18} />
+                                    <CreditCard size={14} />
                                 </div>
                                 <div className="stat-info">
                                     <span className="stat-label">Retail Price</span>
@@ -93,7 +93,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
 
                             <div className="product-modal-stat-card">
                                 <div className={`stat-icon-wrapper stock ${isOutOfStock ? 'danger' : 'success'}`}>
-                                    <Package size={18} />
+                                    <Package size={14} />
                                 </div>
                                 <div className="stat-info">
                                     <span className="stat-label">Stock Status</span>
@@ -108,7 +108,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                         <div className="metadata-grid">
                             <div className="meta-card">
                                 <div className="meta-icon-box orange">
-                                    <Calendar size={14} />
+                                    <Calendar size={12} />
                                 </div>
                                 <div className="meta-content">
                                     <span className="meta-label">Expiry Date</span>
@@ -120,7 +120,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                         {/* Description Section */}
                         <div className="product-modal-description">
                             <div className="desc-header">
-                                <Info size={14} />
+                                <Info size={12} />
                                 <span>Product Overview</span>
                             </div>
                             <p className="desc-text text-sm">
@@ -141,7 +141,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                                 disabled={isOutOfStock}
                                 className="modal-checkout-btn"
                             >
-                                <ShoppingCart size={20} className="mr-2" />
+                                <ShoppingCart size={16} className="mr-2" />
                                 {isOutOfStock ? 'Out of Stock' : 'Add to Current Order'}
                             </Button>
                         </div>

@@ -146,7 +146,7 @@ input, textarea, select, button {
 }
 
 .order-row td {
-    padding: 16px 20px;
+    padding: 13px 20px;
     vertical-align: middle;
 }
 
@@ -210,18 +210,20 @@ input, textarea, select, button {
 }
 
 /* Status Badges */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 90px;
-    padding: 2px 10px 4px; /* Reduced padding, text pushed slightly up */
-    border-radius: 5px !important;
-    font-size: 11px;
-    font-weight: 500;
-    line-height: 1.2;
+.orders-table .status-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 90px !important;
+    padding: 4px 8px !important; 
+    border-radius: 4px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
     letter-spacing: 0.02em;
     text-transform: capitalize;
+    margin-top: 0 !important;
+    height: auto !important;
 }
 
 .status-pending {
