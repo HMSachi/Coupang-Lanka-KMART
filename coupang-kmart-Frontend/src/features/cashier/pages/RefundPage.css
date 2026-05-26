@@ -864,6 +864,14 @@ input, textarea, select, button {
     font-size: 0.76rem;
 }
 
+.return-action-error {
+    display: block;
+    margin-top: 0.55rem;
+    color: #b91c1c;
+    font-size: 0.74rem;
+    font-weight: 800;
+}
+
 .return-report-side {
     position: sticky;
     top: 0;
@@ -954,6 +962,13 @@ input, textarea, select, button {
     justify-content: center;
     gap: 0.45rem;
     cursor: pointer;
+}
+
+.exchange-batch-btn.disabled,
+.exchange-batch-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    opacity: 0.9;
 }
 
 .cash-return-batch-modal {

@@ -187,7 +187,8 @@ export default function PaymentPage() {
                 vat_amount: Number(orderSummary?.vatAmount ?? 0) || 0,
                 service_charge: Number(orderSummary?.serviceCharge ?? 0) || 0,
                 change_due: completedChangeDue,
-                branch_id: effectiveBranchId
+                branch_id: effectiveBranchId,
+                exchange_batch_number: activeExchange?.batch_number || null
             };
             setCompletedInvoiceNo(invoiceNo);
 
@@ -240,16 +241,6 @@ export default function PaymentPage() {
                 localStorage.removeItem('pos_cart');
                 localStorage.removeItem('pending_order_summary');
                 if (activeExchange?.batch_number) {
-                    const pendingExchangeBatches = JSON.parse(localStorage.getItem('pending_exchange_batches') || '[]');
-                    const remainingBatches = pendingExchangeBatches.filter(batch => batch.batch_number !== activeExchange.batch_number);
-                    const usedBatches = JSON.parse(localStorage.getItem('used_exchange_batches') || '[]');
-                    localStorage.setItem('pending_exchange_batches', JSON.stringify(remainingBatches));
-                    localStorage.setItem('used_exchange_batches', JSON.stringify([{
-                        ...activeExchange,
-                        status: 'used',
-                        used_at: completedAt,
-                        exchange_order_id: invoiceNo
-                    }, ...usedBatches]));
                     localStorage.removeItem('exchange_order_context');
                 }
                 window.dispatchEvent(new Event('cartUpdated'));

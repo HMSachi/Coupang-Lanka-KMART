@@ -15,6 +15,7 @@ import PosCartPage from '../features/cashier/pages/PosCartPage';
 import CheckoutPage from '../features/cashier/pages/CheckoutPage';
 import PaymentPage from '../features/cashier/pages/PaymentPage';
 import RefundPage from '../features/cashier/pages/RefundPage';
+import WastedItemsPage from '../features/cashier/pages/WastedItemsPage';
 import EodPage from '../features/cashier/pages/EodPage';
 import SessionStartPage from '../features/cashier/pages/SessionStartPage';
 import OnlineOrdersPage from '../features/cashier/pages/OnlineOrdersPage';
@@ -162,6 +163,14 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
                             <RefundPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/pos/wasted-items"
+                    element={
+                        <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
+                            <WastedItemsPage />
                         </ProtectedRoute>
                     }
                 />

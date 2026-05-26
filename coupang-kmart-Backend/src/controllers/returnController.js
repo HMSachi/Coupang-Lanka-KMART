@@ -6,6 +6,38 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
+const parseJsonValue = (value, fallback) => {
+    if (!value) return fallback;
+    if (typeof value === 'object') return value;
+    try {
+        return JSON.parse(value);
+    } catch (err) {
+        return fallback;
+    }
+};
+
+const normalizeExchangeBatch = (batch) => {
+    if (!batch) return null;
+    return {
+        id: batch.id,
+        batch_number: batch.batch_number,
+        return_ref: batch.return_ref,
+        order_id: batch.order_ref,
+        original_order_id: batch.order_id,
+        customer: parseJsonValue(batch.customer, {}),
+        cashier_name: batch.cashier_name,
+        branch_id: batch.branch_id,
+        amount: Number(batch.amount || 0),
+        status: batch.status || 'pending',
+        items: parseJsonValue(batch.items, []),
+        return_report: parseJsonValue(batch.return_report, {}),
+        exchange_order_id: batch.exchange_order_id,
+        created_at: batch.created_at,
+        used_at: batch.used_at,
+        updated_at: batch.updated_at
+    };
+};
+
 exports.getReturnConfig = async (req, res) => {
     try {
         const [reasonsRes, policyRes, productsRes] = await Promise.all([
@@ -298,6 +330,148 @@ exports.getReturns = async (req, res) => {
     }
 };
 
+exports.getTodayReturns = async (req, res) => {
+    try {
+        const result = await pool.query(`
+            WITH grouped_returns AS (
+                SELECT
+                    COALESCE(rr.return_ref, 'RTN-' || rr.id::text) AS group_ref,
+                    rr.*,
+                    COALESCE(rr.branch_id, o.branch_id) AS effective_branch_id,
+                    b.name AS branch_name
+                FROM return_records rr
+                LEFT JOIN orders o ON o.id = rr.order_id
+                LEFT JOIN branches b ON b.id = COALESCE(rr.branch_id, o.branch_id)
+                WHERE rr.created_at::date = CURRENT_DATE
+            )
+            SELECT
+                group_ref AS return_ref,
+                MIN(created_at) AS created_at,
+                MAX(order_ref) AS order_ref,
+                MAX(cashier_name) AS cashier_name,
+                MAX(effective_branch_id) AS branch_id,
+                MAX(branch_name) AS branch_name,
+                ARRAY_AGG(DISTINCT return_method) AS return_methods,
+                MAX(return_method) AS return_method,
+                COUNT(*)::int AS item_count,
+                COALESCE(SUM(refund_amount), 0)::numeric AS total_refund_amount,
+                COALESCE(SUM(CASE WHEN return_method = 'refund_cash' THEN refund_amount ELSE 0 END), 0)::numeric AS cash_refund_amount,
+                COALESCE(SUM(CASE WHEN return_method = 'store_credit' THEN refund_amount ELSE 0 END), 0)::numeric AS store_credit_amount,
+                COALESCE(SUM(CASE WHEN return_method = 'exchange_item' THEN refund_amount ELSE 0 END), 0)::numeric AS exchange_amount,
+                SUM(CASE WHEN return_method = 'refund_cash' THEN 1 ELSE 0 END)::int AS cash_item_count,
+                SUM(CASE WHEN return_method = 'store_credit' THEN 1 ELSE 0 END)::int AS store_credit_item_count,
+                SUM(CASE WHEN return_method = 'exchange_item' THEN 1 ELSE 0 END)::int AS exchange_item_count
+            FROM grouped_returns
+            GROUP BY group_ref
+            ORDER BY MIN(created_at) DESC
+        `);
+
+        const totals = result.rows.reduce((acc, row) => {
+            acc.total_refund_amount += Number(row.total_refund_amount || 0);
+            acc.cash_refund_amount += Number(row.cash_refund_amount || 0);
+            acc.store_credit_amount += Number(row.store_credit_amount || 0);
+            acc.exchange_amount += Number(row.exchange_amount || 0);
+            acc.cash_item_count += Number(row.cash_item_count || 0);
+            acc.store_credit_item_count += Number(row.store_credit_item_count || 0);
+            acc.exchange_item_count += Number(row.exchange_item_count || 0);
+            return acc;
+        }, {
+            total_refund_amount: 0,
+            cash_refund_amount: 0,
+            store_credit_amount: 0,
+            exchange_amount: 0,
+            cash_item_count: 0,
+            store_credit_item_count: 0,
+            exchange_item_count: 0
+        });
+
+        res.json({
+            date: new Date().toISOString().slice(0, 10),
+            transaction_count: result.rows.length,
+            totals,
+            returns: result.rows
+        });
+    } catch (err) {
+        console.error('Error loading today returns:', err);
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getWastedItems = async (req, res) => {
+    const { period = 'today' } = req.query;
+
+    const periodFilters = {
+        today: 'rr.created_at::date = CURRENT_DATE',
+        last7: "rr.created_at >= (CURRENT_DATE - INTERVAL '6 days')",
+        month: "date_trunc('month', rr.created_at) = date_trunc('month', CURRENT_DATE)",
+        all: 'TRUE'
+    };
+    const whereClause = periodFilters[period] || periodFilters.today;
+
+    try {
+        const result = await pool.query(`
+            SELECT
+                rr.id,
+                COALESCE(rr.return_ref, 'RTN-' || rr.id::text) AS return_ref,
+                rr.order_id,
+                rr.order_ref,
+                rr.product_id,
+                rr.product_name,
+                rr.quantity,
+                rr.unit_price,
+                rr.refund_amount,
+                rr.reason_text,
+                rr.custom_note,
+                rr.return_method,
+                rr.cashier_name,
+                COALESCE(rr.branch_id, o.branch_id) AS branch_id,
+                b.name AS branch_name,
+                rr.created_at,
+                rr.condition_confirmed,
+                o.customer_name,
+                o.customer_phone,
+                o.customer_email,
+                o.status AS order_status,
+                o.payment_method,
+                o.total_amount AS order_total,
+                o.completed_at AS order_completed_at
+            FROM return_records rr
+            LEFT JOIN orders o ON o.id = rr.order_id
+            LEFT JOIN branches b ON b.id = COALESCE(rr.branch_id, o.branch_id)
+            WHERE ${whereClause}
+            ORDER BY rr.created_at DESC, rr.id DESC
+        `);
+
+        const totals = result.rows.reduce((acc, item) => {
+            const amount = Number(item.refund_amount || 0);
+            const qty = Number(item.quantity || 0);
+            acc.item_count += qty;
+            acc.record_count += 1;
+            acc.total_value += amount;
+            if (item.return_method === 'refund_cash') acc.cash_refund_amount += amount;
+            if (item.return_method === 'store_credit') acc.store_credit_amount += amount;
+            if (item.return_method === 'exchange_item') acc.exchange_amount += amount;
+            return acc;
+        }, {
+            record_count: 0,
+            item_count: 0,
+            total_value: 0,
+            cash_refund_amount: 0,
+            store_credit_amount: 0,
+            exchange_amount: 0
+        });
+
+        res.json({
+            period,
+            totals,
+            items: result.rows
+        });
+    } catch (err) {
+        console.error('Error loading wasted items:', err);
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.getReturnByRef = async (req, res) => {
     const { returnRef } = req.params;
     try {
@@ -317,9 +491,158 @@ exports.getReturnByRef = async (req, res) => {
             ? await pool.query('SELECT * FROM orders WHERE id = $1', [orderId])
             : { rows: [] };
 
-        res.json(buildReturnReport(recordsRes.rows, orderRes.rows[0] || null));
+        const exchangeBatchRes = await pool.query(
+            'SELECT * FROM return_exchange_batches WHERE return_ref = $1',
+            [recordsRes.rows[0].return_ref || returnRef]
+        );
+
+        res.json(buildReturnReport(recordsRes.rows, orderRes.rows[0] || null, exchangeBatchRes.rows[0] || null));
     } catch (err) {
         console.error('Error loading return report:', err);
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getExchangeBatches = async (req, res) => {
+    const { status = 'pending' } = req.query;
+    const allowedStatuses = ['pending', 'used', 'all'];
+    const selectedStatus = allowedStatuses.includes(status) ? status : 'pending';
+
+    try {
+        const params = [];
+        let whereClause = '';
+        if (selectedStatus !== 'all') {
+            params.push(selectedStatus);
+            whereClause = 'WHERE status = $1';
+        }
+
+        const result = await pool.query(
+            `SELECT *
+             FROM return_exchange_batches
+             ${whereClause}
+             ORDER BY created_at DESC, id DESC`,
+            params
+        );
+
+        res.json(result.rows.map(normalizeExchangeBatch));
+    } catch (err) {
+        console.error('Error loading exchange batches:', err);
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.createExchangeBatch = async (req, res) => {
+    const { returnRef } = req.params;
+
+    try {
+        const recordsRes = await pool.query(
+            `SELECT *
+             FROM return_records
+             WHERE return_ref = $1 OR ('RTN-' || id::text) = $1
+             ORDER BY id ASC`,
+            [returnRef]
+        );
+
+        if (recordsRes.rows.length === 0) {
+            return res.status(404).json({ error: 'Return report not found' });
+        }
+
+        const reportReturnRef = recordsRes.rows[0].return_ref || returnRef;
+        const existingRes = await pool.query(
+            'SELECT * FROM return_exchange_batches WHERE return_ref = $1',
+            [reportReturnRef]
+        );
+
+        if (existingRes.rows.length > 0) {
+            return res.json({
+                message: 'Exchange batch already created',
+                exchange_batch: normalizeExchangeBatch(existingRes.rows[0])
+            });
+        }
+
+        const exchangeRecords = recordsRes.rows.filter(item => item.return_method === 'exchange_item');
+        if (exchangeRecords.length === 0) {
+            return res.status(400).json({ error: 'This return does not include exchange item records' });
+        }
+
+        const orderId = recordsRes.rows[0].order_id;
+        const orderRes = orderId
+            ? await pool.query('SELECT * FROM orders WHERE id = $1', [orderId])
+            : { rows: [] };
+        const order = orderRes.rows[0] || null;
+        const report = buildReturnReport(recordsRes.rows, order);
+        const amount = exchangeRecords.reduce((sum, item) => sum + Number(item.refund_amount || 0), 0);
+        const batchNumber = `EXB-${Date.now()}`;
+        const items = exchangeRecords.map(item => ({
+            id: item.product_id || `exchange-${item.id}`,
+            product_id: item.product_id,
+            name: item.product_name,
+            price: Number(item.unit_price || 0),
+            qty: Number(item.quantity || 1),
+            image: '',
+            return_item_id: item.id,
+            return_ref: reportReturnRef,
+            exchange_batch_number: batchNumber
+        }));
+
+        const result = await pool.query(
+            `INSERT INTO return_exchange_batches (
+                batch_number, return_ref, order_id, order_ref, customer, cashier_name,
+                branch_id, amount, status, items, return_report
+            ) VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7, $8, 'pending', $9::jsonb, $10::jsonb)
+            ON CONFLICT (return_ref)
+            DO UPDATE SET return_ref = return_exchange_batches.return_ref
+            RETURNING *`,
+            [
+                batchNumber,
+                reportReturnRef,
+                orderId || null,
+                recordsRes.rows[0].order_ref || null,
+                JSON.stringify(report.customer || {}),
+                recordsRes.rows[0].cashier_name || null,
+                recordsRes.rows[0].branch_id || null,
+                amount,
+                JSON.stringify(items),
+                JSON.stringify(report)
+            ]
+        );
+
+        res.status(201).json({
+            message: 'Exchange batch created',
+            exchange_batch: normalizeExchangeBatch(result.rows[0])
+        });
+    } catch (err) {
+        console.error('Error creating exchange batch:', err);
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.markExchangeBatchUsed = async (req, res) => {
+    const { batchNumber } = req.params;
+    const { exchange_order_id } = req.body;
+
+    try {
+        const result = await pool.query(
+            `UPDATE return_exchange_batches
+             SET status = 'used',
+                 used_at = COALESCE(used_at, CURRENT_TIMESTAMP),
+                 exchange_order_id = COALESCE($2, exchange_order_id),
+                 updated_at = CURRENT_TIMESTAMP
+             WHERE batch_number = $1
+             RETURNING *`,
+            [batchNumber, exchange_order_id || null]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Exchange batch not found' });
+        }
+
+        res.json({
+            message: 'Exchange batch marked as used',
+            exchange_batch: normalizeExchangeBatch(result.rows[0])
+        });
+    } catch (err) {
+        console.error('Error marking exchange batch used:', err);
         res.status(500).json({ error: err.message });
     }
 };
@@ -356,7 +679,7 @@ exports.markCashBatch = async (req, res) => {
 exports.getReturnDashboard = async (req, res) => {
     try {
         const todayRes = await pool.query(`
-            SELECT COUNT(*)::int AS count
+            SELECT COUNT(DISTINCT COALESCE(return_ref, 'RTN-' || id::text))::int AS count
             FROM return_records
             WHERE created_at::date = CURRENT_DATE
         `);
@@ -400,7 +723,7 @@ exports.getReturnDashboard = async (req, res) => {
     }
 };
 
-function buildReturnReport(records, order) {
+function buildReturnReport(records, order, exchangeBatch = null) {
     const first = records[0] || {};
     const total = records.reduce((sum, item) => sum + Number(item.refund_amount || 0), 0);
     return {
@@ -425,6 +748,7 @@ function buildReturnReport(records, order) {
             total_amount: Number(order.total_amount || 0),
             completed_at: order.completed_at || order.created_at
         } : null,
+        exchange_batch: normalizeExchangeBatch(exchangeBatch),
         items: records.map(item => ({
             id: item.id,
             product_id: item.product_id,
