@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import POSLayout from '../../../layouts/POSLayout';
 import { Banknote, CreditCard, QrCode, Building2, Wallet, ArrowLeft, Receipt, CheckCircle, Trash2, Info, Calculator, Clock } from 'lucide-react';
+import logo from '../../../assets/logo.jpeg';
 import './PaymentPage.css';
 
 export default function PaymentPage() {
@@ -9,8 +10,10 @@ export default function PaymentPage() {
     const [cart, setCart] = useState([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [completedInvoiceNo, setCompletedInvoiceNo] = useState('');
 
     const [orderSummary, setOrderSummary] = useState(null);
+    const [exchangeContext, setExchangeContext] = useState(null);
 
     // Payment State
     const [orderTotal, setOrderTotal] = useState(0);
@@ -23,26 +26,92 @@ export default function PaymentPage() {
     useEffect(() => {
         const savedCart = localStorage.getItem('pos_cart');
         const savedSummary = localStorage.getItem('pending_order_summary');
+        const savedExchangeContext = localStorage.getItem('exchange_order_context');
 
         if (savedCart) {
-            setCart(JSON.parse(savedCart));
+            const parsedCart = JSON.parse(savedCart);
+            const parsedExchange = savedExchangeContext ? JSON.parse(savedExchangeContext) : null;
+            const calculatedTotal = parsedCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            setCart(parsedCart);
 
             if (savedSummary) {
                 const summary = JSON.parse(savedSummary);
-                setOrderSummary(summary);
-                setOrderTotal(summary.total);
-                setRemainingBalance(summary.total);
+                const totalValue = Number(summary.total ?? calculatedTotal) || 0;
+                if (parsedExchange) {
+                    const exchangeAmount = Number(parsedExchange.amount || summary.exchangeCredit || 0);
+                    const exchangeCredit = Math.min(exchangeAmount, totalValue);
+                    const exchangeSummary = {
+                        ...summary,
+                        total: totalValue,
+                        exchangeCredit,
+                        exchangeBatchNumber: parsedExchange.batch_number,
+                        returnRef: parsedExchange.return_ref,
+                        orderRef: parsedExchange.order_id
+                    };
+                    setExchangeContext(parsedExchange);
+                    setOrderSummary(exchangeSummary);
+                    setOrderTotal(totalValue);
+                    setRemainingBalance(Math.max(0, totalValue - exchangeCredit));
+                    setAppliedPayments(exchangeCredit > 0 ? [{
+                        id: `exchange-${parsedExchange.batch_number}`,
+                        method: 'exchange_credit',
+                        amount: exchangeCredit,
+                        received: exchangeCredit,
+                        return_ref: parsedExchange.return_ref,
+                        exchange_batch_number: parsedExchange.batch_number
+                    }] : []);
+                } else {
+                    setOrderSummary(summary);
+                    setOrderTotal(totalValue);
+                    setRemainingBalance(totalValue);
+                }
             } else {
-                const total = JSON.parse(savedCart).reduce((sum, item) => sum + (item.price * item.qty), 0);
-                setOrderTotal(total);
-                setRemainingBalance(total);
+                if (parsedExchange) {
+                    const exchangeAmount = Number(parsedExchange.amount || 0);
+                    const exchangeCredit = Math.min(exchangeAmount, calculatedTotal);
+                    setExchangeContext(parsedExchange);
+                    setOrderSummary({
+                        subtotal: calculatedTotal,
+                        discountAmount: 0,
+                        vatAmount: 0,
+                        serviceCharge: 0,
+                        total: calculatedTotal,
+                        exchangeCredit,
+                        exchangeBatchNumber: parsedExchange.batch_number,
+                        returnRef: parsedExchange.return_ref,
+                        orderRef: parsedExchange.order_id
+                    });
+                    setOrderTotal(calculatedTotal);
+                    setRemainingBalance(Math.max(0, calculatedTotal - exchangeCredit));
+                    setAppliedPayments(exchangeCredit > 0 ? [{
+                        id: `exchange-${parsedExchange.batch_number}`,
+                        method: 'exchange_credit',
+                        amount: exchangeCredit,
+                        received: exchangeCredit,
+                        return_ref: parsedExchange.return_ref,
+                        exchange_batch_number: parsedExchange.batch_number
+                    }] : []);
+                } else {
+                    setOrderTotal(calculatedTotal);
+                    setRemainingBalance(calculatedTotal);
+                }
             }
         } else {
             navigate('/pos');
         }
     }, [navigate]);
 
+    const formatPaymentMethod = (method) => ({
+        cash: 'Cash',
+        card: 'Card',
+        qr: 'QR Pay',
+        bank: 'Bank Transfer',
+        wallet: 'Wallet',
+        exchange_credit: 'Exchange Credit'
+    }[method] || method);
+
     const handleAddPayment = () => {
+        if (remainingBalance <= 0) return;
         let amt = 0;
         if (selectedMethod === 'cash') {
             amt = Math.min(Number(cashReceived), remainingBalance);
@@ -66,6 +135,7 @@ export default function PaymentPage() {
     };
 
     const removePayment = (id, amount) => {
+        if (String(id).startsWith('exchange-')) return;
         setAppliedPayments(appliedPayments.filter(p => p.id !== id));
         setRemainingBalance(prev => prev + amount);
     };
@@ -75,6 +145,51 @@ export default function PaymentPage() {
         try {
             const editingOrderId = localStorage.getItem('editing_order_id');
             const token = localStorage.getItem('token');
+            const completedAt = new Date().toISOString();
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const session = JSON.parse(localStorage.getItem('active_session') || 'null');
+            const savedCustomer = JSON.parse(localStorage.getItem('pos_customer') || '{"name": "POS Customer", "phone": ""}');
+            const activeExchange = exchangeContext || JSON.parse(localStorage.getItem('exchange_order_context') || 'null');
+            const invoiceNo = `INV-${Date.now().toString().slice(-8)}`;
+            const completedChangeDue = appliedPayments.reduce((sum, payment) => {
+                if (payment.method !== 'cash') return sum;
+                return sum + Math.max(0, (Number(payment.received) || 0) - (Number(payment.amount) || 0));
+            }, 0);
+            const userRole = user.role ? user.role.toLowerCase() : '';
+            const effectiveBranchId = user.branch_id || ((userRole === 'admin' || userRole === 'superadmin') ? 1 : null);
+            const orderItemsForSave = cart.map(item => ({
+                ...item,
+                id: item.is_exchange_item && !item.product_id ? null : (item.product_id || item.id)
+            }));
+            const completedOrderData = {
+                order_id: invoiceNo,
+                customer_name: savedCustomer.name || 'POS Customer',
+                customer_phone: savedCustomer.phone || '',
+                payment_method: appliedPayments.map(payment => payment.method).join(', ') || 'POS',
+                subtotal: Number(orderSummary?.subtotal ?? orderTotal) || 0,
+                shipping_cost: 0,
+                total_amount: Number(orderTotal) || 0,
+                status: 'completed',
+                items: orderItemsForSave,
+                cashier_name: session?.cashier || user.name || user.email || 'Cashier',
+                register_id: session?.registerId || 'REGISTER_01',
+                session_id: session?.id || null,
+                session_start_time: session?.startTime || null,
+                completed_at: completedAt,
+                payment_details: appliedPayments.map(payment => ({
+                    method: payment.method,
+                    amount: Number(payment.amount) || 0,
+                    received: Number(payment.received) || Number(payment.amount) || 0,
+                    return_ref: payment.return_ref || activeExchange?.return_ref || '',
+                    exchange_batch_number: payment.exchange_batch_number || activeExchange?.batch_number || ''
+                })),
+                discount_amount: Number(orderSummary?.discountAmount ?? 0) || 0,
+                vat_amount: Number(orderSummary?.vatAmount ?? 0) || 0,
+                service_charge: Number(orderSummary?.serviceCharge ?? 0) || 0,
+                change_due: completedChangeDue,
+                branch_id: effectiveBranchId
+            };
+            setCompletedInvoiceNo(invoiceNo);
 
             if (editingOrderId) {
                 const response = await fetch(`http://localhost:5000/api/orders/${editingOrderId}`, {
@@ -83,24 +198,38 @@ export default function PaymentPage() {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ status: 'completed' })
+                    body: JSON.stringify(completedOrderData)
                 });
 
                 if (!response.ok) {
                     throw new Error('Failed to update order status');
+                }
+            } else {
+                const response = await fetch('http://localhost:5000/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(completedOrderData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to save completed order');
                 }
             }
 
             localStorage.removeItem('editing_order_id');
 
             const logs = JSON.parse(localStorage.getItem('cash_drawer_logs') || '[]');
-            appliedPayments.forEach(p => {
+            appliedPayments.filter(p => p.method !== 'exchange_credit').forEach(p => {
                 logs.push({
                     id: `TRANS_${Date.now()}_${Math.random()}`,
                     type: p.method === 'cash' ? 'CASH_SALE' : (p.method === 'card' ? 'CARD_SALE' : 'BANK_TRANSFER'),
                     amount: p.amount,
                     timestamp: new Date().toISOString(),
-                    desc: `Sale Transaction #${Math.floor(Math.random() * 10000)}`
+                    desc: `Sale Transaction ${invoiceNo}`,
+                    order_id: invoiceNo
                 });
             });
             localStorage.setItem('cash_drawer_logs', JSON.stringify(logs));
@@ -110,6 +239,19 @@ export default function PaymentPage() {
                 setIsSuccess(true);
                 localStorage.removeItem('pos_cart');
                 localStorage.removeItem('pending_order_summary');
+                if (activeExchange?.batch_number) {
+                    const pendingExchangeBatches = JSON.parse(localStorage.getItem('pending_exchange_batches') || '[]');
+                    const remainingBatches = pendingExchangeBatches.filter(batch => batch.batch_number !== activeExchange.batch_number);
+                    const usedBatches = JSON.parse(localStorage.getItem('used_exchange_batches') || '[]');
+                    localStorage.setItem('pending_exchange_batches', JSON.stringify(remainingBatches));
+                    localStorage.setItem('used_exchange_batches', JSON.stringify([{
+                        ...activeExchange,
+                        status: 'used',
+                        used_at: completedAt,
+                        exchange_order_id: invoiceNo
+                    }, ...usedBatches]));
+                    localStorage.removeItem('exchange_order_context');
+                }
                 window.dispatchEvent(new Event('cartUpdated'));
                 window.dispatchEvent(new Event('refreshHeldOrders'));
                 window.dispatchEvent(new Event('refreshCashMetrics'));
@@ -127,6 +269,7 @@ export default function PaymentPage() {
             const editingOrderId = localStorage.getItem('editing_order_id');
             const token = localStorage.getItem('token');
             const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const session = JSON.parse(localStorage.getItem('active_session') || 'null');
             const savedCustomer = JSON.parse(localStorage.getItem('pos_customer') || '{"name": "POS Customer", "phone": ""}');
 
             const orderData = {
@@ -137,7 +280,11 @@ export default function PaymentPage() {
                 total_amount: orderTotal,
                 items: cart,
                 status: 'hold',
-                branch_id: user.branch_id
+                branch_id: user.branch_id,
+                cashier_name: session?.cashier || user.name || user.email || 'Cashier',
+                register_id: session?.registerId || 'REGISTER_01',
+                session_id: session?.id || null,
+                session_start_time: session?.startTime || null
             };
 
             let response;
@@ -201,7 +348,7 @@ export default function PaymentPage() {
                         <div className="invoice-paper">
                             {/* Shop Details */}
                             <div className="inv-header">
-                                <div className="inv-shop-logo">CK</div>
+                                <img src={logo} alt="Coupang Kmart" className="inv-shop-logo" />
                                 <h2>COUPANG KMART</h2>
                                 <p>No 125, Galle Road, Colombo 03</p>
                                 <p>Tel: +94 11 234 5678</p>
@@ -210,7 +357,7 @@ export default function PaymentPage() {
                             <div className="inv-meta-grid">
                                 <div>
                                     <label>Invoice No</label>
-                                    <span>#{Math.floor(Math.random() * 100000).toString().padStart(6, '0')}</span>
+                                    <span>#{completedInvoiceNo || 'N/A'}</span>
                                 </div>
                                 <div>
                                     <label>Date & Time</label>
@@ -221,6 +368,20 @@ export default function PaymentPage() {
                                     <span>{JSON.parse(localStorage.getItem('user'))?.name || 'Cashier #01'}</span>
                                 </div>
                             </div>
+
+                            {exchangeContext && (
+                                <div className="inv-exchange-box">
+                                    <div>
+                                        <label>Exchange Item Bill</label>
+                                        <strong>For Return ID {exchangeContext.return_ref}</strong>
+                                        <span>Exchange Batch {exchangeContext.batch_number}</span>
+                                    </div>
+                                    <div>
+                                        <label>Exchange Credit</label>
+                                        <strong>LKR {Number(exchangeContext.amount || 0).toLocaleString()}</strong>
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="inv-separator"></div>
 
@@ -264,7 +425,7 @@ export default function PaymentPage() {
                                 <h3>Payment Details</h3>
                                 {appliedPayments.map(p => (
                                     <div key={p.id} className="inv-pay-row">
-                                        <span className="capitalize">{p.method}</span>
+                                        <span className="capitalize">{formatPaymentMethod(p.method)}</span>
                                         <span>LKR {p.amount.toLocaleString()}</span>
                                     </div>
                                 ))}
@@ -279,7 +440,7 @@ export default function PaymentPage() {
                             <div className="inv-footer">
                                 <div className="inv-barcode">
                                     <div className="barcode-mock">||||| | || ||| | ||| ||</div>
-                                    <p>INV-{Date.now().toString().slice(-8)}</p>
+                                    <p>{completedInvoiceNo || 'INV'}</p>
                                 </div>
                                 <div className="inv-policy">
                                     <p><strong>Return Policy:</strong> Returns accepted within 7 days with valid receipt. Items must be in original condition.</p>
@@ -347,6 +508,12 @@ export default function PaymentPage() {
                                     <span>Total Payable</span>
                                     <span>LKR {orderTotal.toLocaleString()}</span>
                                 </div>
+                                {exchangeContext && (
+                                    <div className="pay-total-row exchange-credit-row">
+                                        <span>Exchange Credit Applied</span>
+                                        <span>- LKR {Number(orderSummary?.exchangeCredit || 0).toLocaleString()}</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -360,6 +527,21 @@ export default function PaymentPage() {
 
                     {/* RIGHT: Payment Logic */}
                     <div className="payment-main">
+                        {exchangeContext && (
+                            <div className="payment-card exchange-payment-card">
+                                <div>
+                                    <label>Exchange Order</label>
+                                    <strong>{exchangeContext.batch_number}</strong>
+                                    <span>Return ID {exchangeContext.return_ref} | Original order {exchangeContext.order_id}</span>
+                                </div>
+                                <div>
+                                    <label>Auto Applied</label>
+                                    <strong>LKR {Number(orderSummary?.exchangeCredit || exchangeContext.amount || 0).toLocaleString()}</strong>
+                                    <span>Customer: {exchangeContext.customer?.name || 'POS Customer'}</span>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="payment-card methods-card">
                             <div className="card-header">
                                 <Calculator size={18} />
@@ -433,12 +615,14 @@ export default function PaymentPage() {
                                     {appliedPayments.map(p => (
                                         <div key={p.id} className="applied-row">
                                             <div className="applied-info">
-                                                <span className="method-tag">{p.method}</span>
+                                                <span className="method-tag">{formatPaymentMethod(p.method)}</span>
                                                 <span className="applied-amt">LKR {p.amount.toLocaleString()}</span>
                                             </div>
-                                            <button onClick={() => removePayment(p.id, p.amount)} className="remove-pay-btn">
-                                                <Trash2 size={14} />
-                                            </button>
+                                            {p.method !== 'exchange_credit' && (
+                                                <button onClick={() => removePayment(p.id, p.amount)} className="remove-pay-btn">
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            )}
                                         </div>
                                     ))}
                                 </div>

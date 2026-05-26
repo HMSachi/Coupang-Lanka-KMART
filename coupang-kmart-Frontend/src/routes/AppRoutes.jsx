@@ -19,6 +19,7 @@ import EodPage from '../features/cashier/pages/EodPage';
 import SessionStartPage from '../features/cashier/pages/SessionStartPage';
 import OnlineOrdersPage from '../features/cashier/pages/OnlineOrdersPage';
 import CashierReports from '../features/admin/pages/CashierReports';
+import SalesAnalyticsPage from '../features/admin/pages/SalesAnalyticsPage';
 
 /**
  * Protected Route Wrapper
@@ -103,6 +104,14 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={['superAdmin', 'admin']}>
                             <Reports />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/analytics"
+                    element={
+                        <ProtectedRoute allowedRoles={['superAdmin', 'admin']}>
+                            <SalesAnalyticsPage />
                         </ProtectedRoute>
                     }
                 />

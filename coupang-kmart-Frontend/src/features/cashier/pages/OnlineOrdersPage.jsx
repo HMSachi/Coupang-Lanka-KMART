@@ -20,15 +20,29 @@ const OnlineOrdersPage = () => {
         fetchOrders();
     }, []);
 
+    const isOnlineOrder = (order) => {
+        const orderId = order.order_id || '';
+        const isPosOrder = Boolean(
+            order.session_id ||
+            order.register_id ||
+            order.cashier_name ||
+            order.shipping_method === 'In-Store' ||
+            orderId.startsWith('HOLD-') ||
+            orderId.startsWith('INV-')
+        );
+
+        return !isPosOrder;
+    };
+
     const fetchOrders = async () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/orders', {
+            const response = await fetch('http://localhost:5000/api/orders?source=online', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
-            setOrders(Array.isArray(data) ? data : []);
+            setOrders(Array.isArray(data) ? data.filter(isOnlineOrder) : []);
         } catch (error) {
             console.error('Error fetching orders:', error);
         } finally {
@@ -95,9 +109,7 @@ const OnlineOrdersPage = () => {
     };
 
     const filteredOrders = orders.filter(order => {
-        // Filter out physical/POS orders (which typically start with HOLD-)
-        const isPhysical = (order.order_id || '').startsWith('HOLD-');
-        if (isPhysical) return false;
+        if (!isOnlineOrder(order)) return false;
 
         const matchesStatus = filterStatus === 'ALL' || order.status === filterStatus;
         const matchesSearch = (order.order_id || '').toLowerCase().includes(searchQuery.toLowerCase()) ||

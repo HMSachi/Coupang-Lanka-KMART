@@ -135,6 +135,21 @@ export default function CashierReports() {
 
     const getOrderPayment = (order) => order?.payment_method || order?.paymentMethod || order?.payment || 'N/A';
 
+    const getSessionActions = (order, cashier) => {
+        if (Array.isArray(order?.session_actions) && order.session_actions.length > 0) {
+            return order.session_actions;
+        }
+
+        const actions = [];
+        if (order.approved_by === cashier) actions.push('Approved');
+        if (order.processed_by === cashier) actions.push('Processed');
+        if (order.shipped_by === cashier) actions.push('Handover');
+        if (order.delivered_by === cashier) actions.push('Delivered');
+        if (order.cash_received_by === cashier) actions.push('Cash Received');
+        if (order.cashier_name === cashier) actions.push('POS Issued');
+        return actions;
+    };
+
     // Handle drill down into financial details
     const handleFinancialDrillDown = (category, report) => {
         const logs = report.cash_drawer_logs || [];
@@ -466,6 +481,7 @@ export default function CashierReports() {
                                             {selectedOrderItems.map((order, idx) => {
                                                 const orderId = getOrderId(order);
                                                 const orderAmount = getOrderAmount(order);
+                                                const sessionActions = getSessionActions(order, selectedOrderReport.cashier);
                                                 return (
                                                     <tr key={`${orderId}-${idx}`} className="hover:bg-slate-50/50 transition-colors">
                                                         <td className="py-4">
@@ -485,12 +501,14 @@ export default function CashierReports() {
                                                         <td className="py-4">
                                                             <div className="text-[10px] text-slate-400 font-bold uppercase mb-1">Audit Trail Record:</div>
                                                             <div className="flex flex-wrap gap-1">
-                                                                {order.approved_by === selectedOrderReport.cashier && <span className="text-[9px] bg-slate-100 px-1 rounded font-bold">Approved</span>}
-                                                                {order.processed_by === selectedOrderReport.cashier && <span className="text-[9px] bg-slate-100 px-1 rounded font-bold">Processed</span>}
-                                                                {order.shipped_by === selectedOrderReport.cashier && <span className="text-[9px] bg-slate-100 px-1 rounded font-bold">Shipped</span>}
-                                                                {order.delivered_by === selectedOrderReport.cashier && <span className="text-[9px] bg-slate-100 px-1 rounded font-bold">Delivered</span>}
-                                                                {order.cash_received_by === selectedOrderReport.cashier && <span className="text-[9px] bg-blue-100 text-blue-700 px-1 rounded font-bold underline">Cash Settled</span>}
-                                                                {order.cashier_name === selectedOrderReport.cashier && <span className="text-[9px] bg-indigo-100 text-indigo-700 px-1 rounded font-bold italic">POS Issued</span>}
+                                                                {sessionActions.map(action => (
+                                                                    <span
+                                                                        key={action}
+                                                                        className={`text-[9px] px-1 rounded font-bold ${action === 'Cash Received' ? 'bg-blue-100 text-blue-700 underline' : action === 'POS Issued' ? 'bg-indigo-100 text-indigo-700 italic' : 'bg-slate-100'}`}
+                                                                    >
+                                                                        {action}
+                                                                    </span>
+                                                                ))}
                                                             </div>
                                                         </td>
                                                         <td className="py-4 text-right">
