@@ -6,6 +6,25 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
+async function markExchangeBatchUsedForOrder(client, batchNumber, exchangeOrderId) {
+    if (!batchNumber) return;
+
+    const result = await client.query(
+        `UPDATE return_exchange_batches
+         SET status = 'used',
+             used_at = COALESCE(used_at, CURRENT_TIMESTAMP),
+             exchange_order_id = COALESCE($2, exchange_order_id),
+             updated_at = CURRENT_TIMESTAMP
+         WHERE batch_number = $1
+         RETURNING id`,
+        [batchNumber, exchangeOrderId || null]
+    );
+
+    if (result.rows.length === 0) {
+        throw new Error('Exchange batch not found or not available');
+    }
+}
+
 exports.createOrder = async (req, res) => {
     const {
         order_id, customer_name, customer_email, customer_phone,
@@ -13,7 +32,8 @@ exports.createOrder = async (req, res) => {
         payment_method, subtotal, shipping_cost, total_amount,
         instructions, items, status, cashier_name, register_id,
         session_id, session_start_time, completed_at, payment_details,
-        discount_amount, vat_amount, service_charge, change_due, branch_id
+        discount_amount, vat_amount, service_charge, change_due, branch_id,
+        exchange_batch_number
     } = req.body;
 
     const client = await pool.connect();
@@ -74,6 +94,8 @@ exports.createOrder = async (req, res) => {
             ]);
         }
 
+        await markExchangeBatchUsedForOrder(client, exchange_batch_number, order_id);
+
         await client.query('COMMIT');
         res.status(201).json({ message: 'Order created successfully', id: dbOrderId, order_id });
     } catch (err) {
@@ -94,7 +116,8 @@ exports.updateOrder = async (req, res) => {
         payment_method, subtotal, shipping_cost, total_amount,
         instructions, items, status, cashier_name, register_id,
         session_id, session_start_time, completed_at, payment_details,
-        discount_amount, vat_amount, service_charge, change_due, branch_id
+        discount_amount, vat_amount, service_charge, change_due, branch_id,
+        exchange_batch_number
     } = req.body;
 
     const client = await pool.connect();
@@ -160,6 +183,8 @@ exports.updateOrder = async (req, res) => {
                 ]);
             }
         }
+
+        await markExchangeBatchUsedForOrder(client, exchange_batch_number, order_id);
 
         await client.query('COMMIT');
         res.json({ message: 'Order updated successfully' });

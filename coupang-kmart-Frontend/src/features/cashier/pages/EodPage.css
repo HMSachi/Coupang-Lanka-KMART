@@ -865,12 +865,108 @@ input, textarea, select, button {
     font-weight: 400;
 }
 
+.session-identity-panel {
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.04);
+}
+
+.session-reference-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.95rem 1rem;
+    margin-bottom: 0.85rem;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f8fbff 0%, #eff6ff 100%);
+}
+
+.session-reference-icon {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 38px;
+    border-radius: 10px;
+    color: #2563eb;
+    background: #ffffff;
+    border: 1px solid #bfdbfe;
+}
+
+.session-field-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
 .eod-session-id {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: 400;
+    display: block;
+    font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace !important;
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 600;
     letter-spacing: 0;
     color: #0f172a;
+    overflow-wrap: anywhere;
+}
+
+.session-detail-list {
+    display: grid;
+    gap: 0.65rem;
+}
+
+.session-detail-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 52px;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.session-detail-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 12px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.session-detail-label svg {
+    color: #2563eb;
+}
+
+.session-detail-value {
+    font-size: 13px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: #0f172a;
+    text-align: right;
+}
+
+@media (max-width: 640px) {
+    .session-detail-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+
+    .session-detail-value {
+        text-align: left;
+    }
 }
 
 /* MODAL & REPORT SHEET */

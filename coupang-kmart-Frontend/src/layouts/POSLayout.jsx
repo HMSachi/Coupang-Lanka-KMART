@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, User, Clock, RotateCcw, BarChart2, MonitorIcon, ChevronRight, Store, ShoppingCart, ShoppingBag } from 'lucide-react';
+import { LogOut, User, Clock, RotateCcw, BarChart2, MonitorIcon, ChevronRight, Store, ShoppingCart, ShoppingBag, PackageX } from 'lucide-react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.jpeg';
 import './POSLayout.css';
@@ -40,6 +40,7 @@ const POSLayout = ({ children }) => {
     const pageTitle =
         location.pathname === '/pos/online-orders' ? 'Online Orders' :
             location.pathname === '/pos/refund' ? 'Returns & Refunds' :
+                location.pathname === '/pos/wasted-items' ? 'Wasted Items' :
                 location.pathname === '/pos/eod' ? 'My Session' : '';
 
     const handleLogout = () => {
@@ -60,6 +61,7 @@ const POSLayout = ({ children }) => {
         { path: '/pos/online-orders', icon: <ShoppingBag size={20} />, label: 'Online Orders' },
         { path: '/pos/cart', icon: <ShoppingCart size={20} />, label: 'Cart' },
         { path: '/pos/refund', icon: <RotateCcw size={20} />, label: 'Returns & Refunds' },
+        { path: '/pos/wasted-items', icon: <PackageX size={20} />, label: 'Wasted Items' },
         { path: '/pos/eod', icon: <BarChart2 size={20} />, label: 'My Session / EOD' }
     ];
 

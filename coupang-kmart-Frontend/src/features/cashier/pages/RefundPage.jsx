@@ -358,40 +358,39 @@ export default function RefundPage() {
         }
     };
 
-    const createExchangeBatch = () => {
+    const createExchangeBatch = async () => {
         if (!activeReturnReport) return;
 
-        const exchangeItems = activeReturnReport.items.filter(item => item.return_method === 'exchange_item');
-        const exchangeAmount = exchangeItems.reduce((sum, item) => sum + Number(item.refund_amount || 0), 0);
-        const batchNumber = `EXB-${Date.now()}`;
-        const exchangeBatch = {
-            id: `EXCHANGE_BATCH_${activeReturnReport.return_ref}`,
-            batch_number: batchNumber,
-            return_ref: activeReturnReport.return_ref,
-            order_id: activeReturnReport.order_ref,
-            customer: activeReturnReport.customer,
-            cashier_name: activeReturnReport.cashier_name,
-            created_at: new Date().toISOString(),
-            amount: exchangeAmount,
-            status: 'pending',
-            items: exchangeItems.map(item => ({
-                id: item.product_id || `exchange-${item.id}`,
-                product_id: item.product_id,
-                name: item.product_name,
-                price: Number(item.unit_price || 0),
-                qty: Number(item.quantity || 1),
-                image: '',
-                return_item_id: item.id,
-                return_ref: activeReturnReport.return_ref,
-                exchange_batch_number: batchNumber
-            })),
-            return_report: activeReturnReport
-        };
+        const existingBatch = activeReturnReport.exchange_batch;
+        if (existingBatch) {
+            setExchangeBatchModal(existingBatch);
+            return;
+        }
 
-        const pendingBatches = JSON.parse(localStorage.getItem('pending_exchange_batches') || '[]');
-        const withoutCurrentReturn = pendingBatches.filter(batch => batch.return_ref !== activeReturnReport.return_ref);
-        localStorage.setItem('pending_exchange_batches', JSON.stringify([exchangeBatch, ...withoutCurrentReturn]));
-        setExchangeBatchModal(exchangeBatch);
+        setBatchError('');
+        setBatchSubmitting(true);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${apiUrl}/api/returns/${encodeURIComponent(activeReturnReport.return_ref)}/exchange-batch`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Unable to create exchange batch');
+
+            const exchangeBatch = data.exchange_batch || data;
+            setActiveReturnReport(prev => prev ? { ...prev, exchange_batch: exchangeBatch } : prev);
+            setExchangeBatchModal(exchangeBatch);
+            window.dispatchEvent(new Event('refreshHeldOrders'));
+        } catch (err) {
+            console.error('Exchange batch failed:', err);
+            setBatchError(err.message || 'Unable to create exchange batch.');
+        } finally {
+            setBatchSubmitting(false);
+        }
     };
 
     return (
@@ -528,6 +527,9 @@ export default function RefundPage() {
                 {activeReturnReport && (
                     <ReturnReportModal
                         report={activeReturnReport}
+                        exchangeBatch={activeReturnReport.exchange_batch}
+                        actionError={batchError}
+                        actionSubmitting={batchSubmitting}
                         formatCurrency={formatCurrency}
                         formatMethod={formatMethod}
                         onClose={() => setActiveReturnReport(null)}
@@ -855,7 +857,7 @@ export default function RefundPage() {
     );
 }
 
-function ReturnReportModal({ report, formatCurrency, formatMethod, onClose, onCashBatch, onStoreCreditInvoice, onExchangeBatch }) {
+function ReturnReportModal({ report, exchangeBatch, actionError, actionSubmitting, formatCurrency, formatMethod, onClose, onCashBatch, onStoreCreditInvoice, onExchangeBatch }) {
     return (
         <div className="refund-modal-overlay">
             <div className="refund-modal return-report-modal">
@@ -965,11 +967,27 @@ function ReturnReportModal({ report, formatCurrency, formatMethod, onClose, onCa
                         {report.hasExchange && (
                             <div className="return-side-card exchange-card">
                                 <label>Exchange Order</label>
-                                <strong>{formatCurrency(report.exchange_amount)}</strong>
-                                <span>Create an exchange batch for cart so the replacement order can be completed with exchange credit.</span>
-                                <button className="exchange-batch-btn" onClick={onExchangeBatch}>
-                                    <RotateCcw size={16} /> Exchange Now
-                                </button>
+                                <strong>{formatCurrency(exchangeBatch?.amount || report.exchange_amount)}</strong>
+                                {exchangeBatch ? (
+                                    <>
+                                        <span>
+                                            {exchangeBatch.status === 'used'
+                                                ? `Exchange completed${exchangeBatch.exchange_order_id ? ` with ${exchangeBatch.exchange_order_id}` : ''}.`
+                                                : `Exchange batch ${exchangeBatch.batch_number} already created. Open cart to complete it.`}
+                                        </span>
+                                        <button className="exchange-batch-btn disabled" type="button" disabled>
+                                            <CheckCircle size={16} /> {exchangeBatch.status === 'used' ? 'Exchange Completed' : 'Batch Already Created'}
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span>Create an exchange batch for cart so the replacement order can be completed with exchange credit.</span>
+                                        {actionError && <small className="return-action-error">{actionError}</small>}
+                                        <button className="exchange-batch-btn" onClick={onExchangeBatch} disabled={actionSubmitting}>
+                                            <RotateCcw size={16} /> {actionSubmitting ? 'Creating Batch...' : 'Exchange Now'}
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         )}
 
@@ -1129,6 +1147,7 @@ function normalizeReturnReport(report, fallbackOrder = null) {
             total_amount: fallbackOrder?.total || 0,
             completed_at: fallbackOrder?.completedAt || ''
         },
+        exchange_batch: report.exchange_batch || null,
         items
     };
 }

@@ -515,18 +515,37 @@ export default function EodPage() {
                                 </Card>
 
                                 <Card white title="Session Identification">
-                                    <div className="reconcile-card">
-                                        <div className="reconcile-item">
-                                            <label>Session ID</label>
-                                            <span className="eod-session-id">{session.id}</span>
+                                    <div className="session-identity-panel">
+                                        <div className="session-reference-strip">
+                                            <div className="session-reference-icon">
+                                                <FileText size={18} />
+                                            </div>
+                                            <div>
+                                                <span className="session-field-label">Session Reference</span>
+                                                <strong className="eod-session-id">{session.id}</strong>
+                                            </div>
                                         </div>
-                                        <div className="reconcile-item">
-                                            <label>Cashier</label>
-                                            <span>{session.cashier}</span>
-                                        </div>
-                                        <div className="reconcile-item">
-                                            <label>Start Time</label>
-                                            <span>{new Date(session.startTime).toLocaleString()}</span>
+
+                                        <div className="session-detail-list">
+                                            <div className="session-detail-row">
+                                                <span className="session-detail-label">
+                                                    <User size={15} />
+                                                    Cashier
+                                                </span>
+                                                <span className="session-detail-value">{session.cashier}</span>
+                                            </div>
+                                            <div className="session-detail-row">
+                                                <span className="session-detail-label">
+                                                    <Clock size={15} />
+                                                    Start Time
+                                                </span>
+                                                <span className="session-detail-value">
+                                                    {new Date(session.startTime).toLocaleString('en-US', {
+                                                        dateStyle: 'medium',
+                                                        timeStyle: 'short'
+                                                    })}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </Card>

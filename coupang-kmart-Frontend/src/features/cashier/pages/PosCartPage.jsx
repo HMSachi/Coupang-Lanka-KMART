@@ -4,6 +4,35 @@ import CartSidebar from '../components/CartSidebar';
 import { ArrowLeft, Clock, ShoppingCart, Plus, Edit2, Play, CheckCircle, Search, Eye, X, Receipt, User, CreditCard, CalendarDays, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+const parsePaymentDetails = (details) => {
+  if (Array.isArray(details)) return details;
+  if (!details) return [];
+  if (typeof details === 'string') {
+    try {
+      const parsed = JSON.parse(details);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      return [];
+    }
+  }
+  return [];
+};
+
+const getExchangeInfo = (order, payments) => {
+  const paymentText = String(order.payment_method || '').toLowerCase();
+  const exchangePayment = payments.find(payment =>
+    payment?.method === 'exchange_credit' ||
+    payment?.exchange_batch_number ||
+    payment?.return_ref
+  );
+
+  return {
+    isExchangeOrder: paymentText.includes('exchange_credit') || Boolean(exchangePayment),
+    exchangeBatchNumber: exchangePayment?.exchange_batch_number || '',
+    exchangeReturnRef: exchangePayment?.return_ref || ''
+  };
+};
+
 export default function PosCartPage() {
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
@@ -59,37 +88,43 @@ export default function PosCartPage() {
     }
   };
 
-  const normalizeCompletedOrder = (order) => ({
-    id: order.id,
-    orderId: order.order_id,
-    invoiceNo: order.order_id,
-    completedAt: order.completed_at || order.created_at,
-    cashier: order.cashier_name,
-    registerId: order.register_id,
-    sessionId: order.session_id,
-    sessionStartTime: order.session_start_time,
-    customer: {
-      name: order.customer_name || 'POS Customer',
-      phone: order.customer_phone || ''
-    },
-    items: (order.items || []).map(item => ({
-      id: item.product_id,
-      name: item.product_name || item.name,
-      price: Number(item.price) || 0,
-      qty: Number(item.quantity || item.qty) || 0,
-      image: item.image_url || ''
-    })),
-    summary: {
-      subtotal: Number(order.subtotal) || 0,
-      discountAmount: Number(order.discount_amount) || 0,
-      vatAmount: Number(order.vat_amount) || 0,
-      serviceCharge: Number(order.service_charge) || 0,
-      total: Number(order.total_amount) || 0
-    },
-    payments: Array.isArray(order.payment_details) ? order.payment_details : [],
-    changeDue: Number(order.change_due) || 0,
-    itemCount: (order.items || []).reduce((sum, item) => sum + (Number(item.quantity || item.qty) || 0), 0)
-  });
+  const normalizeCompletedOrder = (order) => {
+    const payments = parsePaymentDetails(order.payment_details);
+    const exchangeInfo = getExchangeInfo(order, payments);
+
+    return {
+      id: order.id,
+      orderId: order.order_id,
+      invoiceNo: order.order_id,
+      completedAt: order.completed_at || order.created_at,
+      cashier: order.cashier_name,
+      registerId: order.register_id,
+      sessionId: order.session_id,
+      sessionStartTime: order.session_start_time,
+      customer: {
+        name: order.customer_name || 'POS Customer',
+        phone: order.customer_phone || ''
+      },
+      items: (order.items || []).map(item => ({
+        id: item.product_id,
+        name: item.product_name || item.name,
+        price: Number(item.price) || 0,
+        qty: Number(item.quantity || item.qty) || 0,
+        image: item.image_url || ''
+      })),
+      summary: {
+        subtotal: Number(order.subtotal) || 0,
+        discountAmount: Number(order.discount_amount) || 0,
+        vatAmount: Number(order.vat_amount) || 0,
+        serviceCharge: Number(order.service_charge) || 0,
+        total: Number(order.total_amount) || 0
+      },
+      payments,
+      ...exchangeInfo,
+      changeDue: Number(order.change_due) || 0,
+      itemCount: (order.items || []).reduce((sum, item) => sum + (Number(item.quantity || item.qty) || 0), 0)
+    };
+  };
 
   const loadCompletedOrders = async () => {
     try {
@@ -143,18 +178,23 @@ export default function PosCartPage() {
     setCart(prev => prev.filter(item => item.id !== id));
   };
 
-  const loadExchangeBatches = () => {
+  const loadExchangeBatches = async () => {
     try {
-      const batches = JSON.parse(localStorage.getItem('pending_exchange_batches') || '[]');
-      setPendingExchangeBatches(Array.isArray(batches) ? batches.filter(batch => batch.status !== 'used') : []);
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/returns/exchange-batches?status=pending', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Unable to load exchange batches');
+      setPendingExchangeBatches(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Error loading exchange batches:', err);
       setPendingExchangeBatches([]);
     }
   };
 
-  const openExchangePicker = () => {
-    loadExchangeBatches();
+  const openExchangePicker = async () => {
+    await loadExchangeBatches();
     setShowExchangePicker(true);
   };
 
@@ -328,6 +368,9 @@ export default function PosCartPage() {
         order.customer?.name,
         order.customer?.phone,
         order.cashier,
+        order.isExchangeOrder ? 'exchange order' : '',
+        order.exchangeBatchNumber,
+        order.exchangeReturnRef,
         ...(order.items || []).map(item => item.name)
       ].filter(Boolean).join(' ').toLowerCase().includes(search);
     })
@@ -394,8 +437,11 @@ export default function PosCartPage() {
                   {filteredCompletedOrders.map(order => (
                     <tr key={order.id} onClick={() => setSelectedCompletedOrder(order)}>
                       <td>
-                        <strong>{order.invoiceNo || order.orderId}</strong>
-                        <span>{order.registerId || 'Register #01'}</span>
+                        <div className="completed-table-order-line">
+                          <strong>{order.invoiceNo || order.orderId}</strong>
+                          {order.isExchangeOrder && <span className="exchange-order-tag">Exchange Order</span>}
+                        </div>
+                        <span>{order.isExchangeOrder ? `Return ${order.exchangeReturnRef || 'exchange return'}` : (order.registerId || 'Register #01')}</span>
                       </td>
                       <td>
                         <strong>{order.customer?.name || 'POS Customer'}</strong>
@@ -560,7 +606,10 @@ export default function PosCartPage() {
                     <div key={order.id} className="completed-order-card" onClick={() => setSelectedCompletedOrder(order)}>
                       <div className="held-info">
                         <div className="held-main">
-                          <span className="held-id">{order.invoiceNo || order.orderId}</span>
+                          <div className="completed-id-wrap">
+                            <span className="held-id">{order.invoiceNo || order.orderId}</span>
+                            {order.isExchangeOrder && <span className="exchange-order-tag">Exchange Order</span>}
+                          </div>
                           <span className="held-time">{new Date(order.completedAt).toLocaleTimeString()}</span>
                         </div>
                         <div className="held-details">
@@ -1109,6 +1158,7 @@ export default function PosCartPage() {
             <div>
               <h3>Completed Order Details</h3>
               <p>{order.invoiceNo || order.orderId}</p>
+              {order.isExchangeOrder && <span className="exchange-order-tag modal-tag">Exchange Order</span>}
             </div>
             <button onClick={() => setSelectedCompletedOrder(null)} className="completed-modal-close">
               <X size={20} />
@@ -1141,6 +1191,19 @@ export default function PosCartPage() {
               </div>
             </div>
           </div>
+
+          {order.isExchangeOrder && (
+            <div className="exchange-order-summary-box">
+              <div>
+                <label>Exchange Batch</label>
+                <strong>{order.exchangeBatchNumber || 'Recorded exchange'}</strong>
+              </div>
+              <div>
+                <label>Return ID</label>
+                <strong>{order.exchangeReturnRef || 'N/A'}</strong>
+              </div>
+            </div>
+          )}
 
           <div className="completed-modal-items">
             <h4>Items</h4>
@@ -1293,6 +1356,60 @@ export default function PosCartPage() {
           font-size: 0.76rem;
         }
 
+        .completed-id-wrap,
+        .completed-table-order-line {
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          flex-wrap: wrap;
+        }
+
+        .exchange-order-tag {
+          display: inline-flex !important;
+          align-items: center;
+          width: max-content;
+          margin-top: 0 !important;
+          border: 1px solid #bfdbfe;
+          background: #eff6ff;
+          color: #1d4ed8;
+          border-radius: 999px;
+          padding: 2px 7px;
+          font-size: 10px !important;
+          line-height: 1.2;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+
+        .modal-tag {
+          margin-top: 0.35rem !important;
+        }
+
+        .exchange-order-summary-box {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.75rem;
+          margin: 0 1rem 1rem;
+          border: 1px solid #bfdbfe;
+          background: #eff6ff;
+          border-radius: 5px;
+          padding: 0.85rem;
+        }
+
+        .exchange-order-summary-box label {
+          display: block;
+          color: #64748b;
+          font-size: 0.72rem;
+          font-weight: 700;
+          text-transform: uppercase;
+        }
+
+        .exchange-order-summary-box strong {
+          display: block;
+          margin-top: 0.2rem;
+          color: #1e3a8a;
+          font-size: 0.85rem;
+        }
+
         .text-right {
           text-align: right !important;
         }
@@ -1437,7 +1554,8 @@ export default function PosCartPage() {
 
         @media (max-width: 900px) {
           .completed-toolbar,
-          .completed-detail-grid {
+          .completed-detail-grid,
+          .exchange-order-summary-box {
             grid-template-columns: 1fr;
           }
 
