@@ -88,19 +88,20 @@ exports.createProduct = async (req, res) => {
     const {
         category_id, name, description, base_price, discount_price, image_url,
         global_stock_quantity, buying_price, discount_value, discount_type,
-        tax_percentage, unit_type, expiry_date, image_urls
+        tax_percentage, unit_type, expiry_date, image_urls, model_3d_url
     } = req.body;
     try {
         const result = await pool.query(
             `INSERT INTO products (
                 category_id, name, description, base_price, discount_price, image_url, 
                 global_stock_quantity, buying_price, discount_value, discount_type, 
-                tax_percentage, unit_type, expiry_date, image_urls
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`,
+                tax_percentage, unit_type, expiry_date, image_urls, model_3d_url, model_3d_status
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *`,
             [
                 category_id || null, name, description, base_price, discount_price || null, image_url,
                 parseInt(global_stock_quantity) || 0, buying_price || 0, discount_value || 0,
-                discount_type || 'percentage', tax_percentage || 0, unit_type || 'Piece', expiry_date || null, image_urls || []
+                discount_type || 'percentage', tax_percentage || 0, unit_type || 'Piece', expiry_date || null,
+                image_urls || [], model_3d_url || null, model_3d_url ? 'ready' : 'none'
             ]
         );
 
@@ -120,8 +121,9 @@ exports.updateProduct = async (req, res) => {
     const {
         category_id, name, description, base_price, discount_price, image_url,
         is_active, global_stock_quantity, buying_price, discount_value,
-        discount_type, tax_percentage, unit_type, expiry_date, image_urls
+        discount_type, tax_percentage, unit_type, expiry_date, image_urls, model_3d_url
     } = req.body;
+    const hasModel3DUrl = Object.prototype.hasOwnProperty.call(req.body, 'model_3d_url');
     try {
         const result = await pool.query(
             `UPDATE products SET 
@@ -129,13 +131,20 @@ exports.updateProduct = async (req, res) => {
                 discount_price = $5, image_url = $6, is_active = $7, 
                 global_stock_quantity = $8, buying_price = $9, discount_value = $10, 
                 discount_type = $11, tax_percentage = $12, unit_type = $13, 
-                expiry_date = $14, image_urls = $15 
-            WHERE id = $16 RETURNING *`,
+                expiry_date = $14, image_urls = $15,
+                model_3d_url = CASE WHEN $16 THEN $17 ELSE model_3d_url END,
+                model_3d_status = CASE
+                    WHEN $16 AND $17 IS NOT NULL THEN 'ready'
+                    WHEN $16 THEN 'none'
+                    ELSE model_3d_status
+                END
+            WHERE id = $18 RETURNING *`,
             [
                 category_id || null, name, description, base_price, discount_price || null, image_url,
                 is_active, parseInt(global_stock_quantity) || 0, buying_price || 0,
                 discount_value || 0, discount_type || 'percentage', tax_percentage || 0,
-                unit_type || 'Piece', expiry_date || null, image_urls || [], id
+                unit_type || 'Piece', expiry_date || null, image_urls || [], hasModel3DUrl,
+                model_3d_url || null, id
             ]
         );
         res.json(result.rows[0]);
@@ -175,7 +184,7 @@ exports.getBranchInventory = async (req, res) => {
                 pi.id as inventory_id, p.id as product_id, p.name, c.name as category_name, 
                 p.base_price, pi.stock_quantity, pi.low_stock_threshold, p.image_url,
                 p.description, p.unit_type, p.discount_value, p.discount_type, 
-                p.tax_percentage, p.expiry_date, p.image_urls
+                p.tax_percentage, p.expiry_date, p.image_urls, p.model_3d_url, p.model_3d_status
             FROM product_inventory pi
             JOIN products p ON pi.product_id = p.id
             LEFT JOIN categories c ON p.category_id = c.id

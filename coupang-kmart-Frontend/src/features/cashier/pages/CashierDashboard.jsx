@@ -11,6 +11,7 @@ import '../styles/cashier.css';
 
 import { useNavigate } from 'react-router-dom';
 import '../styles/cashier.css';
+import { API_BASE_URL } from '../../../config';
 
 export default function CashierDashboard() {
   const navigate = useNavigate();
@@ -48,8 +49,8 @@ export default function CashierDashboard() {
         const headers = { 'Authorization': `Bearer ${token}` };
 
         const [catRes, prodRes] = await Promise.all([
-          fetch('http://localhost:5000/api/products/categories', { headers }),
-          fetch(`http://localhost:5000/api/products/branch-inventory/${branchId}`, { headers })
+          fetch(`${API_BASE_URL}/api/products/categories`, { headers }),
+          fetch(`${API_BASE_URL}/api/products/branch-inventory/${branchId}`, { headers })
         ]);
 
         const catData = await catRes.json();

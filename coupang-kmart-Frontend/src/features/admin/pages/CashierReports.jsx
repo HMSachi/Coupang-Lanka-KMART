@@ -4,6 +4,8 @@ import Card from '../../../components/shared/Card';
 import { FileText, Download, Printer, User, Clock, ChevronRight, X, ShieldCheck } from 'lucide-react';
 import '../../cashier/pages/EodPage.css'; // Reusing styles from EOD for the printable modal
 
+import { API_BASE_URL } from '../../../config';
+
 export default function CashierReports() {
     const [reports, setReports] = useState([]);
     const [selectedReport, setSelectedReport] = useState(null);
@@ -16,7 +18,7 @@ export default function CashierReports() {
         const fetchReports = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+                const apiUrl = API_BASE_URL;
                 const response = await fetch(`${apiUrl}/api/reports`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });

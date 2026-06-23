@@ -25,6 +25,9 @@ import {
 } from 'lucide-react';
 import logo from '../../../assets/logo.jpeg';
 import './EodPage.css';
+import { API_BASE_URL } from '../../../config';
+
+const apiUrl = API_BASE_URL;
 
 export default function EodPage() {
     const [step, setStep] = useState(1);
@@ -110,7 +113,6 @@ export default function EodPage() {
     const fetchPendingSettlements = async () => {
         try {
             const token = localStorage.getItem('token');
-            const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
             const response = await fetch(`${apiUrl}/api/orders/transactions/all?pending=true`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -203,7 +205,6 @@ export default function EodPage() {
         if (cashActionForm.transaction_id) {
             try {
                 const token = localStorage.getItem('token');
-                const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
                 await fetch(`${apiUrl}/api/orders/transactions/${cashActionForm.transaction_id}/settle`, {
                     method: 'PUT',
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -287,7 +288,6 @@ export default function EodPage() {
         if (window.confirm('Are you sure you want to securely transmit this End-of-Day report to the Admin for final reconciliation?')) {
             try {
                 const draft = draftsList.find(d => d.id === id);
-                const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
                 const token = localStorage.getItem('token');
                 const reportEndTime = new Date().toISOString();
 

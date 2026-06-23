@@ -8,6 +8,7 @@ import logo from '../../../assets/logo.jpeg'
 import '../styles/auth.css'
 
 import { DUMMY_USERS } from '../../../services/dummyData';
+import { API_BASE_URL } from '../../../config';
 
 const HARDCODED_USERS = DUMMY_USERS;
 
@@ -54,7 +55,7 @@ export default function LoginPage() {
     setError('')
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: username, password })

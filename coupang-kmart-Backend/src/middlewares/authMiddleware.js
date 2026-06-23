@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const db = require('../config/db');
 require('dotenv').config();
 
 exports.authenticateToken = (req, res, next) => {
@@ -11,13 +12,28 @@ exports.authenticateToken = (req, res, next) => {
 
     if (token == null) return res.status(401).json({ message: 'Unauthorized' });
 
-    jwt.verify(token, process.env.JWT_SECRET || 'secret123', (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET || 'secret123', async (err, user) => {
         if (err) {
             console.error('JWT Verification Error:', err.message);
             return res.status(403).json({ message: 'Forbidden: Invalid Token' });
         }
-        req.user = user;
-        next();
+
+        try {
+            const result = await db.query(
+                `SELECT u.id, u.name, u.email, u.role, u.branch_id, b.name AS branch_name
+                 FROM users u
+                 LEFT JOIN branches b ON u.branch_id = b.id
+                 WHERE u.id = $1`,
+                [user.id]
+            );
+
+            req.user = result.rows[0] || user;
+            next();
+        } catch (dbErr) {
+            console.error('Auth user refresh error:', dbErr.message);
+            req.user = user;
+            next();
+        }
     });
 };
 

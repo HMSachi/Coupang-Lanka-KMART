@@ -3,6 +3,13 @@ const productController = require('../controllers/productController');
 const { authenticateToken, isAdmin, isStaff } = require('../middlewares/authMiddleware');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+
+const uploadDir = path.join(process.cwd(), 'uploads');
+const modelUploadDir = path.join(uploadDir, '3d');
+
+fs.mkdirSync(uploadDir, { recursive: true });
+fs.mkdirSync(modelUploadDir, { recursive: true });
 
 // Multer storage config
 const storage = multer.diskStorage({
@@ -10,6 +17,25 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname))
 });
 const upload = multer({ storage });
+
+const modelStorage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, modelUploadDir),
+    filename: (req, file, cb) => cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname))
+});
+
+const modelUpload = multer({
+    storage: modelStorage,
+    fileFilter: (req, file, cb) => {
+        const allowedExtensions = ['.glb', '.gltf'];
+        const ext = path.extname(file.originalname).toLowerCase();
+
+        if (!allowedExtensions.includes(ext)) {
+            return cb(new Error('Only .glb and .gltf 3D model files are allowed'));
+        }
+
+        cb(null, true);
+    }
+});
 
 const router = express.Router();
 
@@ -27,6 +53,14 @@ router.delete('/items/:id', authenticateToken, isAdmin, productController.delete
 router.post('/upload-images', authenticateToken, isAdmin, upload.array('images', 3), (req, res) => {
     const filePaths = req.files.map(file => `/uploads/${file.filename}`);
     res.json({ urls: filePaths });
+});
+
+router.post('/upload-3d-model', authenticateToken, isAdmin, modelUpload.single('model'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No 3D model file uploaded' });
+    }
+
+    res.json({ url: `/uploads/3d/${req.file.filename}` });
 });
 
 // Public routes for website

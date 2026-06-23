@@ -4,6 +4,7 @@ import POSLayout from '../../../layouts/POSLayout';
 import { Banknote, CreditCard, QrCode, Building2, Wallet, ArrowLeft, Receipt, CheckCircle, Trash2, Info, Calculator, Clock } from 'lucide-react';
 import logo from '../../../assets/logo.jpeg';
 import './PaymentPage.css';
+import { API_BASE_URL } from '../../../config';
 
 export default function PaymentPage() {
     const navigate = useNavigate();
@@ -193,7 +194,7 @@ export default function PaymentPage() {
             setCompletedInvoiceNo(invoiceNo);
 
             if (editingOrderId) {
-                const response = await fetch(`http://localhost:5000/api/orders/${editingOrderId}`, {
+                const response = await fetch(`${API_BASE_URL}/api/orders/${editingOrderId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -206,7 +207,7 @@ export default function PaymentPage() {
                     throw new Error('Failed to update order status');
                 }
             } else {
-                const response = await fetch('http://localhost:5000/api/orders', {
+                const response = await fetch(`${API_BASE_URL}/api/orders`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -280,7 +281,7 @@ export default function PaymentPage() {
 
             let response;
             if (editingOrderId) {
-                response = await fetch(`http://localhost:5000/api/orders/${editingOrderId}`, {
+                response = await fetch(`${API_BASE_URL}/api/orders/${editingOrderId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -289,7 +290,7 @@ export default function PaymentPage() {
                     body: JSON.stringify(orderData)
                 });
             } else {
-                response = await fetch('http://localhost:5000/api/orders', {
+                response = await fetch(`${API_BASE_URL}/api/orders`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

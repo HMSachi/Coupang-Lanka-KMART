@@ -4,6 +4,7 @@ import Button from '../../../components/shared/Button';
 import Modal from '../../../components/shared/Modal';
 import Card from '../../../components/shared/Card';
 import './CartSidebar.css';
+import { API_BASE_URL } from '../../../config';
 
 export default function CartSidebar({
   cart,
@@ -52,7 +53,7 @@ export default function CartSidebar({
                   <div className="bill-item-main">
                     <div className="bill-item-visual">
                       {item.image_urls && item.image_urls.length > 0 ? (
-                        <img src={`http://localhost:5000${item.image_urls[0]}`} alt={item.name} className="bill-item-img" />
+                        <img src={`${API_BASE_URL}${item.image_urls[0]}`} alt={item.name} className="bill-item-img" />
                       ) : (
                         <div className="bill-item-emoji-box">
                           <span>{item.image || '📦'}</span>
