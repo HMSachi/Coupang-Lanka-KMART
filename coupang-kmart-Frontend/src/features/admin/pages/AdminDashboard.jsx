@@ -8,6 +8,8 @@ import Card from '../../../components/shared/Card';
 import { ArrowUpRight, RefreshCw, Clock, FileText, ShoppingBag } from 'lucide-react';
 import '../styles/admin.css';
 
+import { API_BASE_URL } from '../../../config';
+
 export default function AdminDashboard() {
   const user = JSON.parse(localStorage.getItem('user')) || { role: 'superAdmin' };
   const isSuper = user.role === 'superAdmin';
@@ -35,7 +37,7 @@ export default function AdminDashboard() {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const apiUrl = API_BASE_URL;
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
       const [ordersRes, reportsRes] = await Promise.all([

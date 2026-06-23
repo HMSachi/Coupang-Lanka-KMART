@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import logo from '../../../assets/logo.jpeg';
 import '../styles/online-orders.css';
+import { API_BASE_URL } from '../../../config';
 
 const OnlineOrdersPage = () => {
     const [orders, setOrders] = useState([]);
@@ -38,7 +39,7 @@ const OnlineOrdersPage = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/orders?source=online', {
+            const response = await fetch(`${API_BASE_URL}/api/orders?source=online`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -53,7 +54,7 @@ const OnlineOrdersPage = () => {
     const fetchOrderDetails = async (orderId) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/orders/${orderId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -69,7 +70,7 @@ const OnlineOrdersPage = () => {
             const user = JSON.parse(localStorage.getItem('user') || '{}');
             const cashierName = user.name || 'Unknown Cashier';
 
-            const response = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+            const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -364,9 +365,9 @@ const OnlineOrdersPage = () => {
                                                     if (url.startsWith('http')) return url;
                                                     const cleanPath = url.startsWith('/') ? url : `/${url}`;
                                                     if (cleanPath.startsWith('/uploads')) {
-                                                        return `http://localhost:5000${cleanPath}`;
+                                                        return `${API_BASE_URL}${cleanPath}`;
                                                     }
-                                                    return `http://localhost:5000/uploads${cleanPath}`;
+                                                    return `${API_BASE_URL}/uploads${cleanPath}`;
                                                 };
 
                                                 return (
@@ -464,7 +465,7 @@ const OnlineOrdersPage = () => {
                                                     onClick={async () => {
                                                         const token = localStorage.getItem('token');
                                                         const user = JSON.parse(localStorage.getItem('user') || '{}');
-                                                        const response = await fetch(`http://localhost:5000/api/orders/${selectedOrder.id}/status`, {
+                                                        const response = await fetch(`${API_BASE_URL}/api/orders/${selectedOrder.id}/status`, {
                                                             method: 'PUT',
                                                             headers: {
                                                                 'Content-Type': 'application/json',

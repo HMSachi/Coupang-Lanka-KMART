@@ -19,8 +19,9 @@ import {
 } from 'lucide-react';
 import logo from '../../../assets/logo.jpeg';
 import './RefundPage.css';
+import { API_BASE_URL } from '../../../config';
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const apiUrl = API_BASE_URL;
 
 export default function RefundPage() {
     const [query, setQuery] = useState('');

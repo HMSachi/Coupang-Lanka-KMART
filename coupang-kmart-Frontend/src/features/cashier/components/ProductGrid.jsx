@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '../../../components/shared/Button';
 import { Plus } from 'lucide-react';
+import { API_BASE_URL } from '../../../config';
 
 const ProductItem = ({ product, onAddToCart, onShowDetails }) => {
   const isOutOfStock = product.stock === 0 || product.branch_stock === 0;
@@ -18,7 +19,7 @@ const ProductItem = ({ product, onAddToCart, onShowDetails }) => {
       <div className="product-image-container">
         {product.image_urls && product.image_urls.length > 0 ? (
           <img
-            src={`http://localhost:5000${product.image_urls[0]}`}
+            src={`${API_BASE_URL}${product.image_urls[0]}`}
             alt={product.name}
             loading="lazy"
           />

@@ -3,6 +3,7 @@ import POSLayout from '../../../layouts/POSLayout';
 import CartSidebar from '../components/CartSidebar';
 import { ArrowLeft, Clock, ShoppingCart, Plus, Edit2, Play, CheckCircle, Search, Eye, X, Receipt, User, CreditCard, CalendarDays, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../../config';
 
 const parsePaymentDetails = (details) => {
   if (Array.isArray(details)) return details;
@@ -74,7 +75,7 @@ export default function PosCartPage() {
     setIsLoadingHeld(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/orders/hold', {
+      const response = await fetch(`${API_BASE_URL}/api/orders/hold`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -143,7 +144,7 @@ export default function PosCartPage() {
         params.set('start_time', activeSession.startTime);
       }
 
-      const response = await fetch(`http://localhost:5000/api/orders/completed/session?${params.toString()}`, {
+      const response = await fetch(`${API_BASE_URL}/api/orders/completed/session?${params.toString()}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!response.ok) throw new Error('Failed to fetch completed orders');
@@ -181,7 +182,7 @@ export default function PosCartPage() {
   const loadExchangeBatches = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/returns/exchange-batches?status=pending', {
+      const response = await fetch(`${API_BASE_URL}/api/returns/exchange-batches?status=pending`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -279,7 +280,7 @@ export default function PosCartPage() {
           };
 
           if (editingOrderId) {
-            await fetch(`http://localhost:5000/api/orders/${editingOrderId}`, {
+            await fetch(`${API_BASE_URL}/api/orders/${editingOrderId}`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -288,7 +289,7 @@ export default function PosCartPage() {
               body: JSON.stringify(orderData)
             });
           } else {
-            await fetch('http://localhost:5000/api/orders', {
+            await fetch(`${API_BASE_URL}/api/orders`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

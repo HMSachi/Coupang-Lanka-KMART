@@ -29,8 +29,9 @@ import {
     WalletCards
 } from 'lucide-react';
 import '../styles/analytics.css';
+import { API_BASE_URL } from '../../../config';
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const apiUrl = API_BASE_URL;
 
 const statusColors = {
     completed: '#22c55e',

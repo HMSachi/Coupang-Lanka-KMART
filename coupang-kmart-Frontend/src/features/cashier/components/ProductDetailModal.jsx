@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { X, ShoppingCart, Tag, Package, CreditCard, Info, Calendar, Hash } from 'lucide-react';
 import Button from '../../../components/shared/Button';
 
+import { API_BASE_URL } from '../../../config';
+
 export default function ProductDetailModal({ product, onClose, onAddToCart }) {
     const [selectedImageIdx, setSelectedImageIdx] = useState(0);
 
@@ -15,7 +17,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
         : null;
 
     const mainImage = images
-        ? `http://localhost:5000${images[selectedImageIdx]}`
+        ? `${API_BASE_URL}${images[selectedImageIdx]}`
         : null;
 
     return (
@@ -42,7 +44,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                                                     onClick={() => setSelectedImageIdx(idx)}
                                                     className={`thumb-btn ${selectedImageIdx === idx ? 'active' : ''}`}
                                                 >
-                                                    <img src={`http://localhost:5000${url}`} alt="thumb" />
+                                                    <img src={`${API_BASE_URL}${url}`} alt="thumb" />
                                                 </button>
                                             ))}
                                         </div>

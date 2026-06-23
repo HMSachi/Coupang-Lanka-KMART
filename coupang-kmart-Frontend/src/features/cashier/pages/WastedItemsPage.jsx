@@ -3,7 +3,9 @@ import POSLayout from '../../../layouts/POSLayout';
 import { AlertTriangle, CalendarDays, Eye, PackageX, RefreshCw, Receipt, Search, User, X } from 'lucide-react';
 import './WastedItemsPage.css';
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+import { API_BASE_URL } from '../../../config';
+
+const apiUrl = API_BASE_URL;
 
 const filters = [
     { key: 'today', label: 'Today' },
