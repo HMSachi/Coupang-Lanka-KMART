@@ -19,6 +19,7 @@ import WastedItemsPage from '../features/cashier/pages/WastedItemsPage';
 import EodPage from '../features/cashier/pages/EodPage';
 import SessionStartPage from '../features/cashier/pages/SessionStartPage';
 import OnlineOrdersPage from '../features/cashier/pages/OnlineOrdersPage';
+import DarazOrdersPage from '../features/cashier/pages/DarazOrdersPage';
 import CashierReports from '../features/admin/pages/CashierReports';
 import SalesAnalyticsPage from '../features/admin/pages/SalesAnalyticsPage';
 
@@ -155,6 +156,14 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
                             <OnlineOrdersPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/pos/daraz"
+                    element={
+                        <ProtectedRoute allowedRoles={['cashier', 'admin', 'superAdmin']}>
+                            <DarazOrdersPage />
                         </ProtectedRoute>
                     }
                 />
