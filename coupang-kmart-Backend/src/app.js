@@ -8,6 +8,7 @@ const branchRoutes = require('./routes/branchRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const returnRoutes = require('./routes/returnRoutes');
+const darazRoutes = require('./routes/darazRoutes');
 
 const path = require('path');
 
@@ -23,6 +24,7 @@ app.use('/api/branches', branchRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/returns', returnRoutes);
+app.use('/api/daraz', darazRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running');

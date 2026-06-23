@@ -10,10 +10,36 @@ const POSLayout = ({ children }) => {
     const [time, setTime] = useState(new Date());
 
     const [cartCount, setCartCount] = useState(0);
+    const [isDarazSelectMode, setIsDarazSelectMode] = useState(false);
+    const [darazPendingOrder, setDarazPendingOrder] = useState({});
+
+    const checkDarazSelectMode = () => {
+        const isSelect = localStorage.getItem('is_daraz_select') === 'true';
+        setIsDarazSelectMode(isSelect);
+        if (isSelect) {
+            try {
+                const pending = JSON.parse(localStorage.getItem('daraz_pending_order') || '{}');
+                setDarazPendingOrder(pending);
+            } catch (err) {
+                console.error('Error parsing pending order:', err);
+                setDarazPendingOrder({});
+            }
+        }
+    };
 
     useEffect(() => {
         const timer = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timer);
+    }, []);
+
+    useEffect(() => {
+        checkDarazSelectMode();
+        window.addEventListener('storage', checkDarazSelectMode);
+        window.addEventListener('darazSelectModeChanged', checkDarazSelectMode);
+        return () => {
+            window.removeEventListener('storage', checkDarazSelectMode);
+            window.removeEventListener('darazSelectModeChanged', checkDarazSelectMode);
+        };
     }, []);
 
     useEffect(() => {
@@ -25,6 +51,7 @@ const POSLayout = ({ children }) => {
             } else {
                 setCartCount(0);
             }
+            checkDarazSelectMode();
         };
 
         updateCount();
@@ -36,12 +63,77 @@ const POSLayout = ({ children }) => {
         };
     }, []);
 
+    const handleConfirmDarazSelection = () => {
+        const savedCart = localStorage.getItem('pos_cart');
+        if (!savedCart || JSON.parse(savedCart).length === 0) {
+            alert('Please select at least one item first.');
+            return;
+        }
+
+        const cartItems = JSON.parse(savedCart);
+        
+        let productName = '';
+        let quantity = 1;
+        let unitPrice = 0;
+
+        if (cartItems.length === 1) {
+            productName = cartItems[0].name;
+            quantity = cartItems[0].qty;
+            unitPrice = cartItems[0].price;
+        } else {
+            productName = cartItems.map(item => `${item.qty}x ${item.name}`).join(', ');
+            quantity = 1;
+            unitPrice = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        }
+
+        const pending = JSON.parse(localStorage.getItem('daraz_pending_order') || '{}');
+        pending.product_name = productName;
+        pending.quantity = quantity;
+        pending.unit_price = unitPrice;
+
+        // Map cart items to the new items format
+        pending.items = cartItems.map(item => ({
+            product_name: item.name,
+            quantity: item.qty,
+            unit_price: item.price
+        }));
+        
+        const fee = parseFloat(pending.delivery_fee) || 0;
+        const disc = parseFloat(pending.discount) || 0;
+        const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        pending.total_amount = subtotal + fee - disc;
+
+        localStorage.setItem('daraz_pending_order', JSON.stringify(pending));
+        localStorage.setItem('daraz_modal_reopen', 'true');
+
+        localStorage.removeItem('is_daraz_select');
+        localStorage.removeItem('pos_cart');
+        
+        window.dispatchEvent(new Event('cartUpdated'));
+        window.dispatchEvent(new Event('darazSelectModeChanged'));
+        
+        navigate('/pos/daraz');
+    };
+
+    const handleCancelDarazSelection = () => {
+        if (window.confirm('Cancel selecting items and return to Daraz orders?')) {
+            localStorage.removeItem('is_daraz_select');
+            localStorage.removeItem('pos_cart');
+            localStorage.setItem('daraz_modal_reopen', 'true');
+            window.dispatchEvent(new Event('cartUpdated'));
+            window.dispatchEvent(new Event('darazSelectModeChanged'));
+            navigate('/pos/daraz');
+        }
+    };
+
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const pageTitle =
         location.pathname === '/pos/online-orders' ? 'Online Orders' :
+        location.pathname === '/pos/daraz' ? 'Daraz Orders' :
             location.pathname === '/pos/refund' ? 'Returns & Refunds' :
                 location.pathname === '/pos/wasted-items' ? 'Wasted Items' :
                 location.pathname === '/pos/eod' ? 'My Session' : '';
+
 
     const handleLogout = () => {
         const shiftStatus = localStorage.getItem('shift_status');
@@ -59,6 +151,7 @@ const POSLayout = ({ children }) => {
     const navItems = [
         { path: '/pos', icon: <MonitorIcon size={20} />, label: 'Create Order' },
         { path: '/pos/online-orders', icon: <ShoppingBag size={20} />, label: 'Online Orders' },
+        { path: '/pos/daraz', icon: <ShoppingBag size={20} />, label: 'Daraz Orders' },
         { path: '/pos/cart', icon: <ShoppingCart size={20} />, label: 'Cart' },
         { path: '/pos/refund', icon: <RotateCcw size={20} />, label: 'Returns & Refunds' },
         { path: '/pos/wasted-items', icon: <PackageX size={20} />, label: 'Wasted Items' },
@@ -148,6 +241,24 @@ const POSLayout = ({ children }) => {
                 </header>
 
                 <main className="pos-content-area">
+                    {isDarazSelectMode && (
+                        <div className="daraz-select-banner">
+                            <div className="daraz-select-banner-content">
+                                <span className="daraz-select-pulse-dot"></span>
+                                <strong>Selecting items for Daraz Order:</strong>
+                                <span className="daraz-select-order-id">#{darazPendingOrder.daraz_order_id || 'Draft'}</span>
+                                <span className="daraz-select-items-count">({cartCount} items selected)</span>
+                            </div>
+                            <div className="daraz-select-banner-actions">
+                                <button onClick={handleConfirmDarazSelection} className="daraz-select-btn-confirm">
+                                    Confirm Selection
+                                </button>
+                                <button onClick={handleCancelDarazSelection} className="daraz-select-btn-cancel">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    )}
                     {children}
                 </main>
             </div>
