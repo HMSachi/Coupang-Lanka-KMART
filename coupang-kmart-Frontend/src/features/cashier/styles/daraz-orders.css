@@ -8,7 +8,7 @@ input, textarea, select, button {
 }
 
 .daraz-orders-container {
-    padding: 1.5rem;
+    padding: 1rem;
     max-width: 1600px;
     margin: 0 auto;
     background: #f8fafc !important;
@@ -30,13 +30,13 @@ input, textarea, select, button {
     margin-bottom: 2rem;
     background: #ffffff !important;
     padding: 1.5rem 2rem;
-    border-radius: 12px;
-    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px;
+    border: none !important;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .daraz-header-info h2 {
-    font-size: 1.6rem;
+    font-size: 1.25rem;
     font-weight: 800;
     color: #ea580c !important;
     margin: 0;
@@ -54,7 +54,7 @@ input, textarea, select, button {
     color: #ffffff !important;
     border: none !important;
     padding: 0.625rem 1.25rem;
-    border-radius: 8px;
+    border-radius: 4px;
     font-weight: 700;
     font-size: 0.875rem;
     display: flex;
@@ -90,29 +90,29 @@ input, textarea, select, button {
 /* Dashboard Metrics Grid */
 .daraz-metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.25rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 
 .daraz-metric-card {
     background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 12px;
-    padding: 1.25rem;
+    border: none !important;
+    border-radius: 6px;
+    padding: 0.75rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 110px;
+    min-height: 60px;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     color: #000000 !important;
 }
 
 .daraz-metric-card:hover {
-    transform: translateY(-3px);
-    border-color: #ea580c !important;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    border-color: #bfdbfe !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 .daraz-metric-header {
@@ -120,33 +120,37 @@ input, textarea, select, button {
     justify-content: space-between;
     align-items: center;
     color: #475569 !important;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.65rem;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.75px;
+    letter-spacing: 0.5px;
 }
 
 .daraz-metric-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+.daraz-metric-icon svg {
+    width: 14px;
+    height: 14px;
 }
 
 .daraz-metric-value {
-    font-size: 1.5rem;
-    font-weight: 800;
+    font-size: 1rem;
+    font-weight: 600;
     color: #000000 !important;
-    margin-top: 0.75rem;
+    margin-top: 0.35rem;
 }
 
 .daraz-metric-meta {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: #475569 !important;
-    margin-top: 0.25rem;
-    font-weight: 600;
+    margin-top: 0.15rem;
+    font-weight: 400;
 }
 
 /* Custom icon tones */
@@ -189,7 +193,7 @@ input, textarea, select, button {
     padding: 0.625rem 1rem 0.625rem 2.5rem;
     background: #ffffff !important;
     border: 1px solid #cbd5e1 !important;
-    border-radius: 8px;
+    border-radius: 4px;
     color: #000000 !important;
     font-size: 0.875rem;
     outline: none;
@@ -205,7 +209,7 @@ input, textarea, select, button {
     padding: 0.625rem 2.25rem 0.625rem 1rem;
     background-color: #ffffff !important;
     border: 1px solid #cbd5e1 !important;
-    border-radius: 8px;
+    border-radius: 4px;
     color: #000000 !important;
     font-size: 0.875rem;
     outline: none;
@@ -227,8 +231,8 @@ input, textarea, select, button {
 /* Orders Table Section */
 .daraz-table-card {
     background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 12px;
+    border: none !important;
+    border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     color: #000000 !important;
@@ -253,7 +257,7 @@ input, textarea, select, button {
     background: #f1f5f9 !important;
     color: #1e3a8a !important;
     font-weight: 700;
-    padding: 1rem 1.25rem;
+    padding: 0.625rem 0.75rem;
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 0.5px;
@@ -263,7 +267,7 @@ input, textarea, select, button {
 }
 
 .daraz-table td {
-    padding: 1rem 1.25rem;
+    padding: 0.625rem 0.75rem;
     border-bottom: 1px solid #e2e8f0 !important;
     color: #000000 !important;
     vertical-align: middle;
@@ -383,8 +387,8 @@ input, textarea, select, button {
 
 .daraz-modal {
     background: #ffffff !important;
-    border: 1px solid #94a3b8 !important;
-    border-radius: 12px;
+    border: none !important;
+    border-radius: 6px;
     width: 100%;
     max-width: 850px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -449,9 +453,10 @@ input, textarea, select, button {
 /* Form Section Styling */
 .daraz-form-section {
     background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
+    border: none !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     padding: 1.25rem;
-    border-radius: 8px;
+    border-radius: 4px;
     width: 100% !important;
 }
 
