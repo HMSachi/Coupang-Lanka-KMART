@@ -184,7 +184,8 @@ exports.getBranchInventory = async (req, res) => {
                 pi.id as inventory_id, p.id as product_id, p.name, c.name as category_name, 
                 p.base_price, pi.stock_quantity, pi.low_stock_threshold, p.image_url,
                 p.description, p.unit_type, p.discount_value, p.discount_type, 
-                p.tax_percentage, p.expiry_date, p.image_urls, p.model_3d_url, p.model_3d_status
+                p.tax_percentage, p.expiry_date, p.image_urls, p.model_3d_url, p.model_3d_status,
+                p.global_stock_quantity
             FROM product_inventory pi
             JOIN products p ON pi.product_id = p.id
             LEFT JOIN categories c ON p.category_id = c.id
@@ -235,6 +236,12 @@ exports.addBranchInventory = async (req, res) => {
             [product_id, branch_id, requestedStock, low_stock_threshold]
         );
 
+        // 5. Insert history record
+        await client.query(
+            'INSERT INTO inventory_history (product_id, branch_id, quantity, action_type) VALUES ($1, $2, $3, $4)',
+            [product_id, branch_id, requestedStock, 'INITIAL_LINK']
+        );
+
         await client.query('COMMIT');
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -248,13 +255,99 @@ exports.addBranchInventory = async (req, res) => {
 
 exports.updateInventory = async (req, res) => {
     const { id } = req.params; // inventory record id
-    const { stock_quantity, low_stock_threshold } = req.body;
+    const { stock_quantity, low_stock_threshold, added_quantity } = req.body;
+    const transferQty = parseInt(added_quantity) || 0;
+
+    const client = await pool.connect();
     try {
-        const result = await pool.query(
+        await client.query('BEGIN');
+
+        // 1. Fetch current inventory details (including product_id and current stock)
+        const invRes = await client.query('SELECT product_id, branch_id, stock_quantity, low_stock_threshold FROM product_inventory WHERE id = $1 FOR UPDATE', [id]);
+        if (invRes.rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Inventory item not found.' });
+        }
+
+        const productId = invRes.rows[0].product_id;
+        const currentBranchStock = parseInt(invRes.rows[0].stock_quantity) || 0;
+        const currentThreshold = invRes.rows[0].low_stock_threshold;
+
+        const nextThreshold = low_stock_threshold !== undefined && low_stock_threshold !== null
+            ? parseInt(low_stock_threshold)
+            : currentThreshold;
+
+        let newBranchStock = currentBranchStock;
+
+        if (transferQty > 0) {
+            // 2. Lock product row to verify and deduct global stock
+            const prodRes = await client.query('SELECT global_stock_quantity FROM products WHERE id = $1 FOR UPDATE', [productId]);
+            if (prodRes.rows.length === 0) {
+                await client.query('ROLLBACK');
+                return res.status(404).json({ error: 'Product not found.' });
+            }
+
+            const globalStock = parseInt(prodRes.rows[0].global_stock_quantity) || 0;
+            if (globalStock < transferQty) {
+                await client.query('ROLLBACK');
+                return res.status(400).json({ error: `Insufficient stock in global warehouse. Available: ${globalStock}` });
+            }
+
+            // 3. Deduct from global stock
+            await client.query('UPDATE products SET global_stock_quantity = global_stock_quantity - $1 WHERE id = $2', [transferQty, productId]);
+
+            // 3.5 Insert history record
+            await client.query(
+                'INSERT INTO inventory_history (product_id, branch_id, quantity, action_type) VALUES ($1, $2, $3, $4)',
+                [productId, invRes.rows[0].branch_id, transferQty, 'REPLENISHMENT']
+            );
+
+            newBranchStock = currentBranchStock + transferQty;
+        } else if (stock_quantity !== undefined && stock_quantity !== null) {
+            // Keep original behavior support if stock_quantity is set directly (e.g. override)
+            newBranchStock = parseInt(stock_quantity);
+        }
+
+        // 4. Update branch record
+        const updatedInv = await client.query(
             'UPDATE product_inventory SET stock_quantity = $1, low_stock_threshold = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING *',
-            [stock_quantity, low_stock_threshold, id]
+            [newBranchStock, nextThreshold, id]
         );
-        res.json(result.rows[0]);
+
+        await client.query('COMMIT');
+        res.json(updatedInv.rows[0]);
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Error updating inventory:', err);
+        res.status(500).json({ error: err.message });
+    } finally {
+        client.release();
+    }
+};
+
+exports.getBranchInventoryHistory = async (req, res) => {
+    const { branch_id } = req.params;
+    if (req.user) {
+        const role = req.user.role ? req.user.role.toLowerCase() : '';
+        if (role !== 'admin' && role !== 'superadmin' && role !== 'subadmin') {
+            const userBranchId = req.user.branch_id;
+            if (!userBranchId || parseInt(branch_id) !== parseInt(userBranchId)) {
+                return res.status(403).json({ error: 'Unauthorized access.' });
+            }
+        }
+    }
+    try {
+        const result = await pool.query(`
+            SELECT 
+                ih.id as history_id, p.id as product_id, p.name, c.name as category_name, 
+                ih.quantity, ih.action_type, ih.created_at
+            FROM inventory_history ih
+            JOIN products p ON ih.product_id = p.id
+            LEFT JOIN categories c ON p.category_id = c.id
+            WHERE ih.branch_id = $1
+            ORDER BY ih.created_at DESC
+        `, [branch_id]);
+        res.json(result.rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

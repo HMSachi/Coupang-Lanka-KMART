@@ -70,5 +70,6 @@ router.get('/public/branch-inventory/:branch_id', productController.getBranchInv
 router.get('/branch-inventory/:branch_id', authenticateToken, isStaff, productController.getBranchInventory);
 router.post('/branch-inventory', authenticateToken, isStaff, productController.addBranchInventory);
 router.put('/inventory/:id', authenticateToken, isStaff, productController.updateInventory);
+router.get('/branch-inventory-history/:branch_id', authenticateToken, isStaff, productController.getBranchInventoryHistory);
 
 module.exports = router;
