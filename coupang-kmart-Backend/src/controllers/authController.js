@@ -92,3 +92,69 @@ exports.getMe = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+exports.getAllUsers = async (req, res) => {
+    if (req.user.role.toLowerCase() !== 'admin') {
+        return res.status(403).json({ message: 'Unauthorized: Main Admin role required' });
+    }
+    try {
+        const result = await db.query(`
+            SELECT u.id, u.name, u.email, u.role, u.branch_id, b.name as branch_name 
+            FROM users u 
+            LEFT JOIN branches b ON u.branch_id = b.id 
+            ORDER BY u.id ASC
+        `);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('getAllUsers error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.createUser = async (req, res) => {
+    if (req.user.role.toLowerCase() !== 'admin') {
+        return res.status(403).json({ message: 'Unauthorized: Main Admin role required' });
+    }
+    try {
+        const { name, email, password, role, branch_id } = req.body;
+
+        if (!name || !email || !password || !role) {
+            return res.status(400).json({ message: 'Name, email, password, and role are required' });
+        }
+
+        const existingUser = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+        if (existingUser.rows.length > 0) {
+            return res.status(400).json({ message: 'User with this email already exists' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const targetBranchId = (role.toLowerCase() === 'admin') ? null : (branch_id ? parseInt(branch_id) : null);
+
+        const result = await db.query(
+            'INSERT INTO users (name, email, password, role, branch_id) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, role, branch_id',
+            [name, email, hashedPassword, role.toLowerCase(), targetBranchId]
+        );
+
+        res.status(201).json({ message: 'User created successfully', user: result.rows[0] });
+    } catch (error) {
+        console.error('createUser error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    if (req.user.role.toLowerCase() !== 'admin') {
+        return res.status(403).json({ message: 'Unauthorized: Main Admin role required' });
+    }
+    const { id } = req.params;
+    if (parseInt(id) === req.user.id) {
+        return res.status(400).json({ message: 'You cannot delete your own admin account' });
+    }
+    try {
+        await db.query('DELETE FROM users WHERE id = $1', [id]);
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error('deleteUser error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};

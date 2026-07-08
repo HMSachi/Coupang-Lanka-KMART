@@ -10,6 +10,7 @@ router.get('/public', branchController.getBranches);
 router.get('/', authenticateToken, isAdmin, branchController.getBranches);
 router.post('/', authenticateToken, isAdmin, branchController.createBranch);
 router.post('/subadmin', authenticateToken, isAdmin, branchController.createSubAdmin);
+router.put('/:id', authenticateToken, isAdmin, branchController.updateBranch);
 
 // Cashier management (Subadmin & Admin)
 router.get('/cashiers/:branch_id', authenticateToken, isStaff, branchController.getCashiers);

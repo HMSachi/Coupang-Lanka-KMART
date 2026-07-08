@@ -10,7 +10,7 @@ const pool = new Pool({
 exports.getBranches = async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT b.*, u.name as subadmin_name, u.email as subadmin_email 
+            SELECT b.*, u.id as subadmin_id, u.name as subadmin_name, u.email as subadmin_email 
             FROM branches b
             LEFT JOIN users u ON u.branch_id = b.id AND u.role = 'subadmin'
             ORDER BY b.id ASC
@@ -112,6 +112,65 @@ exports.getBranchStats = async (req, res) => {
         // Add basic statistic aggregation if needed
         res.json({ message: "Metrics logic ready for deployment" });
     } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.updateBranch = async (req, res) => {
+    const { id } = req.params;
+    const { name, location, subadmin_id, subadmin_name, subadmin_email, subadmin_password } = req.body;
+    
+    try {
+        // Start a transaction
+        await pool.query('BEGIN');
+
+        // 1. Update branch settings
+        await pool.query(
+            'UPDATE branches SET name = $1, location = $2 WHERE id = $3',
+            [name, location, id]
+        );
+
+        // 2. If subadmin details are provided
+        if (subadmin_id) {
+            if (subadmin_password && subadmin_password.trim() !== '') {
+                // Update with password
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(subadmin_password, salt);
+                await pool.query(
+                    'UPDATE users SET name = $1, email = $2, password = $3 WHERE id = $4',
+                    [subadmin_name, subadmin_email, hashedPassword, subadmin_id]
+                );
+            } else {
+                // Update without password
+                await pool.query(
+                    'UPDATE users SET name = $1, email = $2 WHERE id = $3',
+                    [subadmin_name, subadmin_email, subadmin_id]
+                );
+            }
+        } else if (subadmin_email && subadmin_name) {
+            // If subadmin_id doesn't exist, check if we need to create one
+            // Check if email exists in database
+            const existingUser = await pool.query('SELECT * FROM users WHERE email = $1', [subadmin_email]);
+            if (existingUser.rows.length > 0) {
+                await pool.query('ROLLBACK');
+                return res.status(400).json({ error: 'User with this email already exists' });
+            }
+
+            const defaultPassword = subadmin_password || '123456';
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(defaultPassword, salt);
+
+            await pool.query(
+                'INSERT INTO users (name, email, password, role, branch_id) VALUES ($1, $2, $3, $4, $5)',
+                [subadmin_name, subadmin_email, hashedPassword, 'subadmin', id]
+            );
+        }
+
+        await pool.query('COMMIT');
+        res.json({ message: 'Branch and subadmin updated successfully' });
+    } catch (err) {
+        await pool.query('ROLLBACK');
+        console.error('Error updating branch:', err);
         res.status(500).json({ error: err.message });
     }
 };
