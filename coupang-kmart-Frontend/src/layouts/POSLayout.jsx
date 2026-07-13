@@ -167,7 +167,7 @@ const POSLayout = ({ children }) => {
                         <img src={logo} alt="Coupang Kmart" />
                     </div>
                     <div className="pos-sidebar-title">
-                        <span>Coupang <strong>Kmart</strong></span>
+                        <span>Coupang Lanka <strong>Kmart</strong></span>
                         <small>Terminal POS</small>
                     </div>
                 </div>
