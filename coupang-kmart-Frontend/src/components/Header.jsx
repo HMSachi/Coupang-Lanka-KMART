@@ -4,7 +4,7 @@ export default function Header(){
   return (
     <header>
       <nav>
-        <span>Coupang Kmart</span>
+        <span>Coupang Lanka Kmart</span>
       </nav>
     </header>
   )
